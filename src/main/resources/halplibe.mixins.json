@@ -4,6 +4,7 @@
   "package": "turniplabs.halplibe.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "mixins.RecipeRegistryMixin",
     "accessors.BlockFireAccessor",
     "accessors.EntityFireflyFXAccessor",
     "accessors.EntityFXAccessor",
