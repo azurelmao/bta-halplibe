@@ -44,6 +44,7 @@ public class BlockCoords {
         markSectionUsed(new int[]{16,24}, new int[]{19, 31});
         markSectionUsed(new int[]{5,17}, new int[]{6, 24});
         markSectionUsed(new int[]{7,18}, new int[]{10, 20});
+        markIDUsed(5, 16);
         markIDUsed(15, 16);
         markIDUsed(16, 16);
         markIDUsed(18, 8);

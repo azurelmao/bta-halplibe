@@ -6,7 +6,7 @@ import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.tileentity.TileEntityRenderer;
 import net.minecraft.core.block.entity.TileEntity;
 import net.minecraft.core.entity.Entity;
-import turniplabs.halplibe.mixin.accessors.EntityListAccessor;
+import net.minecraft.core.entity.EntityDispatcher;
 import turniplabs.halplibe.mixin.accessors.RenderManagerAccessor;
 import turniplabs.halplibe.mixin.accessors.TileEntityAccessor;
 import turniplabs.halplibe.mixin.accessors.TileEntityRendererAccessor;
@@ -44,7 +44,7 @@ abstract public class EntityHelper {
      */
     public static class Core {
         public static void createEntity(Class<? extends Entity> clazz, int id, String name) {
-            EntityListAccessor.callAddMapping(clazz, name, id);
+            EntityDispatcher.addMapping(clazz, name, id);
         }
         public static void createTileEntity(Class<? extends TileEntity> clazz, String name) {
             TileEntityAccessor.callAddMapping(clazz, name);

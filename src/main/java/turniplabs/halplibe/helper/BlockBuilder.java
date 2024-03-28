@@ -5,6 +5,8 @@ import net.minecraft.client.render.block.color.BlockColorDispatcher;
 import net.minecraft.client.render.block.model.BlockModel;
 import net.minecraft.client.render.block.model.BlockModelDispatcher;
 import net.minecraft.core.block.Block;
+import net.minecraft.core.block.BlockFire;
+import net.minecraft.core.block.tag.BlockTags;
 import net.minecraft.core.data.tag.Tag;
 import net.minecraft.core.item.Item;
 import net.minecraft.core.item.block.ItemBlock;
@@ -13,17 +15,13 @@ import net.minecraft.core.sound.BlockSoundDispatcher;
 import net.minecraft.core.util.helper.Side;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import turniplabs.halplibe.mixin.accessors.BlockFireAccessor;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class BlockBuilder implements Cloneable {
-    public static final Set<Integer> infiniburnList = new TreeSet<>();
-    static {
-        infiniburnList.add(Block.netherrack.id);
-    }
-
     private final String MOD_ID;
     private Float hardness = null;
     private Float resistance = null;
@@ -555,11 +553,11 @@ public class BlockBuilder implements Cloneable {
         }
 
         if (flammability != null) {
-            ((BlockFireAccessor) Block.fire).callSetBurnRate(block.id, flammability[0], flammability[1]);
+            BlockFire.setBurnRate(block.id, flammability[0], flammability[1]);
         }
 
         if (infiniburn) {
-            infiniburnList.add(block.id);
+            block.withTags(BlockTags.INFINITE_BURN);
         }
 
         if (visualUpdateOnMetadata) {

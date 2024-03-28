@@ -8,7 +8,6 @@
     "accessors.BlockFireAccessor",
     "accessors.EntityFireflyFXAccessor",
     "accessors.EntityFXAccessor",
-    "accessors.EntityListAccessor",
     "accessors.LanguageAccessor",
     "accessors.RecipeSymbolAccessor",
     "accessors.TileEntityAccessor",
