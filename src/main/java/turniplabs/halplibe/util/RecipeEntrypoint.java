@@ -3,5 +3,7 @@ package turniplabs.halplibe.util;
 public interface RecipeEntrypoint {
     void onRecipesReady();
 
-    void initNamespaces();
+    default void initNamespaces(){
+
+    }
 }
