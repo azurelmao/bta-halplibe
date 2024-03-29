@@ -9,13 +9,17 @@ import net.minecraft.core.block.Block;
 import net.minecraft.core.block.BlockLanternFirefly;
 import net.minecraft.core.data.gamerule.GameRuleBoolean;
 import net.minecraft.core.data.gamerule.GameRules;
+import net.minecraft.core.data.registry.Registries;
+import net.minecraft.core.data.registry.recipe.RecipeNamespace;
 import net.minecraft.core.item.Item;
 import net.minecraft.core.item.ItemStack;
+import net.minecraft.core.util.helper.DyeColor;
 import net.minecraft.core.world.biome.Biome;
 import net.minecraft.core.world.biome.Biomes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import turniplabs.halplibe.helper.*;
+import turniplabs.halplibe.util.RecipeEntrypoint;
 import turniplabs.halplibe.util.TomlConfigHandler;
 import turniplabs.halplibe.util.achievements.AchievementPage;
 import turniplabs.halplibe.util.achievements.VanillaAchievementsPage;
@@ -24,7 +28,7 @@ import turniplabs.halplibe.util.version.PacketModList;
 
 import java.util.HashMap;
 
-public class HalpLibe implements ModInitializer, PreLaunchEntrypoint {
+public class HalpLibe implements ModInitializer, PreLaunchEntrypoint, RecipeEntrypoint {
     public static final String MOD_ID = "halplibe";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     public static boolean isClient = FabricLoader.getInstance().getEnvironmentType().equals(EnvType.CLIENT);
@@ -103,5 +107,15 @@ public class HalpLibe implements ModInitializer, PreLaunchEntrypoint {
     public void onPreLaunch() {
         // Initializes halp statics first
         NetworkHelper.register(PacketModList.class, false, true); // Register Halplibe packets first
+    }
+
+    @Override
+    public void onRecipesReady() {
+
+    }
+
+    @Override
+    public void initNamespaces() {
+
     }
 }

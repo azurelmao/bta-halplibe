@@ -23,6 +23,9 @@
     ],
     "preLaunch": [
       "turniplabs.halplibe.HalpLibe"
+    ],
+    "recipesReady": [
+      "turniplabs.halplibe.HalpLibe"
     ]
   },
   "mixins": [

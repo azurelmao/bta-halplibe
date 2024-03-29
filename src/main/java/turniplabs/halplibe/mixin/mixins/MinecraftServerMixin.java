@@ -19,6 +19,7 @@ public class MinecraftServerMixin {
 
     @Inject(method = "startServer", at = @At(value = "INVOKE",target = "Lnet/minecraft/core/data/DataLoader;loadRecipesFromFile(Ljava/lang/String;)V", ordinal = 3, shift = At.Shift.AFTER))
     public void recipeEntrypoint(CallbackInfoReturnable<Boolean> cir){
+        FabricLoader.getInstance().getEntrypoints("recipesReady", RecipeEntrypoint.class).forEach(RecipeEntrypoint::initNamespaces);
         FabricLoader.getInstance().getEntrypoints("recipesReady", RecipeEntrypoint.class).forEach(RecipeEntrypoint::onRecipesReady);
     }
     @Inject(method = "startServer", at = @At("HEAD"))
