@@ -6,6 +6,7 @@ import com.google.gson.reflect.TypeToken;
 import net.minecraft.core.Global;
 import net.minecraft.core.WeightedRandomBag;
 import net.minecraft.core.WeightedRandomLootObject;
+import net.minecraft.core.block.Block;
 import net.minecraft.core.data.registry.Registries;
 import net.minecraft.core.data.registry.recipe.*;
 import net.minecraft.core.data.registry.recipe.adapter.*;
@@ -28,6 +29,13 @@ import java.util.List;
 import java.util.Objects;
 
 public final class RecipeBuilder {
+    public static void initNameSpace(String modID){
+        getRecipeNamespace(modID);
+        RecipeBuilder.getRecipeGroup(modID, "blast_furnace", new RecipeSymbol(Block.furnaceBlastActive.getDefaultStack()));
+        RecipeBuilder.getRecipeGroup(modID, "furnace", new RecipeSymbol(Block.furnaceStoneActive.getDefaultStack()));
+        RecipeBuilder.getRecipeGroup(modID, "workbench", new RecipeSymbol(Block.workbench.getDefaultStack()));
+        RecipeBuilder.getRecipeGroup(modID, "trommel", new RecipeSymbol(Block.trommelActive.getDefaultStack()));
+    }
     @Nonnull
     public static RecipeNamespace getRecipeNamespace(String modID){
         if (Registries.RECIPES.getItem(modID) != null){

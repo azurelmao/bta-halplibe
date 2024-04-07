@@ -14,7 +14,7 @@ public class RecipeBuilderBlastFurnace extends RecipeBuilderFurnace{
     @Override
     @SuppressWarnings({"unchecked", "unused"})
     public void create(String recipeID, ItemStack outputStack) {
-        ((RecipeGroup< RecipeEntryBlastFurnace>) RecipeBuilder.getRecipeGroup(modID, "blast_furnace", new RecipeSymbol(Block.furnaceStoneActive.getDefaultStack())))
+        ((RecipeGroup< RecipeEntryBlastFurnace>) RecipeBuilder.getRecipeGroup(modID, "blast_furnace", new RecipeSymbol(Block.furnaceBlastActive.getDefaultStack())))
                 .register(recipeID, new RecipeEntryBlastFurnace(input, outputStack));
     }
 }
