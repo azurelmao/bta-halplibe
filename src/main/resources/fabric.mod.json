@@ -10,7 +10,7 @@
   ],
   "contact": {
     "homepage": "",
-    "sources": ""
+    "sources": "https://github.com/Turnip-Labs/bta-halplibe"
   },
 
   "icon": "icon.png",
@@ -33,7 +33,7 @@
   ],
 
   "depends": {
-    "minecraft": "~7.1-beta.2",
+    "minecraft": "7.1",
     "fabricloader": ">=0.15.5"
   },
   "suggests": {
