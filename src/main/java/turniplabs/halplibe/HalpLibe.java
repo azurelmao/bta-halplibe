@@ -101,8 +101,6 @@ public class HalpLibe implements ModInitializer, PreLaunchEntrypoint, RecipeEntr
         LOGGER.info("HalpLibe initialized.");
     }
 
-    public static GameRuleBoolean UNLOCK_ALL_RECIPES = GameRules.register(new GameRuleBoolean("unlockAllRecipes", false));
-
     @Override
     public void onPreLaunch() {
         // Initializes halp statics first
