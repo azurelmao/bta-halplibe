@@ -215,8 +215,8 @@ public class GuiAchievements extends GuiScreen {
                     boolean isAvailable = statFileWriter.isAchievementUnlockable(achievement);
                     int n = Math.sin((double)(System.currentTimeMillis() % 600L) / 600.0 * Math.PI * 2.0) <= 0.6 ? 130 : 255;
                     color = isUnlocked ? -9408400 : (isAvailable ? 65280 + (n << 24) : -16777216);
-                    this.func_27100_a(x1, x1, y1, color);
-                    this.func_27099_b(x1, y1, y1, color);
+                    this.drawLineHorizontal(x1, x1, y1, color);
+                    this.drawLineVertical(x1, y1, y1, color);
                 } else {
                     int x1 = achievement.x * 24 - posX + 11 + iOffset;
                     int y1 = achievement.y * 24 - posY + 11 + jOffset;
@@ -227,8 +227,8 @@ public class GuiAchievements extends GuiScreen {
                     boolean isAvailable = statFileWriter.isAchievementUnlockable(achievement);
                     int n = Math.sin((double)(System.currentTimeMillis() % 600L) / 600.0 * Math.PI * 2.0) <= 0.6 ? 130 : 255;
                     color = isUnlocked ? -9408400 : (isAvailable ? 65280 + (n << 24) : -16777216);
-                    this.func_27100_a(x1, x2, y1, color);
-                    this.func_27099_b(x2, y1, y2, color);
+                    this.drawLineHorizontal(x1, x2, y1, color);
+                    this.drawLineVertical(x2, y1, y2, color);
                 }
             }
             Achievement achievement1 = null;

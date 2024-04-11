@@ -30,7 +30,7 @@ public class GuiRenderItemMixin extends Gui {
     @Inject(method = "render(Lnet/minecraft/core/item/ItemStack;IIZLnet/minecraft/core/player/inventory/slot/Slot;)V", at = @At("HEAD"))
     public void setDiscovered(ItemStack itemStack, int x, int y, boolean isSelected, Slot slot, CallbackInfo ci) {
         if(mc.theWorld != null && mc.theWorld.getGameRule(HalpLibe.UNLOCK_ALL_RECIPES) && slot != null){
-            slot.discovered = true;
+            slot.setDiscovered(true);
         }
     }
 
@@ -38,7 +38,7 @@ public class GuiRenderItemMixin extends Gui {
     @Inject(method = "render(Lnet/minecraft/core/item/ItemStack;IIZLnet/minecraft/core/player/inventory/slot/Slot;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/player/inventory/slot/Slot;getBackgroundIconIndex()I", shift = At.Shift.BEFORE))
     public void setDiscovered2(ItemStack itemStack, int x, int y, boolean isSelected, Slot slot, CallbackInfo ci, @Local(ordinal = 2) LocalBooleanRef discovered) {
         if(mc.theWorld != null && mc.theWorld.getGameRule(HalpLibe.UNLOCK_ALL_RECIPES) && slot != null){
-            slot.discovered = true;
+            slot.setDiscovered(true);
             discovered.set(true);
         }
     }
