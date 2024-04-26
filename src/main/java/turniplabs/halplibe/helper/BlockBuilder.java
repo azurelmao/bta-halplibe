@@ -506,23 +506,23 @@ public class BlockBuilder implements Cloneable {
             block.atlasIndices[Side.TOP.getId()] = Block.texCoordToIndex(topTexture[0], topTexture[1]);
         }
 
-        if (topTexture != null) {
+        if (bottomTexture != null) {
             block.atlasIndices[Side.BOTTOM.getId()] = Block.texCoordToIndex(bottomTexture[0], bottomTexture[1]);
         }
 
-        if (topTexture != null) {
+        if (northTexture != null) {
             block.atlasIndices[Side.NORTH.getId()] = Block.texCoordToIndex(northTexture[0], northTexture[1]);
         }
 
-        if (topTexture != null) {
+        if (eastTexture != null) {
             block.atlasIndices[Side.EAST.getId()] = Block.texCoordToIndex(eastTexture[0], eastTexture[1]);
         }
 
-        if (topTexture != null) {
+        if (southTexture != null) {
             block.atlasIndices[Side.SOUTH.getId()] = Block.texCoordToIndex(southTexture[0], southTexture[1]);
         }
 
-        if (topTexture != null) {
+        if (westTexture != null) {
             block.atlasIndices[Side.WEST.getId()] = Block.texCoordToIndex(westTexture[0], westTexture[1]);
         }
 
