@@ -4,21 +4,13 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint;
-import net.minecraft.core.Global;
 import net.minecraft.core.block.Block;
-import net.minecraft.core.block.BlockLanternFirefly;
-import net.minecraft.core.data.gamerule.GameRuleBoolean;
-import net.minecraft.core.data.gamerule.GameRules;
-import net.minecraft.core.data.registry.Registries;
-import net.minecraft.core.data.registry.recipe.RecipeNamespace;
 import net.minecraft.core.item.Item;
-import net.minecraft.core.item.ItemStack;
-import net.minecraft.core.util.helper.DyeColor;
-import net.minecraft.core.world.biome.Biome;
-import net.minecraft.core.world.biome.Biomes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import turniplabs.halplibe.helper.*;
+import turniplabs.halplibe.helper.AchievementHelper;
+import turniplabs.halplibe.helper.ModVersionHelper;
+import turniplabs.halplibe.helper.NetworkHelper;
 import turniplabs.halplibe.util.RecipeEntrypoint;
 import turniplabs.halplibe.util.TomlConfigHandler;
 import turniplabs.halplibe.util.achievements.AchievementPage;
@@ -50,7 +42,6 @@ public class HalpLibe implements ModInitializer, PreLaunchEntrypoint, RecipeEntr
 
         CONFIG = new TomlConfigHandler(MOD_ID, toml);
 
-        Global.TEXTURE_ATLAS_WIDTH_TILES = Math.max(32, CONFIG.getInt("Experimental.AtlasWidth"));
         sendModlist = CONFIG.getBoolean("Network.SendModlistPack");
         exportRecipes = CONFIG.getBoolean("Debug.ExportRecipes");
         compatibilityMode = CONFIG.getBoolean("Experimental.CompatibilityMode");
