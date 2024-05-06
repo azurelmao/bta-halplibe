@@ -1,12 +1,10 @@
 package turniplabs.halplibe.util.achievements;
 
-import net.minecraft.client.render.TextureFX;
-import net.minecraft.core.Global;
+import net.minecraft.client.render.stitcher.TextureRegistry;
 import net.minecraft.core.achievement.Achievement;
 import net.minecraft.core.achievement.AchievementList;
 import net.minecraft.core.achievement.stat.Stat;
 import net.minecraft.core.block.Block;
-import net.minecraft.core.util.helper.Side;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Random;
@@ -29,8 +27,7 @@ public class TestAchievementsPage extends AchievementPage{
             GL11.glColor4f(f5, f5, f5, 1.0f);
             int i8 = 0;
             while (i8 * 16 - blockX2 < 224) {
-                int k8 = Block.bedrock.getBlockTextureFromSideAndMetadata(Side.BOTTOM,0);
-                guiAchievements.drawTexturedModalRect(iOffset + i8 * 16 - blockX2, jOffset + l7 * 16 - blockY2, k8 % Global.TEXTURE_ATLAS_WIDTH_TILES * TextureFX.tileWidthTerrain, k8 / Global.TEXTURE_ATLAS_WIDTH_TILES * TextureFX.tileWidthTerrain, 16, 16, TextureFX.tileWidthTerrain, 1.0f / (float)(Global.TEXTURE_ATLAS_WIDTH_TILES * TextureFX.tileWidthTerrain));
+                guiAchievements.drawTexturedIcon(iOffset + i8 * 16 - blockX2, jOffset + l7 * 16 - blockY2, 16, 16, TextureRegistry.getTexture("minecraft:block/bedrock"));
                 ++i8;
             }
             ++l7;

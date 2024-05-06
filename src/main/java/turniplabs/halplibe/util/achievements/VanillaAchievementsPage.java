@@ -1,7 +1,7 @@
 package turniplabs.halplibe.util.achievements;
 
-import net.minecraft.client.render.TextureFX;
-import net.minecraft.core.Global;
+import net.minecraft.client.render.block.model.BlockModelDispatcher;
+import net.minecraft.client.render.stitcher.IconCoordinate;
 import net.minecraft.core.achievement.AchievementList;
 import net.minecraft.core.block.Block;
 import net.minecraft.core.util.helper.Side;
@@ -10,8 +10,8 @@ import org.lwjgl.opengl.GL11;
 import java.util.Random;
 
 public class VanillaAchievementsPage extends AchievementPage{
-    private static Block[] stoneOres = new Block[]{Block.oreCoalStone, Block.oreIronStone, Block.oreGoldStone, Block.oreDiamondStone, Block.oreRedstoneStone};
-    private static Block[] basaltOres = new Block[]{Block.oreCoalBasalt, Block.oreIronBasalt, Block.oreGoldBasalt, Block.oreDiamondBasalt, Block.oreRedstoneBasalt};
+    private static final Block[] stoneOres = new Block[]{Block.oreCoalStone, Block.oreIronStone, Block.oreGoldStone, Block.oreDiamondStone, Block.oreRedstoneStone};
+    private static final Block[] basaltOres = new Block[]{Block.oreCoalBasalt, Block.oreIronBasalt, Block.oreGoldBasalt, Block.oreDiamondBasalt, Block.oreRedstoneBasalt};
     public VanillaAchievementsPage() {
         super("Minecraft", "achievements.page.minecraft");
         achievementList.addAll(AchievementList.achievementList);
@@ -28,31 +28,49 @@ public class VanillaAchievementsPage extends AchievementPage{
                 random.setSeed(1234 + blockX1 + column);
                 random.nextInt();
                 int randomY = random.nextInt(1 + blockY1 + row) + (blockY1 + row) / 2;
-                int texture = Block.sand.getBlockTextureFromSideAndMetadata(Side.BOTTOM, 0);
+                IconCoordinate texture = this.getTextureFromBlock(Block.sand);
                 Block[] oreArray = stoneOres;
                 if (randomY >= 28 || blockY1 + row > 24) {
                     oreArray = basaltOres;
                 }
+
                 if (randomY > 37 || blockY1 + row == 35) {
-                    texture = Block.bedrock.getBlockTextureFromSideAndMetadata(Side.BOTTOM, 0);
+                    texture = this.getTextureFromBlock(Block.bedrock);
                 } else if (randomY == 22) {
-                    texture = random.nextInt(2) == 0 ? oreArray[3].getBlockTextureFromSideAndMetadata(Side.BOTTOM, 0) : oreArray[4].getBlockTextureFromSideAndMetadata(Side.BOTTOM, 0);
+                    if (random.nextInt(2) == 0) {
+                        texture = this.getTextureFromBlock(oreArray[3]);
+                    } else {
+                        texture = this.getTextureFromBlock(oreArray[4]);
+                    }
                 } else if (randomY == 10) {
-                    texture = oreArray[1].getBlockTextureFromSideAndMetadata(Side.BOTTOM, 0);
+                    texture = this.getTextureFromBlock(oreArray[1]);
                 } else if (randomY == 8) {
-                    texture = oreArray[0].getBlockTextureFromSideAndMetadata(Side.BOTTOM, 0);
+                    texture = this.getTextureFromBlock(oreArray[0]);
                 } else if (randomY > 4) {
-                    texture = Block.stone.getBlockTextureFromSideAndMetadata(Side.BOTTOM, 0);
+                    texture = this.getTextureFromBlock(Block.stone);
                     if (randomY >= 28 || blockY1 + row > 24) {
-                        texture = Block.basalt.getBlockTextureFromSideAndMetadata(Side.BOTTOM, 0);
+                        texture = this.getTextureFromBlock(Block.basalt);
                     }
                 } else if (randomY > 0) {
-                    texture = Block.dirt.getBlockTextureFromSideAndMetadata(Side.BOTTOM, 0);
+                    texture = this.getTextureFromBlock(Block.dirt);
                 }
-                guiAchievements.drawTexturedModalRect(iOffset + column * 16 - blockX2, jOffset + row * 16 - blockY2, texture % Global.TEXTURE_ATLAS_WIDTH_TILES * TextureFX.tileWidthTerrain, texture / Global.TEXTURE_ATLAS_WIDTH_TILES * TextureFX.tileWidthTerrain, 16, 16, TextureFX.tileWidthTerrain, 1.0f / (float)(Global.TEXTURE_ATLAS_WIDTH_TILES * TextureFX.tileWidthTerrain));
+
+                guiAchievements.drawTexturedModalRect(
+                        iOffset + column * 16 - blockX2,
+                        jOffset + row * 16 - blockY2,
+                        texture.iconX,
+                        texture.iconY,
+                        texture.width,
+                        texture.height,
+                        (double)(1.0F / (float)texture.parentAtlas.getAtlasWidth()),
+                        (double)(1.0F / (float)texture.parentAtlas.getAtlasHeight())
+                );
                 ++column;
             }
             ++row;
         }
+    }
+    protected IconCoordinate getTextureFromBlock(Block block) {
+        return BlockModelDispatcher.getInstance().getDispatch(block).getBlockTextureFromSideAndMetadata(Side.BOTTOM, 0);
     }
 }
