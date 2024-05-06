@@ -16,11 +16,6 @@ abstract public class ParticleHelper {
     public static Map<String, Class<? extends EntityFX>> particlesOld = new HashMap<>();
     public static Map<String, ParticleLambda> particles = new HashMap<>();
 
-    @SuppressWarnings("unused") // API function
-    @Deprecated
-    public static void createParticle(Class<? extends EntityFX> clazz, String name) {
-        particlesOld.put(name, clazz);
-    }
 
     @SuppressWarnings("unused") // API function
     public static void createParticle(String name, ParticleLambda lambda) {
