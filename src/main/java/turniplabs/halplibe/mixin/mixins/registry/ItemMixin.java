@@ -15,7 +15,7 @@ public class ItemMixin {
 
 	@Inject(at = @At(value = "FIELD", target = "Lnet/minecraft/core/item/Item;highestItemId:I", shift = At.Shift.BEFORE), method = "<clinit>", cancellable = true)
 	private static void captureHighest(CallbackInfo ci) {
-		ItemHelper.highestVanilla = highestItemId;
+		ItemHelper.Registry.highestVanilla = highestItemId;
 		ci.cancel();
 	}
 	
