@@ -4,54 +4,38 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint;
-import net.minecraft.core.Global;
 import net.minecraft.core.block.Block;
-import net.minecraft.core.block.BlockLanternFirefly;
-import net.minecraft.core.data.gamerule.GameRuleBoolean;
-import net.minecraft.core.data.gamerule.GameRules;
-import net.minecraft.core.data.registry.Registries;
-import net.minecraft.core.data.registry.recipe.RecipeNamespace;
 import net.minecraft.core.item.Item;
-import net.minecraft.core.item.ItemStack;
-import net.minecraft.core.util.helper.DyeColor;
-import net.minecraft.core.world.biome.Biome;
-import net.minecraft.core.world.biome.Biomes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import turniplabs.halplibe.helper.*;
+import turniplabs.halplibe.helper.AchievementHelper;
+import turniplabs.halplibe.helper.ModVersionHelper;
+import turniplabs.halplibe.helper.NetworkHelper;
 import turniplabs.halplibe.util.RecipeEntrypoint;
 import turniplabs.halplibe.util.TomlConfigHandler;
 import turniplabs.halplibe.util.achievements.AchievementPage;
 import turniplabs.halplibe.util.achievements.VanillaAchievementsPage;
 import turniplabs.halplibe.util.toml.Toml;
-import turniplabs.halplibe.util.version.PacketModList;
 
 import java.util.HashMap;
 
 public class HalpLibe implements ModInitializer, PreLaunchEntrypoint, RecipeEntrypoint {
     public static final String MOD_ID = "halplibe";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
-    public static boolean isClient = FabricLoader.getInstance().getEnvironmentType().equals(EnvType.CLIENT);
-    public static boolean sendModlist;
+    public static final boolean isClient = FabricLoader.getInstance().getEnvironmentType().equals(EnvType.CLIENT);
     public static boolean exportRecipes;
     public static boolean compatibilityMode;
     public static final TomlConfigHandler CONFIG;
     static {
         Toml toml = new Toml();
         toml.addCategory("Experimental");
-        toml.addEntry("Experimental.AtlasWidth", "Dynamically resized the Terrain and Item atlases, value must be an integer greater than or equal to 32",32);
-        toml.addEntry("Experimental.RequireTextures", "Require texture to exist on startup", false);
         toml.addEntry("Experimental.CompatibilityMode", "Attempt allowing compatibility with older halplibe versions", true);
-        toml.addCategory("Network");
-        toml.addEntry("Network.SendModlistPack", "This sends a modlist packet to clients that join the server when enabled, however it may cause issues if the clients do not have halplibe installed", true);
         toml.addCategory("Debug");
         toml.addEntry("Debug.ExportRecipes", "Writes all the loaded game recipes to dumpRecipes after startup", false);
 
 
         CONFIG = new TomlConfigHandler(MOD_ID, toml);
 
-        Global.TEXTURE_ATLAS_WIDTH_TILES = Math.max(32, CONFIG.getInt("Experimental.AtlasWidth"));
-        sendModlist = CONFIG.getBoolean("Network.SendModlistPack");
         exportRecipes = CONFIG.getBoolean("Debug.ExportRecipes");
         compatibilityMode = CONFIG.getBoolean("Experimental.CompatibilityMode");
 
@@ -104,7 +88,6 @@ public class HalpLibe implements ModInitializer, PreLaunchEntrypoint, RecipeEntr
     @Override
     public void onPreLaunch() {
         // Initializes halp statics first
-        NetworkHelper.register(PacketModList.class, false, true); // Register Halplibe packets first
     }
 
     @Override

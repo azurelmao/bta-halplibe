@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import turniplabs.halplibe.helper.BlockHelper;
+import turniplabs.halplibe.helper.BlockBuilder;
 
 @Mixin(value = Block.class, remap = false)
 public abstract class BlockMixin {
@@ -19,7 +19,7 @@ public abstract class BlockMixin {
 
 	@Inject(at = @At("TAIL"), method = "<clinit>")
 	private static void captureHighest(CallbackInfo ci) {
-		BlockHelper.highestVanilla = highestBlockId;
+		BlockBuilder.Registry.highestVanilla = highestBlockId;
 	}
 
 	@Inject(at = @At(value = "INVOKE", target = "Ljava/lang/IllegalArgumentException;<init>(Ljava/lang/String;)V", shift = At.Shift.BEFORE), method = "<init>")

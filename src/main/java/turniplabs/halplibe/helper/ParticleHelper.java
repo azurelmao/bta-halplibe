@@ -1,30 +1,21 @@
 package turniplabs.halplibe.helper;
 
 
-
-import net.minecraft.client.entity.fx.EntityFX;
 import net.minecraft.client.entity.fx.EntityFireflyFX;
+import net.minecraft.client.entity.fx.ParticleDispatcher;
+import net.minecraft.client.entity.fx.ParticleLambda;
 import net.minecraft.core.util.helper.MathHelper;
-import net.minecraft.core.world.World;
+import turniplabs.halplibe.HalpLibe;
 import turniplabs.halplibe.mixin.accessors.EntityFXAccessor;
 import turniplabs.halplibe.mixin.accessors.EntityFireflyFXAccessor;
 
-import java.util.HashMap;
-import java.util.Map;
-
 abstract public class ParticleHelper {
-    public static Map<String, Class<? extends EntityFX>> particlesOld = new HashMap<>();
-    public static Map<String, ParticleLambda> particles = new HashMap<>();
 
-    @SuppressWarnings("unused") // API function
-    @Deprecated
-    public static void createParticle(Class<? extends EntityFX> clazz, String name) {
-        particlesOld.put(name, clazz);
-    }
 
     @SuppressWarnings("unused") // API function
     public static void createParticle(String name, ParticleLambda lambda) {
-        particles.put(name, lambda);
+        if (!HalpLibe.isClient) return;
+        ParticleDispatcher.getInstance().addDispatch(name, lambda);
     }
 
 
@@ -65,8 +56,4 @@ abstract public class ParticleHelper {
         ((EntityFireflyFXAccessor) particle).setMaxB(b);
     }
 
-    @FunctionalInterface
-    public interface ParticleLambda {
-        EntityFX run(World world, double x, double y, double z, double motionX, double motionY, double motionZ);
-    }
 }

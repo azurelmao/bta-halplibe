@@ -10,9 +10,12 @@ import net.minecraft.client.gui.popup.PopupCloseListener;
 import net.minecraft.client.render.Lighting;
 import net.minecraft.client.render.Scissor;
 import net.minecraft.client.render.entity.ItemEntityRenderer;
+import net.minecraft.client.render.item.model.ItemModelDispatcher;
+import net.minecraft.client.render.tessellator.TessellatorStandard;
 import net.minecraft.core.achievement.Achievement;
 import net.minecraft.core.achievement.AchievementList;
 import net.minecraft.core.achievement.stat.StatsCounter;
+import net.minecraft.core.item.Item;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.lang.I18n;
 import net.minecraft.core.util.helper.MathHelper;
@@ -261,14 +264,14 @@ public class GuiAchievements extends GuiScreen {
                 }
                 if(!isAvailable){
                     GL11.glColor4f(0.1f, 0.1f, 0.1f, 1.0f);
-                    renderitem.field_27004_a = false;
+                    renderitem.useColor = false;
                 }
                 GL11.glEnable(2896);
                 GL11.glEnable(2884);
-                renderitem.renderItemIntoGUI(this.mc.fontRenderer, this.mc.renderEngine, new ItemStack(achievement.itemId, 1, 0), x2 + 3, y2 + 3, 1.0f);
+                ItemModelDispatcher.getInstance().getDispatch(Item.itemsList[achievement.itemId]).renderItemIntoGui(TessellatorStandard.instance, this.mc.fontRenderer, this.mc.renderEngine, new ItemStack(achievement.itemId, 1, 0), x2 + 3, y2 + 3, 1.0f);
                 GL11.glDisable(2896);
                 if(!isAvailable){
-                    renderitem.field_27004_a = true;
+                    renderitem.useColor = true;
                 }
                 GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
                 if (x < iOffset || y < jOffset || x >= iOffset + 224 || y >= jOffset + 155 || x < x2 || x > x2 + 22 || y < y2 || y > y2 + 22) continue;
