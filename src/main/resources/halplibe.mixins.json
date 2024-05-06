@@ -19,8 +19,7 @@
     "mixins.commands.CommandsCoreMixin",
     "mixins.network.PacketMixin",
     "mixins.registry.BlockMixin",
-    "mixins.registry.ItemMixin",
-    "mixins.version.NetHandlerMixin"
+    "mixins.registry.ItemMixin"
   ],
   "client": [
     "accessors.RenderManagerAccessor",
