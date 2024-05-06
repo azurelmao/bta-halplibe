@@ -7,8 +7,12 @@ import net.minecraft.client.Minecraft;
 import turniplabs.halplibe.HalpLibe;
 import turniplabs.halplibe.util.version.EnumModList;
 import turniplabs.halplibe.util.version.ModInfo;
-import turniplabs.halplibe.util.version.PacketModList;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -115,8 +119,8 @@ abstract public class ModVersionHelper {
                 return null;
         }
     }
-    protected static void handleModListPacket(PacketModList packetModList){
-        serverMods = packetModList.modInfos;
+    protected static void setServerModlist(List<ModInfo> modInfos){
+        serverMods = modInfos;
         if (isDev){
             printModList();
         }
@@ -128,6 +132,42 @@ abstract public class ModVersionHelper {
             for (ModInfo info: getServerModlist()) {
                 HalpLibe.LOGGER.info(info.id + " " + info.version);
             }
+        }
+    }
+    public static byte[] encodeMods(List<ModInfo> modInfo){
+        byte[] bytes = new byte[0];
+        try {
+            ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
+            DataOutputStream dataOutputStream = new DataOutputStream(byteOutput);
+            int size = modInfo.size();
+            for (int i = 0; i < size; i++) {
+                modInfo.get(i).pack(dataOutputStream);
+                if (i == size -1){
+                    dataOutputStream.writeChar(127);
+                } else {
+                    dataOutputStream.writeChar(3);
+                }
+            }
+            bytes = byteOutput.toByteArray();
+            byteOutput.close();
+            dataOutputStream.close();
+            return bytes;
+        } catch (IOException e) {
+            return bytes;
+        }
+    }
+    public static List<ModInfo> decodeMods(byte[] bytes){
+        try {
+            List<ModInfo> modInfos = new ArrayList<>();
+            DataInputStream dataInputStream = new DataInputStream(new ByteArrayInputStream(bytes));
+            char data = 0;
+            while (data != 127){
+                modInfos.add(new ModInfo(dataInputStream));
+                data = dataInputStream.readChar();
+            }
+            return modInfos;
+        } catch (IOException e) {
+            return new ArrayList<>();
         }
     }
 }

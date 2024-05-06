@@ -16,7 +16,6 @@
     "mixins.ContainerPlayerCreativeMixin",
     "mixins.I18nMixin",
     "mixins.NetClientHandlerMixin",
-    "mixins.PacketMobSpawnMixin",
     "mixins.commands.CommandsCoreMixin",
     "mixins.network.PacketMixin",
     "mixins.registry.BlockMixin",
