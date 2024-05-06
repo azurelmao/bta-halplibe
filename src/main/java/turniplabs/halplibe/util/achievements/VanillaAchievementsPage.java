@@ -55,15 +55,12 @@ public class VanillaAchievementsPage extends AchievementPage{
                     texture = this.getTextureFromBlock(Block.dirt);
                 }
 
-                guiAchievements.drawTexturedModalRect(
+                guiAchievements.drawTexturedIcon(
                         iOffset + column * 16 - blockX2,
                         jOffset + row * 16 - blockY2,
-                        texture.iconX,
-                        texture.iconY,
                         texture.width,
                         texture.height,
-                        (double)(1.0F / (float)texture.parentAtlas.getAtlasWidth()),
-                        (double)(1.0F / (float)texture.parentAtlas.getAtlasHeight())
+                        texture
                 );
                 ++column;
             }
