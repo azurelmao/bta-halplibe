@@ -1,8 +1,13 @@
 package turniplabs.halplibe.helper;
 
+import net.minecraft.client.render.item.model.ItemModel;
+import net.minecraft.client.render.item.model.ItemModelDispatcher;
+import net.minecraft.client.render.item.model.ItemModelStandard;
 import net.minecraft.core.block.Block;
 import net.minecraft.core.item.Item;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import turniplabs.halplibe.HalpLibe;
 import turniplabs.halplibe.util.registry.IdSupplier;
 import turniplabs.halplibe.util.registry.RunLengthConfig;
@@ -13,45 +18,27 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 abstract public class ItemHelper {
 
-	/**
-	 * @deprecated Translation keys should now be defined inside the item constructor
-	 * Use instead 	{@link ItemHelper#createItem(String modId, Item item, String texture)} or
-	 * 				{@link ItemHelper#createItem(String modId, Item item)}
-	 */
-	@Deprecated
-	public static Item createItem(String modId, Item item, String translationKey, String texture) {
-		item.setKey(translationKey);
-		return createItem(modId, item, texture);
+	public static <T extends Item> T createItem(@NotNull String modId, @NotNull T item){
+		return createItem(modId, item, (i) -> new ItemModelStandard(i, modId));
 	}
-
-	public static Item createItem(String modId, Item item, String texture) {
-		if (HalpLibe.compatibilityMode){
-			String[] textureSplit = texture.split("[.]");
-			if (textureSplit.length > 2 || (textureSplit.length > 1 && !TextureHelper.supportedImageFormats.contains(textureSplit[1])) || textureSplit.length == 1){ // TODO eventually remove this deprecation support code
-				new IllegalArgumentException("Language key provided instead of a valid texture path!! \nPrevious function has been deprecated language keys are now input into the item constructor rather than as an explicit parameter!").printStackTrace();
-				HalpLibe.LOGGER.warn("Provided texture detected as language key, compatibility mode emulating the old behavior");
-				item.setKey(texture);
-				return createItem(modId, item);
-			}
-		}
-		int[] mainCoords = TextureHelper.getOrCreateItemTexture(modId, texture);
-		item.setIconCoord(mainCoords[0], mainCoords[1]);
-
-		return createItem(modId, item);
-	}
-
-	public static Item createItem(String modId, Item item) {
+	public static <T extends Item> T createItem(@NotNull String modId, @NotNull T item, @NotNull Function<Item, ItemModel> itemModelSupplier) {
 		List<String> tokens = Arrays.stream(item.getKey().split("\\.")).collect(Collectors.toList());
 
 		List<String> newTokens = new ArrayList<>();
 		newTokens.add(modId);
 		newTokens.addAll(tokens.subList(1, tokens.size()));
 
-		return item.setKey(StringUtils.join(newTokens, "."));
+		if (HalpLibe.isClient){
+			ItemModelDispatcher.getInstance().addDispatch(itemModelSupplier.apply(item));
+		}
+
+		return (T) item.setKey(StringUtils.join(newTokens, "."));
 	}
 	public static class Registry{
 		public static int highestVanilla;
