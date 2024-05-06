@@ -153,6 +153,7 @@ abstract public class ModVersionHelper {
             dataOutputStream.close();
             return bytes;
         } catch (IOException e) {
+            HalpLibe.LOGGER.error("IOException occurred in encoding!", e);
             return bytes;
         }
     }
@@ -167,6 +168,7 @@ abstract public class ModVersionHelper {
             }
             return modInfos;
         } catch (IOException e) {
+            HalpLibe.LOGGER.error("IOException occurred in decoding!", e);
             return new ArrayList<>();
         }
     }
