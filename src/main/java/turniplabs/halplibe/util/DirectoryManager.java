@@ -48,13 +48,13 @@ public class DirectoryManager {
         return resourceDirectoryMap.get(modID).getOrDefault(key, String.format(formattedDefault, modID));
     }
     public static String getBlockTextureDirectory(String modID){
-        return getDirectory(BLOCK_TEXTURES, modID, "/assets/%s/block/");
+        return getDirectory(BLOCK_TEXTURES, modID, "/assets/%s/textures/block/");
     }
     public static String getItemTextureDirectory(String modID){
-        return getDirectory(ITEM_TEXTURES, modID, "/assets/%s/item/");
+        return getDirectory(ITEM_TEXTURES, modID, "/assets/%s/textures/item/");
     }
     public static String getParticleTextureDirectory(String modID){
-        return getDirectory(PARTICLE_TEXTURES, modID, "/assets/%s/particle/");
+        return getDirectory(PARTICLE_TEXTURES, modID, "/assets/%s/textures/particle/");
     }
     public static String getLanguageDirectory(String modID){
         return getDirectory(LANGUAGE, modID, "/lang/%s/");
@@ -72,6 +72,6 @@ public class DirectoryManager {
         return getDirectory(STREAMING, modID, "/assets/%s/streaming/");
     }
     public static String getArmorDirectory(String modID){
-        return getDirectory(ARMOR, modID, "/assets/%s/armor/");
+        return getDirectory(ARMOR, modID, "/assets/%s/textures/armor/");
     }
 }
