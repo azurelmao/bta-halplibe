@@ -31,7 +31,7 @@ import java.util.HashMap;
 public class HalpLibe implements ModInitializer, PreLaunchEntrypoint, RecipeEntrypoint {
     public static final String MOD_ID = "halplibe";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
-    public static boolean isClient = FabricLoader.getInstance().getEnvironmentType().equals(EnvType.CLIENT);
+    public static final boolean isClient = FabricLoader.getInstance().getEnvironmentType().equals(EnvType.CLIENT);
     public static boolean sendModlist;
     public static boolean exportRecipes;
     public static boolean compatibilityMode;
