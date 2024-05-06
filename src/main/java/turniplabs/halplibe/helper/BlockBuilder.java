@@ -12,7 +12,6 @@ import net.minecraft.core.item.Item;
 import net.minecraft.core.item.block.ItemBlock;
 import net.minecraft.core.sound.BlockSound;
 import net.minecraft.core.sound.BlockSoundDispatcher;
-import net.minecraft.core.util.helper.Side;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import turniplabs.halplibe.util.registry.IdSupplier;
@@ -24,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class BlockBuilder implements Cloneable {
@@ -42,15 +42,9 @@ public class BlockBuilder implements Cloneable {
     private Block blockDrop = null;
     private BlockSound blockSound = null;
     private BlockColor blockColor = null;
-    private BlockModel blockModel = null;
+    private Function<Block, BlockModel<?>> blockModelSupplier = null;
     private BlockLambda<ItemBlock> customItemBlock = null;
     private Tag<Block>[] tags = null;
-    private int[] topTexture = null;
-    private int[] bottomTexture = null;
-    private int[] northTexture = null;
-    private int[] eastTexture = null;
-    private int[] southTexture = null;
-    private int[] westTexture = null;
 
     public BlockBuilder(String modId) {
         MOD_ID = modId;
@@ -256,14 +250,14 @@ public class BlockBuilder implements Cloneable {
      * Example code:
      * <pre>{@code
      *     public static final Block customFlower = new BlockBuilder(MOD_ID)
-     *          .setBlockModel(new BlockModelRenderBlocks(1))
+     *          .setBlockModel(BlockModelCrossedSquares::new))
      *          .build(new BlockFlower("custom.flower", 4002);
      * }</pre>
      */
     @SuppressWarnings({"unused"})
-    public BlockBuilder setBlockModel(BlockModel blockModel) {
+    public BlockBuilder setBlockModel(Function<Block, BlockModel<?>> blockModelSupplier) {
         BlockBuilder blockBuilder = this.clone();
-        blockBuilder.blockModel = blockModel;
+        blockBuilder.blockModelSupplier = blockModelSupplier;
         return blockBuilder;
     }
 
@@ -300,237 +294,7 @@ public class BlockBuilder implements Cloneable {
     }
 
     @SuppressWarnings({"unused"})
-    public BlockBuilder setTextures(String texture) {
-        return setTextures(MOD_ID, texture);
-    }
-
-    @SuppressWarnings({"unused"})
-    public BlockBuilder setTextures(String modID, String texture) {
-        int[] one = TextureHelper.getOrCreateBlockTexture(modID, texture);
-
-        BlockBuilder blockBuilder = this.clone();
-        blockBuilder.topTexture = one;
-        blockBuilder.bottomTexture = one;
-        blockBuilder.northTexture = one;
-        blockBuilder.eastTexture = one;
-        blockBuilder.southTexture = one;
-        blockBuilder.westTexture = one;
-
-        return blockBuilder;
-    }
-
-    @SuppressWarnings({"unused"})
-    public BlockBuilder setTextures(int x, int y) {
-        int[] one = new int[]{x, y};
-
-        BlockBuilder blockBuilder = this.clone();
-        blockBuilder.topTexture = one;
-        blockBuilder.bottomTexture = one;
-        blockBuilder.northTexture = one;
-        blockBuilder.eastTexture = one;
-        blockBuilder.southTexture = one;
-        blockBuilder.westTexture = one;
-
-        return blockBuilder;
-    }
-
-    @SuppressWarnings({"unused"})
-    public BlockBuilder setSideTextures(String texture) {
-        return setSideTextures(MOD_ID, texture);
-    }
-
-    @SuppressWarnings({"unused"})
-    public BlockBuilder setSideTextures(String modID, String texture) {
-        int[] sides = TextureHelper.getOrCreateBlockTexture(modID, texture);
-
-        BlockBuilder blockBuilder = this.clone();
-        blockBuilder.northTexture = sides;
-        blockBuilder.eastTexture = sides;
-        blockBuilder.southTexture = sides;
-        blockBuilder.westTexture = sides;
-
-        return blockBuilder;
-    }
-
-    @SuppressWarnings({"unused"})
-    public BlockBuilder setSideTextures(int x, int y) {
-        int[] sides = new int[]{x, y};
-
-        BlockBuilder blockBuilder = this.clone();
-        blockBuilder.northTexture = sides;
-        blockBuilder.eastTexture = sides;
-        blockBuilder.southTexture = sides;
-        blockBuilder.westTexture = sides;
-
-        return blockBuilder;
-    }
-
-    @SuppressWarnings({"unused"})
-    public BlockBuilder setTopBottomTexture(String texture) {
-        return setTopBottomTexture(MOD_ID, texture);
-    }
-
-    @SuppressWarnings({"unused"})
-    public BlockBuilder setTopBottomTexture(String modID, String texture) {
-        int[] topBottom = TextureHelper.getOrCreateBlockTexture(modID, texture);
-
-        BlockBuilder blockBuilder = this.clone();
-        blockBuilder.topTexture = topBottom;
-        blockBuilder.bottomTexture = topBottom;
-
-        return blockBuilder;
-    }
-
-    @SuppressWarnings({"unused"})
-    public BlockBuilder setTopBottomTexture(int x, int y) {
-        int[] topBottom = new int[]{x, y};
-
-        BlockBuilder blockBuilder = this.clone();
-        blockBuilder.topTexture = topBottom;
-        blockBuilder.bottomTexture = topBottom;
-
-        return blockBuilder;
-    }
-
-    @SuppressWarnings({"unused"})
-    public BlockBuilder setTopTexture(String texture) {
-        return setTopTexture(MOD_ID, texture);
-    }
-
-    @SuppressWarnings({"unused"})
-    public BlockBuilder setTopTexture(String modID, String texture) {
-        BlockBuilder blockBuilder = this.clone();
-        blockBuilder.topTexture = TextureHelper.getOrCreateBlockTexture(modID, texture);
-        return blockBuilder;
-    }
-
-    @SuppressWarnings({"unused"})
-    public BlockBuilder setTopTexture(int x, int y) {
-        BlockBuilder blockBuilder = this.clone();
-        blockBuilder.topTexture = new int[]{x, y};
-        return blockBuilder;
-    }
-
-    @SuppressWarnings({"unused"})
-    public BlockBuilder setBottomTexture(String texture) {
-        return setBottomTexture(MOD_ID, texture);
-    }
-
-    @SuppressWarnings({"unused"})
-    public BlockBuilder setBottomTexture(String modID, String texture) {
-        BlockBuilder blockBuilder = this.clone();
-        blockBuilder.bottomTexture = TextureHelper.getOrCreateBlockTexture(modID, texture);
-        return blockBuilder;
-    }
-
-    @SuppressWarnings({"unused"})
-    public BlockBuilder setBottomTexture(int x, int y) {
-        BlockBuilder blockBuilder = this.clone();
-        blockBuilder.bottomTexture = new int[]{x, y};
-        return blockBuilder;
-    }
-
-    @SuppressWarnings({"unused"})
-    public BlockBuilder setNorthTexture(String texture) {
-        return setNorthTexture(MOD_ID, texture);
-    }
-
-    @SuppressWarnings({"unused"})
-    public BlockBuilder setNorthTexture(String modID, String texture) {
-        BlockBuilder blockBuilder = this.clone();
-        blockBuilder.northTexture = TextureHelper.getOrCreateBlockTexture(modID, texture);
-        return blockBuilder;
-    }
-
-    @SuppressWarnings({"unused"})
-    public BlockBuilder setNorthTexture(int x, int y) {
-        BlockBuilder blockBuilder = this.clone();
-        blockBuilder.northTexture = new int[]{x, y};
-        return blockBuilder;
-    }
-
-    @SuppressWarnings({"unused"})
-    public BlockBuilder setEastTexture(String texture) {
-        return setEastTexture(MOD_ID, texture);
-    }
-
-    @SuppressWarnings({"unused"})
-    public BlockBuilder setEastTexture(String modID, String texture) {
-        BlockBuilder blockBuilder = this.clone();
-        blockBuilder.eastTexture = TextureHelper.getOrCreateBlockTexture(modID, texture);
-        return blockBuilder;
-    }
-
-    @SuppressWarnings({"unused"})
-    public BlockBuilder setEastTexture(int x, int y) {
-        BlockBuilder blockBuilder = this.clone();
-        blockBuilder.eastTexture = new int[]{x, y};
-        return blockBuilder;
-    }
-
-    @SuppressWarnings({"unused"})
-    public BlockBuilder setSouthTexture(String texture) {
-        return setSouthTexture(MOD_ID, texture);
-    }
-
-    @SuppressWarnings({"unused"})
-    public BlockBuilder setSouthTexture(String modID, String texture) {
-        BlockBuilder blockBuilder = this.clone();
-        blockBuilder.southTexture = TextureHelper.getOrCreateBlockTexture(modID, texture);
-        return blockBuilder;
-    }
-
-    @SuppressWarnings({"unused"})
-    public BlockBuilder setSouthTexture(int x, int y) {
-        BlockBuilder blockBuilder = this.clone();
-        blockBuilder.southTexture = new int[]{x, y};
-        return blockBuilder;
-    }
-
-    @SuppressWarnings({"unused"})
-    public BlockBuilder setWestTexture(String texture) {
-        return setWestTexture(MOD_ID, texture);
-    }
-
-    @SuppressWarnings({"unused"})
-    public BlockBuilder setWestTexture(String modID, String texture) {
-        BlockBuilder blockBuilder = this.clone();
-        blockBuilder.westTexture = TextureHelper.getOrCreateBlockTexture(modID, texture);
-        return blockBuilder;
-    }
-
-    @SuppressWarnings({"unused"})
-    public BlockBuilder setWestTexture(int x, int y) {
-        BlockBuilder blockBuilder = this.clone();
-        blockBuilder.westTexture = new int[]{x, y};
-        return blockBuilder;
-    }
-    @SuppressWarnings({"unused"})
     public <T extends Block> T build(T block) {
-        if (topTexture != null) {
-            block.atlasIndices[Side.TOP.getId()] = Block.texCoordToIndex(topTexture[0], topTexture[1]);
-        }
-
-        if (bottomTexture != null) {
-            block.atlasIndices[Side.BOTTOM.getId()] = Block.texCoordToIndex(bottomTexture[0], bottomTexture[1]);
-        }
-
-        if (northTexture != null) {
-            block.atlasIndices[Side.NORTH.getId()] = Block.texCoordToIndex(northTexture[0], northTexture[1]);
-        }
-
-        if (eastTexture != null) {
-            block.atlasIndices[Side.EAST.getId()] = Block.texCoordToIndex(eastTexture[0], eastTexture[1]);
-        }
-
-        if (southTexture != null) {
-            block.atlasIndices[Side.SOUTH.getId()] = Block.texCoordToIndex(southTexture[0], southTexture[1]);
-        }
-
-        if (westTexture != null) {
-            block.atlasIndices[Side.WEST.getId()] = Block.texCoordToIndex(westTexture[0], westTexture[1]);
-        }
-
         if (hardness != null) {
             block.withHardness(hardness);
         }
@@ -585,8 +349,8 @@ public class BlockBuilder implements Cloneable {
             BlockColorDispatcher.getInstance().addDispatch(block, blockColor);
         }
 
-        if (blockModel != null) {
-            BlockModelDispatcher.getInstance().addDispatch(block, blockModel);
+        if (blockModelSupplier != null) {
+            BlockModelDispatcher.getInstance().addDispatch(blockModelSupplier.apply(block));
         }
 
         if (customItemBlock != null) {
