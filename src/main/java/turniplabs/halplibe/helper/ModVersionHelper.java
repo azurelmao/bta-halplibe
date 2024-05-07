@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-abstract public class ModVersionHelper {
+public final class ModVersionHelper {
     protected static boolean isDev = FabricLoader.getInstance().isDevelopmentEnvironment();
     protected static List<ModInfo> localMods = new ArrayList<>();
     protected static List<ModInfo> serverMods = null;

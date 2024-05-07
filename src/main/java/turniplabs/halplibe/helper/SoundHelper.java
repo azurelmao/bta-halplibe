@@ -12,7 +12,7 @@ import java.nio.file.Files;
 import java.util.Hashtable;
 
 
-abstract public class SoundHelper {
+public final class SoundHelper {
     private static final Hashtable<String, String> fileCache = new Hashtable<>();
     public static final File appDirectory;
     public static final File soundDirectory;

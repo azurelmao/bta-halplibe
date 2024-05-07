@@ -9,7 +9,7 @@ import turniplabs.halplibe.HalpLibe;
 import turniplabs.halplibe.mixin.accessors.EntityFXAccessor;
 import turniplabs.halplibe.mixin.accessors.EntityFireflyFXAccessor;
 
-abstract public class ParticleHelper {
+public final class ParticleHelper {
 
 
     @SuppressWarnings("unused") // API function

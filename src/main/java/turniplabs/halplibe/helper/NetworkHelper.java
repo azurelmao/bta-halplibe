@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.TreeSet;
 import java.util.function.Consumer;
 
-abstract public class NetworkHelper {
+public final class NetworkHelper {
     private static final TreeSet<NetworkEntry> ENTRIES = new TreeSet<>();
     private static boolean locked = false;
 

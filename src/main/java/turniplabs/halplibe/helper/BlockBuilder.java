@@ -33,7 +33,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class BlockBuilder implements Cloneable {
+public final class BlockBuilder implements Cloneable {
 
     private final String MOD_ID;
     private Float hardness = null;
@@ -376,7 +376,7 @@ public class BlockBuilder implements Cloneable {
         }
 
         Assignment.queueBlockModel(block, blockModelSupplier);
-        ItemHelper.Assignment.queueItemModel(itemBlock, customItemModelSupplier);
+        ItemBuilder.Assignment.queueItemModel(itemBlock, customItemModelSupplier);
 
         List<String> tokens = Arrays.stream(block.getKey().split("\\."))
                 .filter(token -> !token.equals(MOD_ID))

@@ -4,7 +4,7 @@ import net.minecraft.core.item.material.ArmorMaterial;
 import net.minecraft.core.util.collection.NamespaceID;
 import net.minecraft.core.util.helper.DamageType;
 
-abstract public class ArmorHelper {
+public final class ArmorHelper {
 
     /**
      * Damage parameters can be more than 100%. Armor durability will be a bit different from in-game.

@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
-abstract public class CommandHelper {
+public final class CommandHelper {
     @ApiStatus.Internal // used in CommandsCoreMixin
     private static final List<Command> coreCommands = new ArrayList<>();
     @ApiStatus.Internal // used in CommandsClientMixin

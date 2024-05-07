@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-final public class EntityHelper {
+public final class EntityHelper {
     public static void createEntity(Class<? extends Entity> clazz, int id, String name, @NotNull Supplier<EntityRenderer<?>> rendererSupplier) {
         EntityDispatcher.addMapping(clazz, name, id);
         Assignment.queueEntityRenderer(clazz, rendererSupplier);

@@ -4,7 +4,7 @@ import net.minecraft.core.item.IItemConvertible;
 import net.minecraft.core.item.ItemStack;
 import turniplabs.halplibe.util.CreativeEntry;
 
-abstract public class CreativeHelper {
+public final class CreativeHelper {
     /**
      * @param itemToAdd The itemstack to be added to the creative inventory list
      * @param priority the priority for the item to be added, lower numbers appear higher in the list. Default is 1000
