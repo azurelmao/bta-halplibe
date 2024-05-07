@@ -395,11 +395,6 @@ public class BlockBuilder implements Cloneable {
 
         queueBlockModel(block, blockModelSupplier);
         ItemHelper.queueItemModel(itemBlock, customItemModelSupplier);
-        if (HalpLibe.isClient){
-
-            BlockModelDispatcher.getInstance().addDispatch(blockModelSupplier.apply(block));
-            ItemModelDispatcher.getInstance().addDispatch(customItemModelSupplier.apply(itemBlock));
-        }
 
         List<String> tokens = Arrays.stream(block.getKey().split("\\."))
                 .filter(token -> !token.equals(MOD_ID))
