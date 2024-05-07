@@ -15,7 +15,7 @@ import turniplabs.halplibe.mixin.accessors.TileEntityRendererAccessor;
 import java.util.Map;
 import java.util.function.Supplier;
 
-abstract public class EntityHelper {
+final public class EntityHelper {
 
     public static void createEntity(Class<? extends Entity> clazz, int id, String name, Supplier<EntityRenderer<?>> rendererSupplier) {
         EntityDispatcher.addMapping(clazz, name, id);
