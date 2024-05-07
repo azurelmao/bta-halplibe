@@ -20,7 +20,9 @@ import net.minecraft.core.sound.BlockSoundDispatcher;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import turniplabs.halplibe.HalpLibe;
+import turniplabs.halplibe.mixin.mixins.models.BlockModelDispatcherMixin;
 import turniplabs.halplibe.util.registry.IdSupplier;
 import turniplabs.halplibe.util.registry.RunLengthConfig;
 import turniplabs.halplibe.util.registry.RunReserves;
@@ -28,12 +30,27 @@ import turniplabs.halplibe.util.toml.Toml;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class BlockBuilder implements Cloneable {
+    /**
+     * Used in {@link BlockModelDispatcherMixin#addQueuedModels(CallbackInfo)}
+     */
+    private static boolean blockDispatcherInitialized = false;
+    private static final Map<Block, Function<Block, BlockModel<?>>> queuedBlockModels = new HashMap<>();
+    public static void queueBlockModel(@NotNull Block block, @NotNull Function<Block, BlockModel<?>> blockModelSupplier){
+        if (!HalpLibe.isClient) return;
+        if (blockDispatcherInitialized){
+            BlockModelDispatcher.getInstance().addDispatch(blockModelSupplier.apply(block));
+            return;
+        }
+        queuedBlockModels.put(block, blockModelSupplier);
+    }
     private final String MOD_ID;
     private Float hardness = null;
     private Float resistance = null;
@@ -376,7 +393,10 @@ public class BlockBuilder implements Cloneable {
             block.withTags(tags);
         }
 
+        queueBlockModel(block, blockModelSupplier);
+        ItemHelper.queueItemModel(itemBlock, customItemModelSupplier);
         if (HalpLibe.isClient){
+
             BlockModelDispatcher.getInstance().addDispatch(blockModelSupplier.apply(block));
             ItemModelDispatcher.getInstance().addDispatch(customItemModelSupplier.apply(itemBlock));
         }
