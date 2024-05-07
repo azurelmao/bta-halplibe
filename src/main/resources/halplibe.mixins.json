@@ -15,10 +15,7 @@
     "mixins.BlockSoundDispatcherMixin",
     "mixins.ContainerPlayerCreativeMixin",
     "mixins.I18nMixin",
-    "mixins.NetClientHandlerMixin",
     "mixins.commands.CommandsCoreMixin",
-    "mixins.models.BlockModelDispatcherMixin",
-    "mixins.models.ItemModelDispatcherMixin",
     "mixins.network.PacketMixin",
     "mixins.registry.BlockMixin",
     "mixins.registry.ItemMixin"
@@ -31,6 +28,10 @@
     "mixins.MinecraftMixin",
     "mixins.commands.CommandsClientMixin",
     "mixins.network.MinecraftMixin",
+    "mixins.NetClientHandlerMixin",
+    "mixins.models.BlockColorDispatcherMixin",
+    "mixins.models.BlockModelDispatcherMixin",
+    "mixins.models.ItemModelDispatcherMixin",
     "mixins.registry.MinecraftMixin",
     "mixins.version.NetClientHandlerMixin"
   ],

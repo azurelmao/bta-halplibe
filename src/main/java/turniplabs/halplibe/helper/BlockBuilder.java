@@ -7,8 +7,6 @@ import net.minecraft.client.render.block.model.BlockModelDispatcher;
 import net.minecraft.client.render.block.model.BlockModelStairs;
 import net.minecraft.client.render.item.model.ItemModel;
 import net.minecraft.client.render.item.model.ItemModelBlock;
-import net.minecraft.client.render.item.model.ItemModelDispatcher;
-import net.minecraft.client.render.item.model.ItemModelStandard;
 import net.minecraft.core.block.Block;
 import net.minecraft.core.block.BlockFire;
 import net.minecraft.core.block.tag.BlockTags;
@@ -23,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import turniplabs.halplibe.HalpLibe;
 import turniplabs.halplibe.mixin.mixins.models.BlockModelDispatcherMixin;
+import turniplabs.halplibe.mixin.mixins.models.BlockColorDispatcherMixin;
 import turniplabs.halplibe.util.registry.IdSupplier;
 import turniplabs.halplibe.util.registry.RunLengthConfig;
 import turniplabs.halplibe.util.registry.RunReserves;
@@ -43,13 +42,30 @@ public class BlockBuilder implements Cloneable {
      */
     private static boolean blockDispatcherInitialized = false;
     private static final Map<Block, Function<Block, BlockModel<?>>> queuedBlockModels = new HashMap<>();
-    public static void queueBlockModel(@NotNull Block block, @NotNull Function<Block, BlockModel<?>> blockModelSupplier){
+    public static void queueBlockModel(@NotNull Block block, Function<Block, BlockModel<?>> blockModelSupplier){
         if (!HalpLibe.isClient) return;
+        if (blockModelSupplier == null) return;
+
         if (blockDispatcherInitialized){
             BlockModelDispatcher.getInstance().addDispatch(blockModelSupplier.apply(block));
             return;
         }
         queuedBlockModels.put(block, blockModelSupplier);
+    }
+    /**
+     * Used in {@link BlockColorDispatcherMixin#addQueuedColors(CallbackInfo)}
+     */
+    private static boolean blockColorDispatcherInitialized = false;
+    private static final Map<Block, Function<Block, BlockColor>> queuedBlockColors = new HashMap<>();
+    public static void queueBlockColor(@NotNull Block block, Function<Block, BlockColor> blockColorSupplier){
+        if (!HalpLibe.isClient) return;
+        if (blockColorSupplier == null) return;
+
+        if (blockColorDispatcherInitialized){
+            BlockColorDispatcher.getInstance().addDispatch(block, blockColorSupplier.apply(block));
+            return;
+        }
+        queuedBlockColors.put(block, blockColorSupplier);
     }
     private final String MOD_ID;
     private Float hardness = null;
@@ -65,7 +81,7 @@ public class BlockBuilder implements Cloneable {
     private int[] flammability = null;
     private Block blockDrop = null;
     private BlockSound blockSound = null;
-    private BlockColor blockColor = null;
+    private Function<Block, BlockColor> blockColor = null;
     @NotNull
     private Function<Block, BlockModel<?>> blockModelSupplier = BlockModelStairs::new;
     @NotNull
@@ -266,9 +282,9 @@ public class BlockBuilder implements Cloneable {
      * }</pre>
      */
     @SuppressWarnings({"unused"})
-    public BlockBuilder setBlockColor(BlockColor blockColor) {
+    public BlockBuilder setBlockColor(Function<Block, BlockColor> blockColorSupplier) {
         BlockBuilder blockBuilder = this.clone();
-        blockBuilder.blockColor = blockColor;
+        blockBuilder.blockColor = blockColorSupplier;
         return blockBuilder;
     }
 
@@ -377,9 +393,7 @@ public class BlockBuilder implements Cloneable {
             BlockSoundDispatcher.getInstance().addDispatch(block, blockSound);
         }
 
-        if (blockColor != null) {
-            BlockColorDispatcher.getInstance().addDispatch(block, blockColor);
-        }
+        queueBlockColor(block, blockColor);
 
         ItemBlock itemBlock;
 
