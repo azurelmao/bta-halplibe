@@ -21,8 +21,9 @@ abstract public class EntityHelper {
         EntityDispatcher.addMapping(clazz, name, id);
         if (HalpLibe.isClient){
             Map<Class<? extends Entity>, EntityRenderer<?>> entityRenderMap = ((RenderManagerAccessor) EntityRenderDispatcher.instance).getEntityRenderMap();
-            entityRenderMap.put(clazz, rendererSupplier.get());
-            rendererSupplier.get().setRenderDispatcher(EntityRenderDispatcher.instance);
+            EntityRenderer<?> renderer = rendererSupplier.get();
+            entityRenderMap.put(clazz, renderer);
+            renderer.setRenderDispatcher(EntityRenderDispatcher.instance);
         }
     }
 
@@ -34,8 +35,9 @@ abstract public class EntityHelper {
         TileEntityAccessor.callAddMapping(clazz, name);
         if (HalpLibe.isClient){
             Map<Class<? extends TileEntity>, TileEntityRenderer<?>> specialRendererMap = ((TileEntityRendererAccessor) TileEntityRenderDispatcher.instance).getSpecialRendererMap();
-            specialRendererMap.put(clazz, rendererSupplier.get());
-            rendererSupplier.get().setRenderDispatcher(TileEntityRenderDispatcher.instance);
+            TileEntityRenderer<?> renderer = rendererSupplier.get();
+            specialRendererMap.put(clazz, renderer);
+            renderer.setRenderDispatcher(TileEntityRenderDispatcher.instance);
         }
     }
 }
