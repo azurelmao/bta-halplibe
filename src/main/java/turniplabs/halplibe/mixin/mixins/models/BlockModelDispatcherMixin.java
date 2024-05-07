@@ -10,7 +10,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import turniplabs.halplibe.helper.BlockBuilder;
 
-import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -21,17 +20,10 @@ public abstract class BlockModelDispatcherMixin {
 
     @Inject(method = "<init>()V", at = @At("TAIL"))
     private void addQueuedModels(CallbackInfo ci){
-        try {
-            Field f = BlockBuilder.class.getField("queuedBlockModels");
-            f.setAccessible(true);
-            Set<Map.Entry<Block, Function<Block, BlockModel<?>>>>entries = ((Map<Block, Function<Block, BlockModel<?>>>) f.get(null)).entrySet();
-            f.setAccessible(false);
-            for (Map.Entry<Block, Function<Block, BlockModel<?>>> entry : entries){
-                addDispatch(entry.getValue().apply(entry.getKey()));
-            }
-            BlockBuilder.class.getField("blockDispatcherInitialized").set(null, true);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            throw new RuntimeException(e);
+        Set<Map.Entry<Block, Function<Block, BlockModel<?>>>>entries = BlockBuilder.Assignment.queuedBlockModels.entrySet();
+        for (Map.Entry<Block, Function<Block, BlockModel<?>>> entry : entries){
+            addDispatch(entry.getValue().apply(entry.getKey()));
         }
+        BlockBuilder.Assignment.blockDispatcherInitialized = true;
     }
 }

@@ -10,7 +10,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import turniplabs.halplibe.helper.ItemHelper;
 
-import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -20,17 +19,10 @@ public abstract class ItemModelDispatcherMixin {
 
     @Inject(method = "<init>()V", at = @At("TAIL"))
     private void addQueuedModels(CallbackInfo ci){
-        try {
-            Field f = ItemHelper.class.getField("queuedItemModels");
-            f.setAccessible(true);
-            Set<Map.Entry<Item, Function<Item, ItemModel>>> entries = ((Map<Item, Function<Item, ItemModel>>) f.get(null)).entrySet();
-            f.setAccessible(false);
-            for (Map.Entry<Item, Function<Item, ItemModel>> entry : entries){
-                addDispatch(entry.getValue().apply(entry.getKey()));
-            }
-            ItemHelper.class.getField("itemDispatcherInitialized").set(null, true);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            throw new RuntimeException(e);
+        Set<Map.Entry<Item, Function<Item, ItemModel>>> entries = ItemHelper.Assignment.queuedItemModels.entrySet();
+        for (Map.Entry<Item, Function<Item, ItemModel>> entry : entries){
+            addDispatch(entry.getValue().apply(entry.getKey()));
         }
+        ItemHelper.Assignment.itemDispatcherInitialized = true;
     }
 }

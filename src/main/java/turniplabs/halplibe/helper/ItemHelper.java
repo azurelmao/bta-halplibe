@@ -7,9 +7,7 @@ import net.minecraft.core.block.Block;
 import net.minecraft.core.item.Item;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import turniplabs.halplibe.HalpLibe;
-import turniplabs.halplibe.mixin.mixins.models.ItemModelDispatcherMixin;
 import turniplabs.halplibe.util.registry.IdSupplier;
 import turniplabs.halplibe.util.registry.RunLengthConfig;
 import turniplabs.halplibe.util.registry.RunReserves;
@@ -25,20 +23,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 abstract public class ItemHelper {
-	/**
-	 * Used in {@link ItemModelDispatcherMixin#addQueuedModels(CallbackInfo)}
-	 */
-	private static boolean itemDispatcherInitialized = false;
-	private static final Map<Item, Function<? extends Item, ItemModel>> queuedItemModels = new HashMap<>();
-	public static <T extends Item> void queueItemModel(@NotNull T item, @NotNull Function<T, ItemModel> itemModelSupplier){
-		if (!HalpLibe.isClient) return;
-		if (itemDispatcherInitialized){
-			ItemModelDispatcher.getInstance().addDispatch(itemModelSupplier.apply(item));
-			return;
-		}
-		queuedItemModels.put(item, itemModelSupplier);
-	}
-
 	public static <T extends Item> T createItem(@NotNull String modId, @NotNull T item){
 		return createItem(modId, item, (i) -> new ItemModelStandard(i, modId));
 	}
@@ -49,7 +33,7 @@ abstract public class ItemHelper {
 		newTokens.add(modId);
 		newTokens.addAll(tokens.subList(1, tokens.size()));
 
-		queueItemModel(item, itemModelSupplier);
+		Assignment.queueItemModel(item, itemModelSupplier);
 
 		return (T) item.setKey(StringUtils.join(newTokens, "."));
 	}
@@ -113,6 +97,18 @@ abstract public class ItemHelper {
 						supplier.validate();
 					}
 			);
+		}
+	}
+	public static class Assignment{
+		public static boolean itemDispatcherInitialized = false;
+		public static final Map<Item, Function<Item, ItemModel>> queuedItemModels = new HashMap<>();
+		public static <T extends Item> void queueItemModel(@NotNull T item, @NotNull Function<T, ItemModel> itemModelSupplier){
+			if (!HalpLibe.isClient) return;
+			if (itemDispatcherInitialized){
+				ItemModelDispatcher.getInstance().addDispatch(itemModelSupplier.apply(item));
+				return;
+			}
+			queuedItemModels.put(item, (Function<Item, ItemModel>) itemModelSupplier);
 		}
 	}
 }

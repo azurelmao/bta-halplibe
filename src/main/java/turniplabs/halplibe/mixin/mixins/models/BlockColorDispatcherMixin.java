@@ -10,7 +10,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import turniplabs.halplibe.helper.BlockBuilder;
 
-import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -20,17 +19,10 @@ public abstract class BlockColorDispatcherMixin extends Dispatcher<Block, BlockC
 
     @Inject(method = "<init>()V", at = @At("TAIL"))
     private void addQueuedModels(CallbackInfo ci){
-        try {
-            Field f = BlockBuilder.class.getField("queuedBlockColors");
-            f.setAccessible(true);
-            Set<Map.Entry<Block, Function<Block, BlockColor>>> entries = ((Map<Block, Function<Block, BlockColor>>) f.get(null)).entrySet();
-            f.setAccessible(false);
-            for (Map.Entry<Block, Function<Block, BlockColor>> entry : entries){
-                addDispatch(entry.getKey(),entry.getValue().apply(entry.getKey()));
-            }
-            BlockBuilder.class.getField("blockColorDispatcherInitialized").set(null, true);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            throw new RuntimeException(e);
+        Set<Map.Entry<Block, Function<Block, BlockColor>>> entries = BlockBuilder.Assignment.queuedBlockColors.entrySet();
+        for (Map.Entry<Block, Function<Block, BlockColor>> entry : entries){
+            addDispatch(entry.getKey(),entry.getValue().apply(entry.getKey()));
         }
+        BlockBuilder.Assignment.blockColorDispatcherInitialized = true;
     }
 }

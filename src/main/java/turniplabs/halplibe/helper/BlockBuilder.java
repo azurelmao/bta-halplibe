@@ -18,10 +18,7 @@ import net.minecraft.core.sound.BlockSoundDispatcher;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import turniplabs.halplibe.HalpLibe;
-import turniplabs.halplibe.mixin.mixins.models.BlockModelDispatcherMixin;
-import turniplabs.halplibe.mixin.mixins.models.BlockColorDispatcherMixin;
 import turniplabs.halplibe.util.registry.IdSupplier;
 import turniplabs.halplibe.util.registry.RunLengthConfig;
 import turniplabs.halplibe.util.registry.RunReserves;
@@ -37,36 +34,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class BlockBuilder implements Cloneable {
-    /**
-     * Used in {@link BlockModelDispatcherMixin#addQueuedModels(CallbackInfo)}
-     */
-    private static boolean blockDispatcherInitialized = false;
-    private static final Map<Block, Function<Block, BlockModel<?>>> queuedBlockModels = new HashMap<>();
-    public static void queueBlockModel(@NotNull Block block, Function<Block, BlockModel<?>> blockModelSupplier){
-        if (!HalpLibe.isClient) return;
-        if (blockModelSupplier == null) return;
 
-        if (blockDispatcherInitialized){
-            BlockModelDispatcher.getInstance().addDispatch(blockModelSupplier.apply(block));
-            return;
-        }
-        queuedBlockModels.put(block, blockModelSupplier);
-    }
-    /**
-     * Used in {@link BlockColorDispatcherMixin#addQueuedColors(CallbackInfo)}
-     */
-    private static boolean blockColorDispatcherInitialized = false;
-    private static final Map<Block, Function<Block, BlockColor>> queuedBlockColors = new HashMap<>();
-    public static void queueBlockColor(@NotNull Block block, Function<Block, BlockColor> blockColorSupplier){
-        if (!HalpLibe.isClient) return;
-        if (blockColorSupplier == null) return;
-
-        if (blockColorDispatcherInitialized){
-            BlockColorDispatcher.getInstance().addDispatch(block, blockColorSupplier.apply(block));
-            return;
-        }
-        queuedBlockColors.put(block, blockColorSupplier);
-    }
     private final String MOD_ID;
     private Float hardness = null;
     private Float resistance = null;
@@ -393,7 +361,7 @@ public class BlockBuilder implements Cloneable {
             BlockSoundDispatcher.getInstance().addDispatch(block, blockSound);
         }
 
-        queueBlockColor(block, blockColor);
+        Assignment.queueBlockColor(block, blockColor);
 
         ItemBlock itemBlock;
 
@@ -407,8 +375,8 @@ public class BlockBuilder implements Cloneable {
             block.withTags(tags);
         }
 
-        queueBlockModel(block, blockModelSupplier);
-        ItemHelper.queueItemModel(itemBlock, customItemModelSupplier);
+        Assignment.queueBlockModel(block, blockModelSupplier);
+        ItemHelper.Assignment.queueItemModel(itemBlock, customItemModelSupplier);
 
         List<String> tokens = Arrays.stream(block.getKey().split("\\."))
                 .filter(token -> !token.equals(MOD_ID))
@@ -485,6 +453,32 @@ public class BlockBuilder implements Cloneable {
                         supplier.validate();
                     }
             );
+        }
+    }
+    public static class Assignment{
+        public static boolean blockDispatcherInitialized = false;
+        public static final Map<Block, Function<Block, BlockModel<?>>> queuedBlockModels = new HashMap<>();
+        public static void queueBlockModel(@NotNull Block block, Function<Block, BlockModel<?>> blockModelSupplier){
+            if (!HalpLibe.isClient) return;
+            if (blockModelSupplier == null) return;
+
+            if (blockDispatcherInitialized){
+                BlockModelDispatcher.getInstance().addDispatch(blockModelSupplier.apply(block));
+                return;
+            }
+            queuedBlockModels.put(block, blockModelSupplier);
+        }
+        public static boolean blockColorDispatcherInitialized = false;
+        public static final Map<Block, Function<Block, BlockColor>> queuedBlockColors = new HashMap<>();
+        public static void queueBlockColor(@NotNull Block block, Function<Block, BlockColor> blockColorSupplier){
+            if (!HalpLibe.isClient) return;
+            if (blockColorSupplier == null) return;
+
+            if (blockColorDispatcherInitialized){
+                BlockColorDispatcher.getInstance().addDispatch(block, blockColorSupplier.apply(block));
+                return;
+            }
+            queuedBlockColors.put(block, blockColorSupplier);
         }
     }
 }
