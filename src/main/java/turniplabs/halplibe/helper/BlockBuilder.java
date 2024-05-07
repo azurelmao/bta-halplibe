@@ -4,6 +4,11 @@ import net.minecraft.client.render.block.color.BlockColor;
 import net.minecraft.client.render.block.color.BlockColorDispatcher;
 import net.minecraft.client.render.block.model.BlockModel;
 import net.minecraft.client.render.block.model.BlockModelDispatcher;
+import net.minecraft.client.render.block.model.BlockModelStairs;
+import net.minecraft.client.render.item.model.ItemModel;
+import net.minecraft.client.render.item.model.ItemModelBlock;
+import net.minecraft.client.render.item.model.ItemModelDispatcher;
+import net.minecraft.client.render.item.model.ItemModelStandard;
 import net.minecraft.core.block.Block;
 import net.minecraft.core.block.BlockFire;
 import net.minecraft.core.block.tag.BlockTags;
@@ -14,6 +19,8 @@ import net.minecraft.core.sound.BlockSound;
 import net.minecraft.core.sound.BlockSoundDispatcher;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
+import turniplabs.halplibe.HalpLibe;
 import turniplabs.halplibe.util.registry.IdSupplier;
 import turniplabs.halplibe.util.registry.RunLengthConfig;
 import turniplabs.halplibe.util.registry.RunReserves;
@@ -42,7 +49,10 @@ public class BlockBuilder implements Cloneable {
     private Block blockDrop = null;
     private BlockSound blockSound = null;
     private BlockColor blockColor = null;
-    private Function<Block, BlockModel<?>> blockModelSupplier = null;
+    @NotNull
+    private Function<Block, BlockModel<?>> blockModelSupplier = BlockModelStairs::new;
+    @NotNull
+    private Function<ItemBlock, ItemModel> customItemModelSupplier = ItemModelBlock::new;
     private BlockLambda<ItemBlock> customItemBlock = null;
     private Tag<Block>[] tags = null;
 
@@ -255,9 +265,14 @@ public class BlockBuilder implements Cloneable {
      * }</pre>
      */
     @SuppressWarnings({"unused"})
-    public BlockBuilder setBlockModel(Function<Block, BlockModel<?>> blockModelSupplier) {
+    public BlockBuilder setBlockModel(@NotNull Function<Block, BlockModel<?>> blockModelSupplier) {
         BlockBuilder blockBuilder = this.clone();
         blockBuilder.blockModelSupplier = blockModelSupplier;
+        return blockBuilder;
+    }
+    public BlockBuilder setItemModel(@NotNull Function<ItemBlock, ItemModel> itemModelSupplier) {
+        BlockBuilder blockBuilder = this.clone();
+        blockBuilder.customItemModelSupplier = itemModelSupplier;
         return blockBuilder;
     }
 
@@ -349,18 +364,21 @@ public class BlockBuilder implements Cloneable {
             BlockColorDispatcher.getInstance().addDispatch(block, blockColor);
         }
 
-        if (blockModelSupplier != null) {
-            BlockModelDispatcher.getInstance().addDispatch(blockModelSupplier.apply(block));
-        }
+        ItemBlock itemBlock;
 
         if (customItemBlock != null) {
-            Item.itemsList[block.id] = customItemBlock.run(block);
+            Item.itemsList[block.id] = itemBlock = customItemBlock.run(block);
         } else {
-            Item.itemsList[block.id] = new ItemBlock(block);
+            Item.itemsList[block.id] = itemBlock = new ItemBlock(block);
         }
 
         if (tags != null) {
             block.withTags(tags);
+        }
+
+        if (HalpLibe.isClient){
+            BlockModelDispatcher.getInstance().addDispatch(blockModelSupplier.apply(block));
+            ItemModelDispatcher.getInstance().addDispatch(customItemModelSupplier.apply(itemBlock));
         }
 
         List<String> tokens = Arrays.stream(block.getKey().split("\\."))
