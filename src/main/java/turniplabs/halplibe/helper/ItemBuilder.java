@@ -8,6 +8,7 @@ import net.minecraft.core.item.Item;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import turniplabs.halplibe.HalpLibe;
 
 import java.lang.reflect.InvocationTargetException;
@@ -22,10 +23,13 @@ import java.util.stream.Collectors;
 
 public final class ItemBuilder implements Cloneable {
     private final String modId;
+    @Nullable
     private String overrideKey = null;
+    @Nullable
     private Tag<Item>[] tags = null;
     private int stackSize = 64;
     private int maxDamage = 0;
+    @Nullable
     private Supplier<Item> containerItemSupplier = null;
     @NotNull
     private Function<Item, ItemModel> customItemModelSupplier;
