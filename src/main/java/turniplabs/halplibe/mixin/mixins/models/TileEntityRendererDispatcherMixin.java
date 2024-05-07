@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 
-@Mixin(TileEntityRenderDispatcher.class)
+@Mixin(value = TileEntityRenderDispatcher.class, remap = false)
 public class TileEntityRendererDispatcherMixin {
     @Shadow @Final private Map<Class<?>, TileEntityRenderer<?>> renderers;
 
