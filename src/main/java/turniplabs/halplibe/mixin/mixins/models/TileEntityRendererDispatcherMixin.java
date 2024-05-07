@@ -1,8 +1,8 @@
 package turniplabs.halplibe.mixin.mixins.models;
 
-import net.minecraft.client.render.EntityRenderDispatcher;
-import net.minecraft.client.render.entity.EntityRenderer;
-import net.minecraft.core.entity.Entity;
+import net.minecraft.client.render.TileEntityRenderDispatcher;
+import net.minecraft.client.render.tileentity.TileEntityRenderer;
+import net.minecraft.core.block.entity.TileEntity;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -15,18 +15,18 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 
-@Mixin(value = EntityRenderDispatcher.class, remap = false)
-public abstract class EntityRenderDispatcherMixin {
-    @Shadow @Final private Map<Class<?>, EntityRenderer<?>> renderers;
+@Mixin(TileEntityRenderDispatcher.class)
+public class TileEntityRendererDispatcherMixin {
+    @Shadow @Final private Map<Class<?>, TileEntityRenderer<?>> renderers;
 
     @Inject(method = "<init>()V", at = @At("TAIL"))
     private void addQueuedModels(CallbackInfo ci){
         try {
-            Set<Map.Entry<Class<? extends Entity> , Supplier<EntityRenderer<?>>>> entries = ((Map<Class<? extends Entity> , Supplier<EntityRenderer<?>>>) EntityHelper.class.getField("queuedEntityRenderer").get(null)).entrySet();
-            for (Map.Entry<Class<? extends Entity> , Supplier<EntityRenderer<?>>> entry : entries){
+            Set<Map.Entry<Class<? extends TileEntity> , Supplier<TileEntityRenderer<?>>>> entries = ((Map<Class<? extends TileEntity> , Supplier<TileEntityRenderer<?>>>) EntityHelper.class.getField("queuedTileEntityRenderer").get(null)).entrySet();
+            for (Map.Entry<Class<? extends TileEntity> , Supplier<TileEntityRenderer<?>>> entry : entries){
                 renderers.put(entry.getKey(), entry.getValue().get());
             }
-            EntityHelper.class.getField("entityRendererDispatcherInitialized").set(null, true);
+            EntityHelper.class.getField("tileEntityRendererDispatcherInitialized").set(null, true);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }

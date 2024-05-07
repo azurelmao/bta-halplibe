@@ -14,6 +14,7 @@ import turniplabs.halplibe.mixin.accessors.RenderManagerAccessor;
 import turniplabs.halplibe.mixin.accessors.TileEntityAccessor;
 import turniplabs.halplibe.mixin.accessors.TileEntityRendererAccessor;
 import turniplabs.halplibe.mixin.mixins.models.EntityRenderDispatcherMixin;
+import turniplabs.halplibe.mixin.mixins.models.TileEntityRendererDispatcherMixin;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,6 +39,24 @@ final public class EntityHelper {
         }
         queuedEntityRenderer.put(clazz, rendererSupplier);
     }
+    /**
+     * Used in {@link TileEntityRendererDispatcherMixin#addQueuedModels(CallbackInfo)}
+     */
+    private static boolean tileEntityRendererDispatcherInitialized = false;
+    private static final Map<Class<? extends TileEntity> , Supplier<TileEntityRenderer<?>>> queuedTileEntityRenderer = new HashMap<>();
+    public static void queueTileEntityRenderer(@NotNull Class<? extends TileEntity> clazz, @NotNull Supplier<TileEntityRenderer<?>> rendererSupplier){
+        if (!HalpLibe.isClient) return;
+        if (rendererSupplier == null) return;
+
+        if (tileEntityRendererDispatcherInitialized){
+            Map<Class<? extends TileEntity>, TileEntityRenderer<?>> specialRendererMap = ((TileEntityRendererAccessor) TileEntityRenderDispatcher.instance).getSpecialRendererMap();
+            TileEntityRenderer<?> renderer = rendererSupplier.get();
+            specialRendererMap.put(clazz, renderer);
+            renderer.setRenderDispatcher(TileEntityRenderDispatcher.instance);
+            return;
+        }
+        queuedTileEntityRenderer.put(clazz, rendererSupplier);
+    }
     public static void createEntity(Class<? extends Entity> clazz, int id, String name, @NotNull Supplier<EntityRenderer<?>> rendererSupplier) {
         EntityDispatcher.addMapping(clazz, name, id);
         queueEntityRenderer(clazz, rendererSupplier);
@@ -49,11 +68,6 @@ final public class EntityHelper {
 
     public static void createSpecialTileEntity(Class<? extends TileEntity> clazz, String name, Supplier<TileEntityRenderer<?>> rendererSupplier) {
         TileEntityAccessor.callAddMapping(clazz, name);
-        if (HalpLibe.isClient){
-            Map<Class<? extends TileEntity>, TileEntityRenderer<?>> specialRendererMap = ((TileEntityRendererAccessor) TileEntityRenderDispatcher.instance).getSpecialRendererMap();
-            TileEntityRenderer<?> renderer = rendererSupplier.get();
-            specialRendererMap.put(clazz, renderer);
-            renderer.setRenderDispatcher(TileEntityRenderDispatcher.instance);
-        }
+        queueTileEntityRenderer(clazz, rendererSupplier);
     }
 }
