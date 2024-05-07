@@ -15,6 +15,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -122,7 +123,7 @@ public final class ItemBuilder implements Cloneable {
 
     public static class Assignment{
         public static boolean itemDispatcherInitialized = false;
-        public static final Map<Item, Function<Item, ItemModel>> queuedItemModels = new HashMap<>();
+        public static final Map<Item, Function<Item, ItemModel>> queuedItemModels = new LinkedHashMap<>();
         public static <T extends Item> void queueItemModel(@NotNull T item, @NotNull Function<T, ItemModel> itemModelSupplier){
             if (!HalpLibe.isClient) return;
             if (itemDispatcherInitialized){

@@ -27,6 +27,7 @@ import turniplabs.halplibe.util.toml.Toml;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -457,7 +458,7 @@ public final class BlockBuilder implements Cloneable {
     }
     public static class Assignment{
         public static boolean blockDispatcherInitialized = false;
-        public static final Map<Block, Function<Block, BlockModel<?>>> queuedBlockModels = new HashMap<>();
+        public static final Map<Block, Function<Block, BlockModel<?>>> queuedBlockModels = new LinkedHashMap<>();
         public static void queueBlockModel(@NotNull Block block, Function<Block, BlockModel<?>> blockModelSupplier){
             if (!HalpLibe.isClient) return;
             if (blockModelSupplier == null) return;
@@ -469,7 +470,7 @@ public final class BlockBuilder implements Cloneable {
             queuedBlockModels.put(block, blockModelSupplier);
         }
         public static boolean blockColorDispatcherInitialized = false;
-        public static final Map<Block, Function<Block, BlockColor>> queuedBlockColors = new HashMap<>();
+        public static final Map<Block, Function<Block, BlockColor>> queuedBlockColors = new LinkedHashMap<>();
         public static void queueBlockColor(@NotNull Block block, Function<Block, BlockColor> blockColorSupplier){
             if (!HalpLibe.isClient) return;
             if (blockColorSupplier == null) return;

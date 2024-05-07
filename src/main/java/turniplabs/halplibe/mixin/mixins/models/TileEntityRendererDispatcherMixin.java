@@ -23,7 +23,11 @@ public class TileEntityRendererDispatcherMixin {
     private void addQueuedModels(CallbackInfo ci){
         Set<Map.Entry<Class<? extends TileEntity> , Supplier<TileEntityRenderer<?>>>> entries = EntityHelper.Assignment.queuedTileEntityRenderer.entrySet();
         for (Map.Entry<Class<? extends TileEntity> , Supplier<TileEntityRenderer<?>>> entry : entries){
-            renderers.put(entry.getKey(), entry.getValue().get());
+            try {
+                renderers.put(entry.getKey(), entry.getValue().get());
+            } catch (Exception e){
+                throw new RuntimeException("Exception Occurred when applying " + entry.getKey().getSimpleName(), e);
+            }
         }
         EntityHelper.Assignment.tileEntityRendererDispatcherInitialized = true;
     }

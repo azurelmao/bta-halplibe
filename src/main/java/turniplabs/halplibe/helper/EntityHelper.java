@@ -14,6 +14,7 @@ import turniplabs.halplibe.mixin.accessors.TileEntityAccessor;
 import turniplabs.halplibe.mixin.accessors.TileEntityRendererAccessor;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -33,7 +34,7 @@ public final class EntityHelper {
     }
     public static class Assignment {
         public static boolean entityRendererDispatcherInitialized = false;
-        public static final Map<Class<? extends Entity> , Supplier<EntityRenderer<?>>> queuedEntityRenderer = new HashMap<>();
+        public static final Map<Class<? extends Entity> , Supplier<EntityRenderer<?>>> queuedEntityRenderer = new LinkedHashMap<>();
         public static void queueEntityRenderer(@NotNull Class<? extends Entity> clazz, @NotNull Supplier<EntityRenderer<?>> rendererSupplier){
             if (!HalpLibe.isClient) return;
             if (rendererSupplier == null) return;
@@ -48,7 +49,7 @@ public final class EntityHelper {
             queuedEntityRenderer.put(clazz, rendererSupplier);
         }
         public static boolean tileEntityRendererDispatcherInitialized = false;
-        public static final Map<Class<? extends TileEntity> , Supplier<TileEntityRenderer<?>>> queuedTileEntityRenderer = new HashMap<>();
+        public static final Map<Class<? extends TileEntity> , Supplier<TileEntityRenderer<?>>> queuedTileEntityRenderer = new LinkedHashMap<>();
         public static void queueTileEntityRenderer(@NotNull Class<? extends TileEntity> clazz, @NotNull Supplier<TileEntityRenderer<?>> rendererSupplier){
             if (!HalpLibe.isClient) return;
             if (rendererSupplier == null) return;

@@ -23,7 +23,11 @@ public abstract class EntityRenderDispatcherMixin {
     private void addQueuedModels(CallbackInfo ci){
         Set<Map.Entry<Class<? extends Entity> , Supplier<EntityRenderer<?>>>> entries = EntityHelper.Assignment.queuedEntityRenderer.entrySet();
         for (Map.Entry<Class<? extends Entity> , Supplier<EntityRenderer<?>>> entry : entries){
-            renderers.put(entry.getKey(), entry.getValue().get());
+            try {
+                renderers.put(entry.getKey(), entry.getValue().get());
+            } catch (Exception e){
+                throw new RuntimeException("Exception Occurred when applying " + entry.getKey().getSimpleName(), e);
+            }
         }
         EntityHelper.Assignment.entityRendererDispatcherInitialized = true;
     }

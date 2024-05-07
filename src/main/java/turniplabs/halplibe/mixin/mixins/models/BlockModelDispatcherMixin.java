@@ -22,7 +22,11 @@ public abstract class BlockModelDispatcherMixin {
     private void addQueuedModels(CallbackInfo ci){
         Set<Map.Entry<Block, Function<Block, BlockModel<?>>>>entries = BlockBuilder.Assignment.queuedBlockModels.entrySet();
         for (Map.Entry<Block, Function<Block, BlockModel<?>>> entry : entries){
-            addDispatch(entry.getValue().apply(entry.getKey()));
+            try {
+                addDispatch(entry.getValue().apply(entry.getKey()));
+            } catch (Exception e){
+                throw new RuntimeException("Exception Occurred when applying " + entry.getKey().getKey(), e);
+            }
         }
         BlockBuilder.Assignment.blockDispatcherInitialized = true;
     }

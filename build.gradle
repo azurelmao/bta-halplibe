@@ -108,7 +108,7 @@ dependencies {
 	implementation("org.apache.logging.log4j:log4j-1.2-api:${log4jVersion}")
 	include(implementation("org.apache.commons:commons-lang3:3.12.0"))
 
-//	modImplementation "ModMenu:ModMenu:${project.mod_menu_version}"
+	modImplementation "ModMenu:ModMenu:${project.mod_menu_version}"
 }
 
 java {

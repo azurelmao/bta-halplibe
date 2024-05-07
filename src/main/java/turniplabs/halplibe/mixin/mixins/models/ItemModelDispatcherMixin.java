@@ -21,7 +21,11 @@ public abstract class ItemModelDispatcherMixin {
     private void addQueuedModels(CallbackInfo ci){
         Set<Map.Entry<Item, Function<Item, ItemModel>>> entries = ItemBuilder.Assignment.queuedItemModels.entrySet();
         for (Map.Entry<Item, Function<Item, ItemModel>> entry : entries){
-            addDispatch(entry.getValue().apply(entry.getKey()));
+            try {
+                addDispatch(entry.getValue().apply(entry.getKey()));
+            } catch (Exception e){
+                throw new RuntimeException("Exception Occurred when applying " + entry.getKey().getKey(), e);
+            }
         }
         ItemBuilder.Assignment.itemDispatcherInitialized = true;
     }

@@ -21,7 +21,11 @@ public abstract class BlockColorDispatcherMixin extends Dispatcher<Block, BlockC
     private void addQueuedModels(CallbackInfo ci){
         Set<Map.Entry<Block, Function<Block, BlockColor>>> entries = BlockBuilder.Assignment.queuedBlockColors.entrySet();
         for (Map.Entry<Block, Function<Block, BlockColor>> entry : entries){
-            addDispatch(entry.getKey(),entry.getValue().apply(entry.getKey()));
+            try {
+                addDispatch(entry.getKey(),entry.getValue().apply(entry.getKey()));
+            } catch (Exception e){
+                throw new RuntimeException("Exception Occurred when applying " + entry.getKey().getKey(), e);
+            }
         }
         BlockBuilder.Assignment.blockColorDispatcherInitialized = true;
     }
