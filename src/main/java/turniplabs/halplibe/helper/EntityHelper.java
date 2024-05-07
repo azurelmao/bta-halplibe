@@ -7,24 +7,40 @@ import net.minecraft.client.render.tileentity.TileEntityRenderer;
 import net.minecraft.core.block.entity.TileEntity;
 import net.minecraft.core.entity.Entity;
 import net.minecraft.core.entity.EntityDispatcher;
+import org.jetbrains.annotations.NotNull;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import turniplabs.halplibe.HalpLibe;
 import turniplabs.halplibe.mixin.accessors.RenderManagerAccessor;
 import turniplabs.halplibe.mixin.accessors.TileEntityAccessor;
 import turniplabs.halplibe.mixin.accessors.TileEntityRendererAccessor;
+import turniplabs.halplibe.mixin.mixins.models.EntityRenderDispatcherMixin;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
 final public class EntityHelper {
+    /**
+     * Used in {@link EntityRenderDispatcherMixin#addQueuedModels(CallbackInfo)}
+     */
+    private static boolean entityRendererDispatcherInitialized = false;
+    private static final Map<Class<? extends Entity> , Supplier<EntityRenderer<?>>> queuedEntityRenderer = new HashMap<>();
+    public static void queueEntityRenderer(@NotNull Class<? extends Entity> clazz, @NotNull Supplier<EntityRenderer<?>> rendererSupplier){
+        if (!HalpLibe.isClient) return;
+        if (rendererSupplier == null) return;
 
-    public static void createEntity(Class<? extends Entity> clazz, int id, String name, Supplier<EntityRenderer<?>> rendererSupplier) {
-        EntityDispatcher.addMapping(clazz, name, id);
-        if (HalpLibe.isClient){
+        if (entityRendererDispatcherInitialized){
             Map<Class<? extends Entity>, EntityRenderer<?>> entityRenderMap = ((RenderManagerAccessor) EntityRenderDispatcher.instance).getEntityRenderMap();
             EntityRenderer<?> renderer = rendererSupplier.get();
             entityRenderMap.put(clazz, renderer);
             renderer.setRenderDispatcher(EntityRenderDispatcher.instance);
+            return;
         }
+        queuedEntityRenderer.put(clazz, rendererSupplier);
+    }
+    public static void createEntity(Class<? extends Entity> clazz, int id, String name, @NotNull Supplier<EntityRenderer<?>> rendererSupplier) {
+        EntityDispatcher.addMapping(clazz, name, id);
+        queueEntityRenderer(clazz, rendererSupplier);
     }
 
     public static void createTileEntity(Class<? extends TileEntity> clazz, String name) {

@@ -16,6 +16,7 @@
     "mixins.ContainerPlayerCreativeMixin",
     "mixins.I18nMixin",
     "mixins.commands.CommandsCoreMixin",
+    "mixins.models.EntityRenderDispatcherMixin",
     "mixins.network.PacketMixin",
     "mixins.registry.BlockMixin",
     "mixins.registry.ItemMixin"
@@ -26,12 +27,12 @@
     "mixins.EntityClientPlayerMPMixin",
     "mixins.GuiIngameMenuMixin",
     "mixins.MinecraftMixin",
-    "mixins.commands.CommandsClientMixin",
-    "mixins.network.MinecraftMixin",
     "mixins.NetClientHandlerMixin",
+    "mixins.commands.CommandsClientMixin",
     "mixins.models.BlockColorDispatcherMixin",
     "mixins.models.BlockModelDispatcherMixin",
     "mixins.models.ItemModelDispatcherMixin",
+    "mixins.network.MinecraftMixin",
     "mixins.registry.MinecraftMixin",
     "mixins.version.NetClientHandlerMixin"
   ],
