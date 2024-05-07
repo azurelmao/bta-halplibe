@@ -10,7 +10,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import turniplabs.halplibe.helper.EntityHelper;
+import turniplabs.halplibe.helper.ItemHelper;
 
+import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -22,7 +24,10 @@ public class TileEntityRendererDispatcherMixin {
     @Inject(method = "<init>()V", at = @At("TAIL"))
     private void addQueuedModels(CallbackInfo ci){
         try {
-            Set<Map.Entry<Class<? extends TileEntity> , Supplier<TileEntityRenderer<?>>>> entries = ((Map<Class<? extends TileEntity> , Supplier<TileEntityRenderer<?>>>) EntityHelper.class.getField("queuedTileEntityRenderer").get(null)).entrySet();
+            Field f = EntityHelper.class.getField("queuedTileEntityRenderer");
+            f.setAccessible(true);
+            Set<Map.Entry<Class<? extends TileEntity> , Supplier<TileEntityRenderer<?>>>> entries = ((Map<Class<? extends TileEntity> , Supplier<TileEntityRenderer<?>>>) f.get(null)).entrySet();
+            f.setAccessible(false);
             for (Map.Entry<Class<? extends TileEntity> , Supplier<TileEntityRenderer<?>>> entry : entries){
                 renderers.put(entry.getKey(), entry.getValue().get());
             }

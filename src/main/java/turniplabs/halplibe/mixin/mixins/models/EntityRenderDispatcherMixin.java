@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import turniplabs.halplibe.helper.EntityHelper;
 
+import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -22,7 +23,10 @@ public abstract class EntityRenderDispatcherMixin {
     @Inject(method = "<init>()V", at = @At("TAIL"))
     private void addQueuedModels(CallbackInfo ci){
         try {
-            Set<Map.Entry<Class<? extends Entity> , Supplier<EntityRenderer<?>>>> entries = ((Map<Class<? extends Entity> , Supplier<EntityRenderer<?>>>) EntityHelper.class.getField("queuedEntityRenderer").get(null)).entrySet();
+            Field f = EntityHelper.class.getField("queuedEntityRenderer");
+            f.setAccessible(true);
+            Set<Map.Entry<Class<? extends Entity> , Supplier<EntityRenderer<?>>>> entries = ((Map<Class<? extends Entity> , Supplier<EntityRenderer<?>>>) f.get(null)).entrySet();
+            f.setAccessible(false);
             for (Map.Entry<Class<? extends Entity> , Supplier<EntityRenderer<?>>> entry : entries){
                 renderers.put(entry.getKey(), entry.getValue().get());
             }
