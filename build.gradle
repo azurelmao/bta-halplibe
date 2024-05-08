@@ -95,6 +95,7 @@ dependencies {
 
 	modRuntimeOnly "objects:client:43db9b498cb67058d2e12d394e6507722e71bb45" // https://piston-data.mojang.com/v1/objects/43db9b498cb67058d2e12d394e6507722e71bb45/client.jar
 	modImplementation "fabric-loader:fabric-loader:${project.loader_version}"
+	modImplementation "com.github.Turnip-Labs:ModMenu:${project.mod_menu_version}"
 
 	implementation "org.slf4j:slf4j-api:1.8.0-beta4"
 	implementation "org.apache.logging.log4j:log4j-slf4j18-impl:2.16.0"
@@ -107,8 +108,6 @@ dependencies {
 	implementation("org.apache.logging.log4j:log4j-api:${log4jVersion}")
 	implementation("org.apache.logging.log4j:log4j-1.2-api:${log4jVersion}")
 	include(implementation("org.apache.commons:commons-lang3:3.12.0"))
-
-	modImplementation "ModMenu:ModMenu:${project.mod_menu_version}"
 }
 
 java {
