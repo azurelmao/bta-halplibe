@@ -4,10 +4,10 @@ import net.minecraft.client.render.block.color.BlockColor;
 import net.minecraft.client.render.block.color.BlockColorDispatcher;
 import net.minecraft.client.render.block.model.BlockModel;
 import net.minecraft.client.render.block.model.BlockModelDispatcher;
-import net.minecraft.client.render.block.model.BlockModelStairs;
 import net.minecraft.client.render.block.model.BlockModelStandard;
 import net.minecraft.client.render.item.model.ItemModel;
 import net.minecraft.client.render.item.model.ItemModelBlock;
+import net.minecraft.client.render.item.model.ItemModelStandard;
 import net.minecraft.client.render.stitcher.IconCoordinate;
 import net.minecraft.client.render.stitcher.TextureRegistry;
 import net.minecraft.core.block.Block;
@@ -63,6 +63,8 @@ public final class BlockBuilder implements Cloneable {
     private Tag<Block>[] tags = null;
     @NotNull
     private String[] textures = new String[6];
+    @Nullable
+    private String itemIcon = null;
 
     public BlockBuilder(String modId) {
         MOD_ID = modId;
@@ -80,42 +82,84 @@ public final class BlockBuilder implements Cloneable {
             throw new AssertionError();
         }
     }
+
+    /**
+     * Sets the texture on the side of the block model. Only applies if assigned block model extends {@link BlockModelStandard}
+     * @param texture Texture key
+     * @return Copy of the {@link BlockBuilder}
+     */
     @SuppressWarnings("unused")
     public BlockBuilder setTopTexture(String texture){
         BlockBuilder builder = clone();
         builder.textures[Side.TOP.getId()] = texture;
         return builder;
     }
+
+    /**
+     * Sets the texture on the side of the block model. Only applies if assigned block model extends {@link BlockModelStandard}
+     * @param texture Texture key
+     * @return Copy of the {@link BlockBuilder}
+     */
     @SuppressWarnings("unused")
     public BlockBuilder setBottomTexture(String texture){
         BlockBuilder builder = clone();
         builder.textures[Side.BOTTOM.getId()] = texture;
         return builder;
     }
+
+    /**
+     * Sets the texture on the side of the block model. Only applies if assigned block model extends {@link BlockModelStandard}
+     * @param texture Texture key
+     * @return Copy of the {@link BlockBuilder}
+     */
     @SuppressWarnings("unused")
     public BlockBuilder setNorthTexture(String texture){
         BlockBuilder builder = clone();
         builder.textures[Side.NORTH.getId()] = texture;
         return builder;
     }
+
+    /**
+     * Sets the texture on the side of the block model. Only applies if assigned block model extends {@link BlockModelStandard}
+     * @param texture Texture key
+     * @return Copy of the {@link BlockBuilder}
+     */
     @SuppressWarnings("unused")
     public BlockBuilder setSouthTexture(String texture){
         BlockBuilder builder = clone();
         builder.textures[Side.SOUTH.getId()] = texture;
         return builder;
     }
+
+    /**
+     * Sets the texture on the side of the block model. Only applies if assigned block model extends {@link BlockModelStandard}
+     * @param texture Texture key
+     * @return Copy of the {@link BlockBuilder}
+     */
     @SuppressWarnings("unused")
     public BlockBuilder setWestTexture(String texture){
         BlockBuilder builder = clone();
         builder.textures[Side.WEST.getId()] = texture;
         return builder;
     }
+
+    /**
+     * Sets the texture on the side of the block model. Only applies if assigned block model extends {@link BlockModelStandard}
+     * @param texture Texture key
+     * @return Copy of the {@link BlockBuilder}
+     */
     @SuppressWarnings("unused")
     public BlockBuilder setEastTexture(String texture){
         BlockBuilder builder = clone();
         builder.textures[Side.EAST.getId()] = texture;
         return builder;
     }
+
+    /**
+     * Sets the texture on the side of the block model. Only applies if assigned block model extends {@link BlockModelStandard}
+     * @param texture Texture key
+     * @return Copy of the {@link BlockBuilder}
+     */
     @SuppressWarnings("unused")
     public BlockBuilder setTextures(String texture){
         BlockBuilder builder = clone();
@@ -127,6 +171,12 @@ public final class BlockBuilder implements Cloneable {
         builder.textures[Side.EAST.getId()] = texture;
         return builder;
     }
+
+    /**
+     * Sets the texture on the side of the block model. Only applies if assigned block model extends {@link BlockModelStandard}
+     * @param texture Texture key
+     * @return Copy of the {@link BlockBuilder}
+     */
     @SuppressWarnings("unused")
     public BlockBuilder setSideTextures(String texture){
         BlockBuilder builder = clone();
@@ -136,6 +186,12 @@ public final class BlockBuilder implements Cloneable {
         builder.textures[Side.EAST.getId()] = texture;
         return builder;
     }
+
+    /**
+     * Sets the texture on the side of the block model. Only applies if assigned block model extends {@link BlockModelStandard}
+     * @param texture Texture key
+     * @return Copy of the {@link BlockBuilder}
+     */
     @SuppressWarnings("unused")
     public BlockBuilder setTopBottomTextures(String texture){
         BlockBuilder builder = clone();
@@ -143,6 +199,12 @@ public final class BlockBuilder implements Cloneable {
         builder.textures[Side.BOTTOM.getId()] = texture;
         return builder;
     }
+
+    /**
+     * Sets the texture on the side of the block model. Only applies if assigned block model extends {@link BlockModelStandard}
+     * @param texture Texture key
+     * @return Copy of the {@link BlockBuilder}
+     */
     @SuppressWarnings("unused")
     public BlockBuilder setNorthSouthTextures(String texture){
         BlockBuilder builder = clone();
@@ -150,11 +212,29 @@ public final class BlockBuilder implements Cloneable {
         builder.textures[Side.SOUTH.getId()] = texture;
         return builder;
     }
+
+    /**
+     * Sets the texture on the side of the block model. Only applies if assigned block model extends {@link BlockModelStandard}
+     * @param texture Texture key
+     * @return Copy of the {@link BlockBuilder}
+     */
     @SuppressWarnings("unused")
     public BlockBuilder setEastWestTextures(String texture){
         BlockBuilder builder = clone();
         builder.textures[Side.WEST.getId()] = texture;
         builder.textures[Side.EAST.getId()] = texture;
+        return builder;
+    }
+
+    /**
+     * Sets the icon for the {@link Item}'s {@link ItemModel}, only works if the ItemModel used extends {@link ItemModelStandard} and the {@link BlockModel} renders as 2D
+     * @param iconKey texture key for the icon for the item to use. Example "minecraft:item/stick"
+     * @return @return Copy of {@link ItemBuilder}
+     */
+    @SuppressWarnings("unused")
+    public BlockBuilder setIcon(String iconKey){
+        BlockBuilder builder = clone();
+        builder.itemIcon = iconKey;
         return builder;
     }
 
@@ -485,7 +565,7 @@ public final class BlockBuilder implements Cloneable {
         }
 
         Assignment.queueBlockModel(block, blockModelSupplier, textures);
-        ItemBuilder.Assignment.queueItemModel(itemBlock, customItemModelSupplier, null);
+        ItemBuilder.Assignment.queueItemModel(itemBlock, customItemModelSupplier, itemIcon);
 
         List<String> tokens = Arrays.stream(block.getKey().split("\\."))
                 .filter(token -> !token.equals(MOD_ID))
