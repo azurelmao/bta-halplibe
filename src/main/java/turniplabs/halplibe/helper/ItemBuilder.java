@@ -161,7 +161,7 @@ public final class ItemBuilder implements Cloneable {
         if (tags != null) {
             item.withTags(tags);
         }
-        
+
         if (stackSize != null){
             item.setMaxStackSize(stackSize);
         }
