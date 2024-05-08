@@ -28,8 +28,8 @@ public final class ItemBuilder implements Cloneable {
     private String textureKey = null;
     @Nullable
     private Tag<Item>[] tags = null;
-    private int stackSize = 64;
-    private int maxDamage = 0;
+    private Integer stackSize = null;
+    private Integer maxDamage = null;
     @Nullable
     private Supplier<Item> containerItemSupplier = null;
     @NotNull
@@ -164,11 +164,15 @@ public final class ItemBuilder implements Cloneable {
         if (containerItemSupplier != null){
             item.setContainerItem(containerItemSupplier.get());
         }
-        item.setMaxStackSize(stackSize);
-        try {
-            item.getClass().getMethod("setMaxDamage", int.class).invoke(item, maxDamage);
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new RuntimeException(e);
+        if (stackSize != null){
+            item.setMaxStackSize(stackSize);
+        }
+        if (maxDamage != null){
+            try {
+                item.getClass().getMethod("setMaxDamage", int.class).invoke(item, maxDamage);
+            } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         List<String> newTokens = new ArrayList<>();
