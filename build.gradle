@@ -33,30 +33,6 @@ repositories {
 		metadataSources { artifact() }
 	}
 	ivy {
-		url = "https://github.com/Turnip-Labs"
-		patternLayout {
-			artifact "[organisation]/releases/download/v[revision]/[module]-[revision].jar"
-			m2compatible = true
-		}
-		metadataSources { artifact() }
-	}
-	ivy {
-		url = "https://github.com/Turnip-Labs"
-		patternLayout {
-			artifact "[organisation]/releases/download/[revision]/[module]-[revision].jar"
-			m2compatible = true
-		}
-		metadataSources { artifact() }
-	}
-	ivy {
-		url = "https://github.com/Turnip-Labs"
-		patternLayout {
-			artifact "[organisation]/releases/download/[revision]/[module]-bta-[revision].jar"
-			m2compatible = true
-		}
-		metadataSources { artifact() }
-	}
-	ivy {
 		url = "https://piston-data.mojang.com"
 		patternLayout {
 			artifact "v1/[organisation]/[revision]/[module].jar"
@@ -72,21 +48,6 @@ repositories {
 		}
 		metadataSources { artifact() }
 	}
-	ivy {
-		url = "https://github.com/UselessBullets"
-		patternLayout {
-			artifact "[organisation]/releases/download/[revision]/[module]-bta-[revision].jar"
-			m2compatible = true
-		}
-		metadataSources { artifact() }
-	}
-	ivy {
-		url = uri("https://github.com/UselessBullets")
-		patternLayout {
-			artifact("[organisation]/releases/download/v[revision]/[module]-[revision].jar")
-		}
-		metadataSources { artifact() }
-	}
 }
 
 dependencies {
@@ -96,7 +57,7 @@ dependencies {
 	modRuntimeOnly "objects:client:43db9b498cb67058d2e12d394e6507722e71bb45" // https://piston-data.mojang.com/v1/objects/43db9b498cb67058d2e12d394e6507722e71bb45/client.jar
 	modImplementation "fabric-loader:fabric-loader:${project.loader_version}"
 
-	modRuntimeOnly "com.github.Turnip-Labs:ModMenu:${project.mod_menu_version}"
+	runtimeOnly(modRuntimeOnly "com.github.Turnip-Labs:ModMenu:${project.mod_menu_version}")
 
 	implementation "org.slf4j:slf4j-api:1.8.0-beta4"
 	implementation "org.apache.logging.log4j:log4j-slf4j18-impl:2.16.0"
