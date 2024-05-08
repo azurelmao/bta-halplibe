@@ -8,6 +8,10 @@ import net.minecraft.core.item.ItemStack;
 import turniplabs.halplibe.helper.RecipeBuilder;
 
 public class RecipeBuilderBlastFurnace extends RecipeBuilderFurnace{
+    /**
+     * Used for creating new blast furnace recipes.
+     * @param modID Namespace to create recipe under
+     */
     public RecipeBuilderBlastFurnace(String modID) {
         super(modID);
     }

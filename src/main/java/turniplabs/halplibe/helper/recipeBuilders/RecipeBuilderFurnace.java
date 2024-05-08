@@ -12,25 +12,60 @@ import java.util.Objects;
 
 public class RecipeBuilderFurnace extends RecipeBuilderBase{
     protected RecipeSymbol input;
+    /**
+     * Used for creating new furnace recipes.
+     * @param modID Namespace to create recipe under
+     */
     public RecipeBuilderFurnace(String modID) {
         super(modID);
     }
+
+    /**
+     * Furnace recipes can only have one input
+     * @param input Input item
+     * @return Copy of {@link RecipeBuilderFurnace}
+     */
     @SuppressWarnings({"unused"})
-    public RecipeBuilderFurnace setInput(IItemConvertible item){
-        return setInput(item, 0);
+    public RecipeBuilderFurnace setInput(IItemConvertible input){
+        return setInput(input, 0);
     }
+
+    /**
+     * Furnace recipes can only have one input
+     * @param input Input item
+     * @param meta Item's required metadata
+     * @return Copy of {@link RecipeBuilderFurnace}
+     */
     @SuppressWarnings({"unused"})
-    public RecipeBuilderFurnace setInput(IItemConvertible item, int meta){
-        return setInput(new ItemStack(item, 1, meta));
+    public RecipeBuilderFurnace setInput(IItemConvertible input, int meta){
+        return setInput(new ItemStack(input, 1, meta));
     }
+
+    /**
+     * Furnace recipes can only have one input
+     * @param input Input {@link ItemStack}
+     * @return Copy of {@link RecipeBuilderFurnace}
+     */
     @SuppressWarnings({"unused"})
     public RecipeBuilderFurnace setInput(ItemStack input){
         return setInput(new RecipeSymbol(input));
     }
+
+    /**
+     * Furnace recipes can only have one input
+     * @param itemGroup Input item group
+     * @return Copy of {@link RecipeBuilderFurnace}
+     */
     @SuppressWarnings({"unused"})
     public RecipeBuilderFurnace setInput(String itemGroup){
         return setInput(new RecipeSymbol(itemGroup));
     }
+
+    /**
+     * Furnace recipes can only have one input
+     * @param input {@link RecipeSymbol} Input symbol
+     * @return Copy of {@link RecipeBuilderFurnace}
+     */
     @SuppressWarnings({"unused"})
     public RecipeBuilderFurnace setInput(RecipeSymbol input){
         RecipeBuilderFurnace builder = this.clone(this);

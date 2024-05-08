@@ -35,6 +35,9 @@ public final class EntityHelper {
     public static class Assignment {
         public static boolean entityRendererDispatcherInitialized = false;
         public static final Map<Class<? extends Entity> , Supplier<EntityRenderer<?>>> queuedEntityRenderer = new LinkedHashMap<>();
+        /**
+         *  Queues aa EntityRenderer assignment until the game is ready to do so
+         */
         public static void queueEntityRenderer(@NotNull Class<? extends Entity> clazz, @NotNull Supplier<EntityRenderer<?>> rendererSupplier){
             if (!HalpLibe.isClient) return;
             if (rendererSupplier == null) return;
@@ -50,6 +53,9 @@ public final class EntityHelper {
         }
         public static boolean tileEntityRendererDispatcherInitialized = false;
         public static final Map<Class<? extends TileEntity> , Supplier<TileEntityRenderer<?>>> queuedTileEntityRenderer = new LinkedHashMap<>();
+        /**
+         *  Queues a TileEntityRenderer assignment until the game is ready to do so
+         */
         public static void queueTileEntityRenderer(@NotNull Class<? extends TileEntity> clazz, @NotNull Supplier<TileEntityRenderer<?>> rendererSupplier){
             if (!HalpLibe.isClient) return;
             if (rendererSupplier == null) return;

@@ -14,7 +14,6 @@ import turniplabs.halplibe.HalpLibe;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,31 +46,69 @@ public final class ItemBuilder implements Cloneable {
             throw new AssertionError();
         }
     }
+
+    /**
+     * Sets the ItemModel to be assigned to the {@link Item} built.
+     * @param modelSupplier Provides the {@link Item} built in {@link #build(Item)} to a lambda that returns an {@link ItemModel}
+     * @return @return Copy of {@link ItemBuilder}
+     */
+    @SuppressWarnings({"unused"})
     public ItemBuilder setItemModel(Function<Item, ItemModel> modelSupplier){
         ItemBuilder builder = this.clone();
         builder.customItemModelSupplier = modelSupplier;
         return builder;
     }
+    /**
+     * Sets the key to the built {@link Item}, for example if you set the key "gem.sapphire" the actual key ingame will be "item.<modid>.gem.sapphire"
+     * @param key Override translation key for the {@link Item}
+     * @return @return Copy of {@link ItemBuilder}
+     */
+    @SuppressWarnings({"unused"})
     public ItemBuilder setKey(String key){
         ItemBuilder builder = this.clone();
         builder.overrideKey = key;
         return builder;
     }
+    /**
+     * Sets stack size for the built {@link Item}, will override any class default stacksizes
+     * @param stackSize Stack size of the {@link Item}
+     * @return @return Copy of {@link ItemBuilder}
+     */
+    @SuppressWarnings({"unused"})
     public ItemBuilder setStackSize(int stackSize){
         ItemBuilder builder = this.clone();
         builder.stackSize = stackSize;
         return builder;
     }
+
+    /**
+     * Sets max durability for the built {@link Item}, will override any class default max damage values.
+     * Probably only really affects tool classes.
+     * @param maxDamage Max durability of the {@link Item}
+     * @return @return Copy of {@link ItemBuilder}
+     */
+    @SuppressWarnings({"unused"})
     public ItemBuilder setMaxDamage(int maxDamage){
         ItemBuilder builder = this.clone();
         builder.maxDamage = maxDamage;
         return builder;
     }
+    /**
+     * Sets the container item for the built item. For example {@code Item.bucketMilk} uses the container item {@code Item.bucket}
+     * @param itemSupplier Supplies the {@link Item} to set as the container item
+     * @return @return Copy of {@link ItemBuilder}
+     */
+    @SuppressWarnings({"unused"})
     public ItemBuilder setContainerItem(Supplier<Item> itemSupplier){
         ItemBuilder builder = this.clone();
         builder.containerItemSupplier = itemSupplier;
         return builder;
     }
+
+    /**
+     * Overrides all previous tags with the ones provided
+     * @return @return Copy of {@link ItemBuilder}
+     */
     @SafeVarargs
     @SuppressWarnings({"unused"})
     public final ItemBuilder setTags(Tag<Item>... tags) {
@@ -80,6 +117,10 @@ public final class ItemBuilder implements Cloneable {
         return itemBuilder;
     }
 
+    /**
+     * Adds provided tags to previously specified tags
+     * @return @return Copy of {@link ItemBuilder}
+     */
     @SafeVarargs
     @SuppressWarnings({"unused"})
     public final ItemBuilder addTags(Tag<Item>... tags) {
@@ -88,6 +129,12 @@ public final class ItemBuilder implements Cloneable {
         return itemBuilder;
     }
 
+    /**
+     * Applies the builder configuration to the supplied item.
+     * @param item Input item object
+     * @return Returns the input item after builder settings are applied to it.
+     */
+    @SuppressWarnings("unused")
     public <T extends Item> T build(T item){
         List<String> tokens;
 
@@ -124,6 +171,10 @@ public final class ItemBuilder implements Cloneable {
     public static class Assignment{
         public static boolean itemDispatcherInitialized = false;
         public static final Map<Item, Function<Item, ItemModel>> queuedItemModels = new LinkedHashMap<>();
+        /**
+         *  Queues a ItemModel assignment until the game is ready to do so
+         */
+        @SuppressWarnings("unchecked")
         public static <T extends Item> void queueItemModel(@NotNull T item, @NotNull Function<T, ItemModel> itemModelSupplier){
             if (!HalpLibe.isClient) return;
             if (itemDispatcherInitialized){

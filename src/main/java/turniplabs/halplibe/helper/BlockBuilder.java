@@ -262,7 +262,7 @@ public final class BlockBuilder implements Cloneable {
      * Example code:
      * <pre>{@code
      *     public static final Block customFlower = new BlockBuilder(MOD_ID)
-     *          .setBlockModel(BlockModelCrossedSquares::new))
+     *          .setBlockModel(block -> new BlockModelCrossedSquares<>(block)))
      *          .build(new BlockFlower("custom.flower", 4002);
      * }</pre>
      */
@@ -272,6 +272,17 @@ public final class BlockBuilder implements Cloneable {
         blockBuilder.blockModelSupplier = blockModelSupplier;
         return blockBuilder;
     }
+
+    /**
+     * Sets the item form of the block's visible model.<br>
+     * Example code:
+     * <pre>{@code
+     *     public static final Block customFlower = new BlockBuilder(MOD_ID)
+     *          .setItemModel(block -> new ItemModelBlock(block, MOD_ID)))
+     *          .build(new BlockFlower("custom.flower", 4002);
+     * }</pre>
+     */
+    @SuppressWarnings({"unused"})
     public BlockBuilder setItemModel(@NotNull Function<ItemBlock, ItemModel> itemModelSupplier) {
         BlockBuilder blockBuilder = this.clone();
         blockBuilder.customItemModelSupplier = itemModelSupplier;
@@ -294,6 +305,9 @@ public final class BlockBuilder implements Cloneable {
         return blockBuilder;
     }
 
+    /**
+     * Overrides all previous tags with the ones provided
+     */
     @SafeVarargs
     @SuppressWarnings({"unused"})
     public final BlockBuilder setTags(Tag<Block>... tags) {
@@ -302,6 +316,9 @@ public final class BlockBuilder implements Cloneable {
         return blockBuilder;
     }
 
+    /**
+     * Adds provided tags to previously specified tags
+     */
     @SafeVarargs
     @SuppressWarnings({"unused"})
     public final BlockBuilder addTags(Tag<Block>... tags) {
@@ -310,6 +327,11 @@ public final class BlockBuilder implements Cloneable {
         return blockBuilder;
     }
 
+    /**
+     * Applies the builder configuration to the supplied block.
+     * @param block Input block object
+     * @return Returns the input block after builder settings are applied to it.
+     */
     @SuppressWarnings({"unused"})
     public <T extends Block> T build(T block) {
         if (hardness != null) {
@@ -459,6 +481,10 @@ public final class BlockBuilder implements Cloneable {
     public static class Assignment{
         public static boolean blockDispatcherInitialized = false;
         public static final Map<Block, Function<Block, BlockModel<?>>> queuedBlockModels = new LinkedHashMap<>();
+
+        /**
+         *  Queues a BlockModel assignment until the game is ready to do so
+         */
         public static void queueBlockModel(@NotNull Block block, Function<Block, BlockModel<?>> blockModelSupplier){
             if (!HalpLibe.isClient) return;
             if (blockModelSupplier == null) return;
@@ -471,6 +497,9 @@ public final class BlockBuilder implements Cloneable {
         }
         public static boolean blockColorDispatcherInitialized = false;
         public static final Map<Block, Function<Block, BlockColor>> queuedBlockColors = new LinkedHashMap<>();
+        /**
+         *  Queues a BlockColor assignment until the game is ready to do so
+         */
         public static void queueBlockColor(@NotNull Block block, Function<Block, BlockColor> blockColorSupplier){
             if (!HalpLibe.isClient) return;
             if (blockColorSupplier == null) return;

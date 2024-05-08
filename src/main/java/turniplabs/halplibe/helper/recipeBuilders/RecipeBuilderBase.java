@@ -4,7 +4,7 @@ import net.minecraft.core.item.ItemStack;
 
 import java.util.Objects;
 
-abstract class RecipeBuilderBase implements Cloneable {
+public abstract class RecipeBuilderBase implements Cloneable {
     protected String modID;
     public RecipeBuilderBase(String modID){
         this.modID = Objects.requireNonNull(modID, "ModID must not be null!");
@@ -22,6 +22,12 @@ abstract class RecipeBuilderBase implements Cloneable {
             throw new AssertionError();
         }
     }
+
+    /**
+     * Creates a new recipe from the provided builder arguments.
+     * @param recipeID Recipe identifier to assign to the created recipe
+     * @param outputStack Result of crafting the specified recipe
+     */
     @SuppressWarnings({"unused"})
-    protected abstract void create(String recipeID, ItemStack outputStack);
+    protected abstract void create( String recipeID, ItemStack outputStack);
 }
