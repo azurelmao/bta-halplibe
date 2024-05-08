@@ -161,12 +161,15 @@ public final class ItemBuilder implements Cloneable {
         if (tags != null) {
             item.withTags(tags);
         }
-        if (containerItemSupplier != null){
-            item.setContainerItem(containerItemSupplier.get());
-        }
+        
         if (stackSize != null){
             item.setMaxStackSize(stackSize);
         }
+
+        if (containerItemSupplier != null){
+            item.setContainerItem(containerItemSupplier.get());
+        }
+
         if (maxDamage != null){
             try {
                 item.getClass().getMethod("setMaxDamage", int.class).invoke(item, maxDamage);
