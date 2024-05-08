@@ -24,7 +24,9 @@ public abstract class EntityRenderDispatcherMixin {
         Set<Map.Entry<Class<? extends Entity> , Supplier<EntityRenderer<?>>>> entries = EntityHelper.Assignment.queuedEntityRenderer.entrySet();
         for (Map.Entry<Class<? extends Entity> , Supplier<EntityRenderer<?>>> entry : entries){
             try {
-                renderers.put(entry.getKey(), entry.getValue().get());
+                EntityRenderer<?> renderer = entry.getValue().get();
+                renderers.put(entry.getKey(), renderer);
+                renderer.setRenderDispatcher((EntityRenderDispatcher) (Object)this);
             } catch (Exception e){
                 throw new RuntimeException("Exception Occurred when applying " + entry.getKey().getSimpleName(), e);
             }

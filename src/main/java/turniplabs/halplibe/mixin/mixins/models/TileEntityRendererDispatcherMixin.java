@@ -24,7 +24,9 @@ public class TileEntityRendererDispatcherMixin {
         Set<Map.Entry<Class<? extends TileEntity> , Supplier<TileEntityRenderer<?>>>> entries = EntityHelper.Assignment.queuedTileEntityRenderer.entrySet();
         for (Map.Entry<Class<? extends TileEntity> , Supplier<TileEntityRenderer<?>>> entry : entries){
             try {
-                renderers.put(entry.getKey(), entry.getValue().get());
+                TileEntityRenderer<?> renderer = entry.getValue().get();
+                renderers.put(entry.getKey(), renderer);
+                renderer.setRenderDispatcher((TileEntityRenderDispatcher)(Object)this);
             } catch (Exception e){
                 throw new RuntimeException("Exception Occurred when applying " + entry.getKey().getSimpleName(), e);
             }
