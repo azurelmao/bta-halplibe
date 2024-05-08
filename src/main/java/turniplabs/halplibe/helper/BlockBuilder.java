@@ -5,8 +5,11 @@ import net.minecraft.client.render.block.color.BlockColorDispatcher;
 import net.minecraft.client.render.block.model.BlockModel;
 import net.minecraft.client.render.block.model.BlockModelDispatcher;
 import net.minecraft.client.render.block.model.BlockModelStairs;
+import net.minecraft.client.render.block.model.BlockModelStandard;
 import net.minecraft.client.render.item.model.ItemModel;
 import net.minecraft.client.render.item.model.ItemModelBlock;
+import net.minecraft.client.render.stitcher.IconCoordinate;
+import net.minecraft.client.render.stitcher.TextureRegistry;
 import net.minecraft.core.block.Block;
 import net.minecraft.core.block.BlockFire;
 import net.minecraft.core.block.tag.BlockTags;
@@ -15,9 +18,11 @@ import net.minecraft.core.item.Item;
 import net.minecraft.core.item.block.ItemBlock;
 import net.minecraft.core.sound.BlockSound;
 import net.minecraft.core.sound.BlockSoundDispatcher;
+import net.minecraft.core.util.helper.Side;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import turniplabs.halplibe.HalpLibe;
 import turniplabs.halplibe.util.registry.IdSupplier;
 import turniplabs.halplibe.util.registry.RunLengthConfig;
@@ -26,7 +31,6 @@ import turniplabs.halplibe.util.toml.Toml;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,11 +56,13 @@ public final class BlockBuilder implements Cloneable {
     private BlockSound blockSound = null;
     private Function<Block, BlockColor> blockColor = null;
     @NotNull
-    private Function<Block, BlockModel<?>> blockModelSupplier = BlockModelStairs::new;
+    private Function<Block, BlockModel<?>> blockModelSupplier = BlockModelStandard::new;
     @NotNull
     private Function<ItemBlock, ItemModel> customItemModelSupplier = ItemModelBlock::new;
     private BlockLambda<ItemBlock> customItemBlock = null;
     private Tag<Block>[] tags = null;
+    @NotNull
+    private String[] textures = new String[6];
 
     public BlockBuilder(String modId) {
         MOD_ID = modId;
@@ -66,10 +72,90 @@ public final class BlockBuilder implements Cloneable {
     public BlockBuilder clone() {
         try {
             // none of the fields are mutated so this should be fine
-            return (BlockBuilder) super.clone();
+            BlockBuilder builder = (BlockBuilder) super.clone();
+            builder.textures = new String[6];
+            System.arraycopy(textures, 0, builder.textures, 0, textures.length);
+            return builder;
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();
         }
+    }
+    @SuppressWarnings("unused")
+    public BlockBuilder setTopTexture(String texture){
+        BlockBuilder builder = clone();
+        builder.textures[Side.TOP.getId()] = texture;
+        return builder;
+    }
+    @SuppressWarnings("unused")
+    public BlockBuilder setBottomTexture(String texture){
+        BlockBuilder builder = clone();
+        builder.textures[Side.BOTTOM.getId()] = texture;
+        return builder;
+    }
+    @SuppressWarnings("unused")
+    public BlockBuilder setNorthTexture(String texture){
+        BlockBuilder builder = clone();
+        builder.textures[Side.NORTH.getId()] = texture;
+        return builder;
+    }
+    @SuppressWarnings("unused")
+    public BlockBuilder setSouthTexture(String texture){
+        BlockBuilder builder = clone();
+        builder.textures[Side.SOUTH.getId()] = texture;
+        return builder;
+    }
+    @SuppressWarnings("unused")
+    public BlockBuilder setWestTexture(String texture){
+        BlockBuilder builder = clone();
+        builder.textures[Side.WEST.getId()] = texture;
+        return builder;
+    }
+    @SuppressWarnings("unused")
+    public BlockBuilder setEastTexture(String texture){
+        BlockBuilder builder = clone();
+        builder.textures[Side.EAST.getId()] = texture;
+        return builder;
+    }
+    @SuppressWarnings("unused")
+    public BlockBuilder setTextures(String texture){
+        BlockBuilder builder = clone();
+        builder.textures[Side.TOP.getId()] = texture;
+        builder.textures[Side.BOTTOM.getId()] = texture;
+        builder.textures[Side.NORTH.getId()] = texture;
+        builder.textures[Side.SOUTH.getId()] = texture;
+        builder.textures[Side.WEST.getId()] = texture;
+        builder.textures[Side.EAST.getId()] = texture;
+        return builder;
+    }
+    @SuppressWarnings("unused")
+    public BlockBuilder setSideTextures(String texture){
+        BlockBuilder builder = clone();
+        builder.textures[Side.NORTH.getId()] = texture;
+        builder.textures[Side.SOUTH.getId()] = texture;
+        builder.textures[Side.WEST.getId()] = texture;
+        builder.textures[Side.EAST.getId()] = texture;
+        return builder;
+    }
+    @SuppressWarnings("unused")
+    public BlockBuilder setTopBottomTextures(String texture){
+        BlockBuilder builder = clone();
+        builder.textures[Side.TOP.getId()] = texture;
+        builder.textures[Side.BOTTOM.getId()] = texture;
+        return builder;
+    }
+    @SuppressWarnings("unused")
+    public BlockBuilder setNorthSouthTextures(String texture){
+        BlockBuilder builder = clone();
+        builder.textures[Side.NORTH.getId()] = texture;
+        builder.textures[Side.SOUTH.getId()] = texture;
+        return builder;
+    }
+    @SuppressWarnings("unused")
+    public BlockBuilder setEastWestTextures(String texture){
+        BlockBuilder builder = clone();
+        builder.textures[Side.WEST.getId()] = texture;
+        builder.textures[Side.EAST.getId()] = texture;
+        return builder;
     }
 
     /**
@@ -398,7 +484,7 @@ public final class BlockBuilder implements Cloneable {
             block.withTags(tags);
         }
 
-        Assignment.queueBlockModel(block, blockModelSupplier);
+        Assignment.queueBlockModel(block, blockModelSupplier, textures);
         ItemBuilder.Assignment.queueItemModel(itemBlock, customItemModelSupplier, null);
 
         List<String> tokens = Arrays.stream(block.getKey().split("\\."))
@@ -480,20 +566,45 @@ public final class BlockBuilder implements Cloneable {
     }
     public static class Assignment{
         public static boolean blockDispatcherInitialized = false;
-        public static final Map<Block, Function<Block, BlockModel<?>>> queuedBlockModels = new LinkedHashMap<>();
+        public static final List<BlockAssignmentEntry<?>> queuedBlockModels = new ArrayList<>();
 
         /**
          *  Queues a BlockModel assignment until the game is ready to do so
          */
-        public static void queueBlockModel(@NotNull Block block, Function<Block, BlockModel<?>> blockModelSupplier){
+        public static <T extends Block> void queueBlockModel(@NotNull T block, Function<T, BlockModel<?>> blockModelSupplier, @Nullable String[] textures){
             if (!HalpLibe.isClient) return;
             if (blockModelSupplier == null) return;
 
             if (blockDispatcherInitialized){
-                BlockModelDispatcher.getInstance().addDispatch(blockModelSupplier.apply(block));
+                BlockModelDispatcher.getInstance().addDispatch(new BlockAssignmentEntry<>(block, blockModelSupplier, textures).getModel());
                 return;
             }
-            queuedBlockModels.put(block, blockModelSupplier);
+            queuedBlockModels.add(new BlockAssignmentEntry<>(block, blockModelSupplier, textures));
+        }
+
+        public static class BlockAssignmentEntry<T extends Block>{
+            public final T block;
+            public final Function<T, BlockModel<?>> modelFunction;
+            public final String[] textures;
+
+            public BlockAssignmentEntry(@NotNull T block, @NotNull Function<T, BlockModel<?>> modelFunction, @Nullable String[] textures){
+                this.block = block;
+                this.modelFunction = modelFunction;
+                this.textures = textures;
+            }
+            public BlockModel<?> getModel(){
+                BlockModel<?> model = modelFunction.apply(block);
+
+                if (model instanceof BlockModelStandard && textures != null){
+                    IconCoordinate[] atlasIndices = ((BlockModelStandard<?>) model).atlasIndices;
+                    for (int i = 0; i < atlasIndices.length; i++) {
+                        if (textures[i] != null){
+                            atlasIndices[i] = TextureRegistry.getTexture(textures[i]);
+                        }
+                    }
+                }
+                return model;
+            }
         }
         public static boolean blockColorDispatcherInitialized = false;
         public static final Map<Block, Function<Block, BlockColor>> queuedBlockColors = new LinkedHashMap<>();

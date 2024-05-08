@@ -15,9 +15,7 @@ import turniplabs.halplibe.HalpLibe;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -66,6 +64,7 @@ public final class ItemBuilder implements Cloneable {
      * @param iconKey texture key for the icon for the item to use. Example "minecraft:item/stick"
      * @return @return Copy of {@link ItemBuilder}
      */
+    @SuppressWarnings("unused")
     public ItemBuilder setIcon(String iconKey){
         ItemBuilder builder = clone();
         builder.textureKey = iconKey;
@@ -185,7 +184,7 @@ public final class ItemBuilder implements Cloneable {
 
     public static class Assignment{
         public static boolean itemDispatcherInitialized = false;
-        public static final Map<Item, ItemAssignmentEntry<?>> queuedItemModels = new LinkedHashMap<>();
+        public static final List<ItemAssignmentEntry<?>> queuedItemModels = new ArrayList<>();
         /**
          *  Queues a ItemModel assignment until the game is ready to do so
          */
@@ -195,7 +194,7 @@ public final class ItemBuilder implements Cloneable {
                 ItemModelDispatcher.getInstance().addDispatch(new ItemAssignmentEntry<>(item, itemModelSupplier, iconTexture).getModel());
                 return;
             }
-            queuedItemModels.put(item, new ItemAssignmentEntry<>(item, itemModelSupplier, iconTexture));
+            queuedItemModels.add(new ItemAssignmentEntry<>(item, itemModelSupplier, iconTexture));
         }
         public static class ItemAssignmentEntry<T extends Item>{
             public final T item;

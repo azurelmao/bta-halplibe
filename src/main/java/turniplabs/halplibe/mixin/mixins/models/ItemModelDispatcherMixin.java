@@ -14,7 +14,7 @@ public abstract class ItemModelDispatcherMixin {
 
     @Inject(method = "<init>()V", at = @At("TAIL"))
     private void addQueuedModels(CallbackInfo ci){
-        for (ItemBuilder.Assignment.ItemAssignmentEntry<?> entry : ItemBuilder.Assignment.queuedItemModels.values()){
+        for (ItemBuilder.Assignment.ItemAssignmentEntry<?> entry : ItemBuilder.Assignment.queuedItemModels){
             try {
                 addDispatch(entry.getModel());
             } catch (Exception e){
