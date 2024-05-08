@@ -29,7 +29,7 @@ public final class ItemHelper {
 		newTokens.add(modId);
 		newTokens.addAll(tokens.subList(1, tokens.size()));
 
-		ItemBuilder.Assignment.queueItemModel(item, itemModelSupplier);
+		ItemBuilder.Assignment.queueItemModel(item, itemModelSupplier, null);
 
 		return (T) item.setKey(StringUtils.join(newTokens, "."));
 	}

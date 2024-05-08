@@ -399,7 +399,7 @@ public final class BlockBuilder implements Cloneable {
         }
 
         Assignment.queueBlockModel(block, blockModelSupplier);
-        ItemBuilder.Assignment.queueItemModel(itemBlock, customItemModelSupplier);
+        ItemBuilder.Assignment.queueItemModel(itemBlock, customItemModelSupplier, null);
 
         List<String> tokens = Arrays.stream(block.getKey().split("\\."))
                 .filter(token -> !token.equals(MOD_ID))
