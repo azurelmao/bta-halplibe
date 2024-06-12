@@ -21,6 +21,9 @@ public class MinecraftServerMixin {
 			m.invoke(null);
 			m.setAccessible(false);
 			I18n.initialize("en_US");
+			StatList.init();
+			StatList.onBlockInit();
+			StatList.onItemInit();
 		} catch (Throwable err) {
 			throw new RuntimeException(err);
 		}
