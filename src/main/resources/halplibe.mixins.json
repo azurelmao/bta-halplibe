@@ -19,6 +19,7 @@
     "mixins.StatMixin",
     "mixins.TileEntityMixin",
     "mixins.commands.CommandsCoreMixin",
+    "mixins.gui.BlockChestMixin",
     "mixins.network.PacketMixin",
     "mixins.registry.BlockMixin",
     "mixins.registry.ItemMixin",
@@ -33,19 +34,21 @@
     "mixins.MinecraftMixin",
     "mixins.NetClientHandlerMixin",
     "mixins.commands.CommandsClientMixin",
+    "mixins.gui.EntityPlayerSPMixin",
     "mixins.models.BlockColorDispatcherMixin",
     "mixins.models.BlockModelDispatcherMixin",
     "mixins.models.EntityRenderDispatcherMixin",
     "mixins.models.ItemModelDispatcherMixin",
     "mixins.models.TileEntityRendererDispatcherMixin",
     "mixins.network.MinecraftMixin",
-    "mixins.version.NetClientHandlerMixin",
+    "mixins.version.NetClientHandlerMixin"
   ],
   "server": [
     "mixins.MinecraftServerMixin",
     "mixins.commands.CommandsServerMixin",
+    "mixins.gui.EntityPlayerMPMixin",
     "mixins.network.MinecraftServerMixin",
-    "mixins.version.NetLoginHandlerMixin",
+    "mixins.version.NetLoginHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

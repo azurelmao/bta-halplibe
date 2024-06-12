@@ -8,12 +8,12 @@ import net.minecraft.core.net.packet.Packet100OpenWindow;
 import net.minecraft.core.net.packet.Packet1Login;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import turniplabs.halplibe.helper.gui.GuiHelper;
-import turniplabs.halplibe.helper.gui.RegisteredGui;
 import turniplabs.halplibe.util.RecipeEntrypoint;
 
 @Mixin(value = NetClientHandler.class,remap = false)
@@ -26,17 +26,13 @@ public abstract class NetClientHandlerMixin extends NetHandler {
         FabricLoader.getInstance().getEntrypoints("recipesReady", RecipeEntrypoint.class).forEach(RecipeEntrypoint::initNamespaces);
     }
 
-    @Inject(
-            method = "handleOpenWindow",
-            at = @At(value = "HEAD"),
-            cancellable = true
-    )
-    public void handleOpenWindowInject(Packet100OpenWindow packet, CallbackInfo ci) {
-        RegisteredGui gui = GuiHelper.getGui(packet.inventoryType);
-        if(gui != null) {
-            gui.openPacket(packet, mc);
-            ci.cancel();
-        }
+    /**
+     * @author kill05
+     * @reason gui rewrite
+     */
+    @Overwrite
+    public void handleOpenWindow(Packet100OpenWindow packet) {
+        GuiHelper.reportVanillaGuiCall("Received BTA open window packet");
     }
 
 }
