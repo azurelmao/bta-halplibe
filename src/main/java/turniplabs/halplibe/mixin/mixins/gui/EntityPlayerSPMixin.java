@@ -22,7 +22,7 @@ public abstract class EntityPlayerSPMixin {
      */
     @Overwrite
     public void displayGUIEditSign(TileEntitySign tile) {
-        Guis.EDIT_SIGN.open(getPlayer(), null, tile.x, tile.y, tile.z);
+        Guis.EDIT_SIGN.open(getPlayer(), tile.x, tile.y, tile.z);
     }
 
     /**
@@ -31,7 +31,7 @@ public abstract class EntityPlayerSPMixin {
      */
     @Overwrite
     public void displayGUIEditFlag(TileEntityFlag tile) {
-        Guis.EDIT_FLAG.open(getPlayer(), null, tile.x, tile.y, tile.z);
+        Guis.EDIT_FLAG.open(getPlayer(), tile.x, tile.y, tile.z);
     }
 
     /**
@@ -49,7 +49,7 @@ public abstract class EntityPlayerSPMixin {
      */
     @Overwrite
     public void displayGUIWorkbench(int x, int y, int z) {
-        Guis.WORKBENCH.open(getPlayer(), null, x, y, z);
+        Guis.WORKBENCH.open(getPlayer(), x, y, z);
     }
 
     /**
@@ -58,7 +58,7 @@ public abstract class EntityPlayerSPMixin {
      */
     @Overwrite
     public void displayGUIEditLabel(ItemStack itemstack, int slot) {
-        Guis.EDIT_LABEL.open(getPlayer(), itemstack, 0, 0, 0);
+        Guis.EDIT_LABEL.open(getPlayer(), itemstack);
     }
 
     /**
@@ -67,7 +67,7 @@ public abstract class EntityPlayerSPMixin {
      */
     @Overwrite
     public void displayGUIPaintingPicker() {
-        Guis.PAINTING_PICKER.open(getPlayer(), null, 0, 0, 0);
+        Guis.PAINTING_PICKER.open(getPlayer());
     }
 
     /**
@@ -76,7 +76,7 @@ public abstract class EntityPlayerSPMixin {
      */
     @Overwrite
     public void displayGUIMobSpawnerPicker(int x, int y, int z) {
-        Guis.MOB_SPAWNER_PICKER.open(getPlayer(), null, x, y, z);
+        Guis.MOB_SPAWNER_PICKER.open(getPlayer(), x, y, z);
     }
 
     /**
@@ -85,7 +85,7 @@ public abstract class EntityPlayerSPMixin {
      */
     @Overwrite
     public void displayGUIWandMonsterPicker(ItemStack stack) {
-        Guis.WAND_MONSTER_PICKER.open(getPlayer(), stack, 0, 0, 0);
+        Guis.WAND_MONSTER_PICKER.open(getPlayer(), stack);
     }
 
     /**
@@ -94,7 +94,7 @@ public abstract class EntityPlayerSPMixin {
      */
     @Overwrite
     public void displayGUIFurnace(TileEntityFurnace tile) {
-        Guis.FURNACE.open(getPlayer(), null, tile.x, tile.y, tile.z);
+        Guis.FURNACE.open(getPlayer(), tile.x, tile.y, tile.z);
     }
 
     /**
@@ -103,7 +103,7 @@ public abstract class EntityPlayerSPMixin {
      */
     @Overwrite
     public void displayGUITrommel(TileEntityTrommel tile) {
-        Guis.TROMMEL.open(getPlayer(), null, tile.x, tile.y, tile.z);
+        Guis.TROMMEL.open(getPlayer(), tile.x, tile.y, tile.z);
     }
 
     /**
@@ -112,7 +112,7 @@ public abstract class EntityPlayerSPMixin {
      */
     @Overwrite
     public void displayGUIDispenser(TileEntityDispenser tile) {
-        Guis.DISPENSER.open(getPlayer(), null, tile.x, tile.y, tile.z);
+        Guis.DISPENSER.open(getPlayer(), tile.x, tile.y, tile.z);
     }
 
 

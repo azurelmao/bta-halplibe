@@ -47,6 +47,7 @@
     "mixins.MinecraftServerMixin",
     "mixins.commands.CommandsServerMixin",
     "mixins.gui.EntityPlayerMPMixin",
+    "mixins.gui.PlayerManager_PlayerInstanceMixin",
     "mixins.network.MinecraftServerMixin",
     "mixins.version.NetLoginHandlerMixin"
   ],

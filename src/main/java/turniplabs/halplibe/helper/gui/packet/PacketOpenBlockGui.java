@@ -1,6 +1,6 @@
 package turniplabs.halplibe.helper.gui.packet;
 
-import turniplabs.halplibe.helper.gui.RegisteredGui;
+import turniplabs.halplibe.helper.gui.registered.RegisteredGui;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

@@ -1,4 +1,4 @@
-package turniplabs.halplibe.helper.gui.factory.base;
+package turniplabs.halplibe.helper.gui.factory.item;
 
 import net.minecraft.client.entity.player.EntityPlayerSP;
 import net.minecraft.client.gui.GuiScreen;
@@ -10,19 +10,23 @@ import org.jetbrains.annotations.Nullable;
 import turniplabs.halplibe.helper.gui.factory.IGuiFactory;
 import turniplabs.halplibe.helper.gui.registered.RegisteredGui;
 
-public interface GuiFactory extends IGuiFactory {
+public interface ItemGuiFactory extends IGuiFactory {
 
-    @NotNull GuiScreen createGui(@NotNull RegisteredGui gui, @NotNull EntityPlayerSP player);
+    @NotNull GuiScreen createGui(@NotNull RegisteredGui gui, @NotNull EntityPlayerSP player, @NotNull ItemStack itemStack);
 
-    @Nullable Container createContainer(@NotNull RegisteredGui gui, @NotNull EntityPlayerMP player);
+    @Nullable Container createContainer(@NotNull RegisteredGui gui, @NotNull EntityPlayerMP player, @NotNull ItemStack itemStack);
 
+    @SuppressWarnings("DataFlowIssue")
     @Override
     default @NotNull GuiScreen createGui(@NotNull RegisteredGui gui, @NotNull EntityPlayerSP player, @Nullable ItemStack itemStack, int x, int y, int z) {
-        return createGui(gui, player);
+        if(itemStack == null) throwInvalidException("Itemstack can't be null.");
+        return createGui(gui, player, itemStack);
     }
 
+    @SuppressWarnings("DataFlowIssue")
     @Override
     default @Nullable Container createContainer(@NotNull RegisteredGui gui, @NotNull EntityPlayerMP player, @Nullable ItemStack itemStack, int x, int y, int z) {
-        return createContainer(gui, player);
+        if(itemStack == null) throwInvalidException("Itemstack can't be null.");
+        return createContainer(gui, player, itemStack);
     }
 }

@@ -12,6 +12,7 @@ import turniplabs.halplibe.helper.*;
 import turniplabs.halplibe.helper.gui.Guis;
 import turniplabs.halplibe.helper.gui.packet.PacketOpenBlockGui;
 import turniplabs.halplibe.helper.gui.packet.PacketOpenGui;
+import turniplabs.halplibe.helper.gui.packet.PacketOpenItemGui;
 import turniplabs.halplibe.helper.gui.test.TestBlock;
 import turniplabs.halplibe.helper.gui.test.TestTile;
 import turniplabs.halplibe.util.TomlConfigHandler;
@@ -87,6 +88,7 @@ public class HalpLibe implements ModInitializer, PreLaunchEntrypoint{
 
         // Gui
         NetworkHelper.register(PacketOpenGui.class, false, true);
+        NetworkHelper.register(PacketOpenItemGui.class, false, true);
         NetworkHelper.register(PacketOpenBlockGui.class, false, true);
         try {
             Class.forName(Guis.class.getName()); // init vanilla guis

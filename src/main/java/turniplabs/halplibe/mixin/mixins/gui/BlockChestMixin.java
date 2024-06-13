@@ -20,7 +20,7 @@ public abstract class BlockChestMixin extends BlockTileEntity {
 
     @Override
     public boolean blockActivated(World world, int x, int y, int z, EntityPlayer player) {
-        Guis.CHEST.open(player, null, x, y, z);
+        Guis.CHEST.open(player, x, y, z);
         return true;
     }
 }
