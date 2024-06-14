@@ -13,8 +13,6 @@ import turniplabs.halplibe.helper.gui.Guis;
 import turniplabs.halplibe.helper.gui.packet.PacketOpenBlockGui;
 import turniplabs.halplibe.helper.gui.packet.PacketOpenGui;
 import turniplabs.halplibe.helper.gui.packet.PacketOpenItemGui;
-import turniplabs.halplibe.helper.gui.test.TestBlock;
-import turniplabs.halplibe.helper.gui.test.TestTile;
 import turniplabs.halplibe.util.TomlConfigHandler;
 import turniplabs.halplibe.util.achievements.AchievementPage;
 import turniplabs.halplibe.util.achievements.VanillaAchievementsPage;
@@ -95,9 +93,6 @@ public class HalpLibe implements ModInitializer, PreLaunchEntrypoint{
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
-
-        EntityHelper.createTileEntity(TestTile.class, "test");
-        new BlockBuilder(MOD_ID).build(new TestBlock());
 
         LOGGER.info("HalpLibe initialized.");
     }
