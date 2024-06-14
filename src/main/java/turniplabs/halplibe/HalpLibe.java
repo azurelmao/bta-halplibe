@@ -8,9 +8,11 @@ import net.minecraft.core.block.Block;
 import net.minecraft.core.item.Item;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import turniplabs.halplibe.helper.AchievementHelper;
-import turniplabs.halplibe.helper.ModVersionHelper;
-import turniplabs.halplibe.util.RecipeEntrypoint;
+import turniplabs.halplibe.helper.*;
+import turniplabs.halplibe.helper.gui.Guis;
+import turniplabs.halplibe.helper.gui.packet.PacketOpenBlockGui;
+import turniplabs.halplibe.helper.gui.packet.PacketOpenGui;
+import turniplabs.halplibe.helper.gui.packet.PacketOpenItemGui;
 import turniplabs.halplibe.util.TomlConfigHandler;
 import turniplabs.halplibe.util.achievements.AchievementPage;
 import turniplabs.halplibe.util.achievements.VanillaAchievementsPage;
@@ -81,6 +83,17 @@ public class HalpLibe implements ModInitializer, PreLaunchEntrypoint{
     @Override
     public void onInitialize() {
         AchievementHelper.addPage(VANILLA_ACHIEVEMENTS);
+
+        // Gui
+        NetworkHelper.register(PacketOpenGui.class, false, true);
+        NetworkHelper.register(PacketOpenItemGui.class, false, true);
+        NetworkHelper.register(PacketOpenBlockGui.class, false, true);
+        try {
+            Class.forName(Guis.class.getName()); // init vanilla guis
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
         LOGGER.info("HalpLibe initialized.");
     }
 
