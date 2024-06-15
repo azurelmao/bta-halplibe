@@ -2,6 +2,7 @@ package turniplabs.halplibe.helper.gui;
 
 import net.minecraft.client.entity.player.EntityPlayerSP;
 import net.minecraft.client.gui.*;
+import net.minecraft.core.block.BlockChest;
 import net.minecraft.core.block.entity.*;
 import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.item.ItemStack;
@@ -83,15 +84,15 @@ public final class Guis {
         Server Guis
        ============== */
 
-    public static final RegisteredGui CHEST = GuiHelper.registerServerGui("minecraft", "chest", new TileGuiFactory<TileEntityChest>() {
+    public static final RegisteredGui CHEST = GuiHelper.registerServerGui("minecraft", "chest", new BlockGuiFactory() {
         @Override
-        public @NotNull GuiScreen createGui(@NotNull RegisteredGui gui, @NotNull EntityPlayerSP player, @NotNull TileEntityChest tile) {
-            return new GuiChest(player.inventory, tile);
+        public @NotNull GuiScreen createGui(@NotNull RegisteredGui gui, @NotNull EntityPlayerSP player, int x, int y, int z) {
+            return new GuiChest(player.inventory, BlockChest.getInventory(player.world, x, y, z));
         }
 
         @Override
-        public @NotNull Container createContainer(@NotNull RegisteredGui gui, @NotNull EntityPlayerMP player, @NotNull TileEntityChest tile) {
-            return new ContainerChest(player.inventory, tile);
+        public @NotNull Container createContainer(@NotNull RegisteredGui gui, @NotNull EntityPlayerMP player, int x, int y, int z) {
+            return new ContainerChest(player.inventory, BlockChest.getInventory(player.world, x, y, z));
         }
     });
 
