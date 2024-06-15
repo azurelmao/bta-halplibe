@@ -36,7 +36,7 @@ public class RegisteredGui {
         this.serverSide = serverSide;
 
         if (!ID_PATTERN.matcher(modId + id).matches())
-            throw new IllegalArgumentException(String.format("Invalid namespace:%s. Must match the following regex '[a-zA-Z0-9_-]+'.", getNamespace()));
+            throw new IllegalArgumentException(String.format("Invalid namespace: %s. Must match the following regex '[a-zA-Z0-9_-]+'.", getNamespace()));
 
         if(GuiHelper.REGISTRY.getItem(getNamespace()) != null)
             throw new IllegalArgumentException(String.format("Duplicate namespace: %s.", getNamespace()));

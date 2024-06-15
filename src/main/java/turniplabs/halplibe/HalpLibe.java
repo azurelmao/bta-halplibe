@@ -9,7 +9,6 @@ import net.minecraft.core.item.Item;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import turniplabs.halplibe.helper.*;
-import turniplabs.halplibe.helper.gui.Guis;
 import turniplabs.halplibe.helper.gui.packet.PacketOpenBlockGui;
 import turniplabs.halplibe.helper.gui.packet.PacketOpenGui;
 import turniplabs.halplibe.helper.gui.packet.PacketOpenItemGui;
