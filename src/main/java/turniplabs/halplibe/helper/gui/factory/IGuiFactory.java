@@ -5,7 +5,6 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.player.inventory.Container;
 import net.minecraft.server.entity.player.EntityPlayerMP;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import turniplabs.halplibe.helper.gui.packet.PacketOpenBlockGui;
@@ -13,7 +12,6 @@ import turniplabs.halplibe.helper.gui.packet.PacketOpenGui;
 import turniplabs.halplibe.helper.gui.packet.PacketOpenItemGui;
 import turniplabs.halplibe.helper.gui.registered.RegisteredGui;
 
-@ApiStatus.Internal
 public interface IGuiFactory {
 
     @NotNull GuiScreen createGui(@NotNull RegisteredGui gui, @NotNull EntityPlayerSP player, @Nullable ItemStack itemStack, int x, int y, int z);
