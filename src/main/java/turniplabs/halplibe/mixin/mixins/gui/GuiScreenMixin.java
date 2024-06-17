@@ -2,21 +2,20 @@ package turniplabs.halplibe.mixin.mixins.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.EntityClientPlayerMP;
+import net.minecraft.client.entity.player.EntityPlayerSP;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.core.util.helper.Listener;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+import turniplabs.halplibe.helper.gui.GuiScreenAccessor;
 import turniplabs.halplibe.helper.gui.packet.PacketGuiButtonClick;
 import turniplabs.halplibe.helper.gui.registered.RegisteredGui;
-import turniplabs.halplibe.mixin.accessors.gui.GuiScreenAccessor;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Iterator;
 
 @SuppressWarnings("AddedMixinMembersNamePattern")
 @Mixin(
@@ -28,37 +27,27 @@ public class GuiScreenMixin implements GuiScreenAccessor {
     @Unique
     private String guiNamespace;
 
-    @Shadow
-    public List<GuiButton> controlList;
-
-
     @Inject(
-            method = "init",
-            at = @At("RETURN")
+            method = "mouseClicked",
+            locals = LocalCapture.CAPTURE_FAILHARD,
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/sound/SoundManager;playSound(Ljava/lang/String;Lnet/minecraft/core/sound/SoundCategory;FF)V",
+                    shift = At.Shift.AFTER
+            )
     )
-    public void injectInit(CallbackInfo ci) {
-        Minecraft mc = Minecraft.getMinecraft(GuiScreenMixin.class);
+    public void injectMouseClicked(int mouseX, int mouseY, int mouseButton, CallbackInfo ci, Iterator<GuiButton> unused, GuiButton button) {
         RegisteredGui gui = getRegisteredGui();
         if(gui == null) return;
 
-        List<Integer> ids = new ArrayList<>(controlList.size());
-        for (GuiButton button : controlList) {
-            if (ids.contains(button.id))
-                throw new IllegalStateException(String.format("Found button in gui '%s' with duplicate id: '%s'.", gui, button.id));
+        EntityPlayerSP player = Minecraft.getMinecraft(GuiScreenMixin.class).thePlayer;
 
-            final Listener<GuiButton> oldListener = button.listener;
-            button.setListener(aButton -> {
-                if (mc.thePlayer instanceof EntityClientPlayerMP) {
-                    EntityClientPlayerMP playerMP = (EntityClientPlayerMP) mc.thePlayer;
-                    playerMP.sendQueue.addToSendQueue(new PacketGuiButtonClick(getGuiNamespace(), aButton.id));
-                }
-
-                gui.getFactory().onButtonPress(gui, mc.thePlayer, aButton.id);
-                if(oldListener != null) oldListener.listen(aButton);
-            });
-
-            ids.add(button.id);
+        if (player instanceof EntityClientPlayerMP) {
+            EntityClientPlayerMP playerMP = (EntityClientPlayerMP) player;
+            playerMP.sendQueue.addToSendQueue(new PacketGuiButtonClick(getGuiNamespace(), button.id));
         }
+
+        gui.getFactory().onButtonClick(gui, player, player, button.id);
     }
 
     @Override

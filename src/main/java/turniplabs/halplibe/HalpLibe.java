@@ -88,7 +88,7 @@ public class HalpLibe implements ModInitializer, PreLaunchEntrypoint{
         NetworkHelper.register(PacketOpenGui.class, false, true);
         NetworkHelper.register(PacketOpenItemGui.class, false, true);
         NetworkHelper.register(PacketOpenBlockGui.class, false, true);
-        NetworkHelper.register(PacketGuiButtonClick.class, true, false);
+        NetworkHelper.register(PacketGuiButtonClick.class, true, true);
 
         LOGGER.info("HalpLibe initialized.");
     }

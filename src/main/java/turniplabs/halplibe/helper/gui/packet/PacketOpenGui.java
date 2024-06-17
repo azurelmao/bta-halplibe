@@ -3,6 +3,7 @@ package turniplabs.halplibe.helper.gui.packet;
 import net.minecraft.core.net.handler.NetHandler;
 import net.minecraft.core.net.packet.Packet;
 import org.jetbrains.annotations.NotNull;
+import turniplabs.halplibe.HalpLibe;
 import turniplabs.halplibe.helper.gui.GuiHelper;
 import turniplabs.halplibe.helper.gui.registered.RegisteredGui;
 
@@ -39,7 +40,13 @@ public class PacketOpenGui extends Packet {
 
     @Override
     public void processPacket(NetHandler netHandler) {
-        GuiHelper.getGui(guiNamespace).handleOpenPacket(this);
+        RegisteredGui gui = GuiHelper.getGui(guiNamespace);
+        if(gui == null) {
+            HalpLibe.LOGGER.warn("Invalid gui id in packet: " + guiNamespace);
+            return;
+        }
+
+        gui.handleOpenPacket(this);
     }
 
     @Override

@@ -1,6 +1,5 @@
-package turniplabs.halplibe.mixin.accessors.gui;
+package turniplabs.halplibe.helper.gui;
 
-import turniplabs.halplibe.helper.gui.GuiHelper;
 import turniplabs.halplibe.helper.gui.registered.RegisteredGui;
 
 public interface GuiScreenAccessor {

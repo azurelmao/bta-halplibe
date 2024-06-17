@@ -19,7 +19,7 @@ import turniplabs.halplibe.helper.gui.factory.block.BlockGuiFactory;
 import turniplabs.halplibe.helper.gui.factory.block.TileGuiFactory;
 import turniplabs.halplibe.helper.gui.factory.item.ItemGuiFactory;
 import turniplabs.halplibe.helper.gui.packet.PacketOpenGui;
-import turniplabs.halplibe.mixin.accessors.gui.GuiScreenAccessor;
+import turniplabs.halplibe.helper.gui.GuiScreenAccessor;
 
 import java.util.Random;
 import java.util.regex.Pattern;
