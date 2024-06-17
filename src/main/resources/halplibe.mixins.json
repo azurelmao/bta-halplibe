@@ -32,6 +32,7 @@
     "mixins.MinecraftMixin",
     "mixins.NetClientHandlerMixin",
     "mixins.commands.CommandsClientMixin",
+    "mixins.gui.GuiScreenMixin",
     "mixins.models.BlockColorDispatcherMixin",
     "mixins.models.BlockModelDispatcherMixin",
     "mixins.models.EntityRenderDispatcherMixin",

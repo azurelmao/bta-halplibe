@@ -1,15 +1,12 @@
 package turniplabs.halplibe.helper.gui.registered;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.EntityClientPlayerMP;
 import net.minecraft.client.entity.player.EntityPlayerSP;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.core.block.entity.TileEntity;
 import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.player.inventory.Container;
-import net.minecraft.core.util.helper.Listener;
 import net.minecraft.server.entity.player.EntityPlayerMP;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -21,11 +18,9 @@ import turniplabs.halplibe.helper.gui.factory.base.GuiFactory;
 import turniplabs.halplibe.helper.gui.factory.block.BlockGuiFactory;
 import turniplabs.halplibe.helper.gui.factory.block.TileGuiFactory;
 import turniplabs.halplibe.helper.gui.factory.item.ItemGuiFactory;
-import turniplabs.halplibe.helper.gui.packet.PacketGuiButtonClick;
 import turniplabs.halplibe.helper.gui.packet.PacketOpenGui;
+import turniplabs.halplibe.mixin.accessors.gui.GuiScreenAccessor;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 import java.util.regex.Pattern;
 
@@ -85,8 +80,7 @@ public class RegisteredGui {
 
         if (player instanceof EntityPlayerSP) {
             EntityPlayerSP playerSP = (EntityPlayerSP) player;
-            GuiScreen gui = factory.createGui(this, playerSP, itemStack, x, y, z);
-            Minecraft.getMinecraft(RegisteredGui.class).displayGuiScreen(addButtonListeners(gui, playerSP));
+            setupAndOpenGui(factory.createGui(this, playerSP, itemStack, x, y, z));
             return;
         }
 
@@ -110,38 +104,21 @@ public class RegisteredGui {
         HalpLibe.LOGGER.warn("Tried to open a gui for invalid EntityPlayer: " + player);
     }
 
-    private GuiScreen addButtonListeners(GuiScreen gui, EntityPlayerSP playerSP) {
-        List<Integer> ids = new ArrayList<>(gui.controlList.size());
-        for (GuiButton button : gui.controlList) {
-            if (ids.contains(button.id))
-                throw new IllegalStateException(String.format("Found button in gui '%s' with duplicate id: '%s'.", gui, button.id));
-
-            final Listener<GuiButton> oldListener = button.listener;
-            button.setListener(aButton -> {
-                if (playerSP instanceof EntityClientPlayerMP) {
-                    EntityClientPlayerMP playerMP = (EntityClientPlayerMP) playerSP;
-                    playerMP.sendQueue.addToSendQueue(new PacketGuiButtonClick(getNamespace(), aButton.id));
-                }
-
-                factory.onButtonPress(this, playerSP, aButton.id);
-                if(oldListener != null) oldListener.listen(aButton);
-            });
-
-            ids.add(button.id);
-        }
-
-        return gui;
-    }
-
     @ApiStatus.Internal
     public void handleOpenPacket(@NotNull PacketOpenGui packet) {
         Minecraft mc = Minecraft.getMinecraft(RegisteredGui.class);
         EntityPlayerSP player = mc.thePlayer;
-        GuiScreen gui = factory.createGui(this, player, packet);
-
-        mc.displayGuiScreen(addButtonListeners(gui, player));
+        setupAndOpenGui(factory.createGui(this, player, packet));
         player.craftingInventory.windowId = packet.windowId;
     }
+
+    private void setupAndOpenGui(GuiScreen gui) {
+        ((GuiScreenAccessor) gui).setRegisteredGui(this);
+        Minecraft mc = Minecraft.getMinecraft(RegisteredGui.class);
+        mc.displayGuiScreen(gui);
+    }
+
+
 
 
     public String getModId() {
