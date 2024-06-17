@@ -2,6 +2,7 @@ package turniplabs.halplibe.helper.gui.factory;
 
 import net.minecraft.client.entity.player.EntityPlayerSP;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.player.inventory.Container;
 import net.minecraft.server.entity.player.EntityPlayerMP;
@@ -17,6 +18,10 @@ public interface IGuiFactory {
     @NotNull GuiScreen createGui(@NotNull RegisteredGui gui, @NotNull EntityPlayerSP player, @Nullable ItemStack itemStack, int x, int y, int z);
 
     @Nullable Container createContainer(@NotNull RegisteredGui gui, @NotNull EntityPlayerMP player, @Nullable ItemStack itemStack, int x, int y, int z);
+
+    default void onButtonPress(@NotNull RegisteredGui gui, @NotNull EntityPlayer player, int button) {
+
+    }
 
     default @NotNull GuiScreen createGui(@NotNull RegisteredGui gui, @NotNull EntityPlayerSP player, @NotNull PacketOpenGui packet) {
         if(!gui.isServerSide()) throw new IllegalStateException("Gui is client side!");
