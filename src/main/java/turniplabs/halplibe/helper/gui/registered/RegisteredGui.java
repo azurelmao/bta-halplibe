@@ -2,6 +2,7 @@ package turniplabs.halplibe.helper.gui.registered;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.EntityPlayerSP;
+import net.minecraft.core.block.entity.TileEntity;
 import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.player.inventory.Container;
@@ -13,6 +14,7 @@ import turniplabs.halplibe.helper.gui.GuiHelper;
 import turniplabs.halplibe.helper.gui.factory.IGuiFactory;
 import turniplabs.halplibe.helper.gui.factory.base.GuiFactory;
 import turniplabs.halplibe.helper.gui.factory.block.BlockGuiFactory;
+import turniplabs.halplibe.helper.gui.factory.block.TileGuiFactory;
 import turniplabs.halplibe.helper.gui.factory.item.ItemGuiFactory;
 import turniplabs.halplibe.helper.gui.packet.PacketOpenGui;
 
@@ -61,6 +63,13 @@ public class RegisteredGui {
             throw new IllegalStateException("Gui is not a block gui!");
 
         open(player, null, x, y, z);
+    }
+
+    public void open(@NotNull EntityPlayer player, TileEntity tile) {
+        if(!(factory instanceof TileGuiFactory))
+            throw new IllegalStateException("Gui is not a tile gui!");
+
+        open(player, null, tile.x, tile.y, tile.z);
     }
 
     protected void open(@NotNull EntityPlayer player, @Nullable ItemStack itemStack, int x, int y, int z) {
