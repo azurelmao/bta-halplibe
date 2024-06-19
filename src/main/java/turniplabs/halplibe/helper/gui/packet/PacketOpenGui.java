@@ -3,6 +3,7 @@ package turniplabs.halplibe.helper.gui.packet;
 import net.minecraft.core.net.handler.NetHandler;
 import net.minecraft.core.net.packet.Packet;
 import org.jetbrains.annotations.NotNull;
+import turniplabs.halplibe.HalpLibe;
 import turniplabs.halplibe.helper.gui.GuiHelper;
 import turniplabs.halplibe.helper.gui.registered.RegisteredGui;
 
@@ -12,11 +13,11 @@ import java.io.IOException;
 
 public class PacketOpenGui extends Packet {
 
-    public String namespace;
+    public String guiNamespace;
     public int windowId;
 
     public PacketOpenGui(@NotNull RegisteredGui gui, int windowId) {
-        this.namespace = gui.getNamespace();
+        this.guiNamespace = gui.getNamespace();
         this.windowId = windowId;
     }
 
@@ -26,24 +27,30 @@ public class PacketOpenGui extends Packet {
 
     @Override
     public void readPacketData(DataInputStream input) throws IOException {
-        this.namespace = input.readUTF();
+        this.guiNamespace = input.readUTF();
         this.windowId = input.readByte();
     }
 
     @Override
     public void writePacketData(DataOutputStream output) throws IOException {
-        if(namespace == null) throw new IOException("Namespace can't be null!");
-        output.writeUTF(namespace);
+        if(guiNamespace == null) throw new IOException("GUI Namespace can't be null!");
+        output.writeUTF(guiNamespace);
         output.writeByte(windowId);
     }
 
     @Override
     public void processPacket(NetHandler netHandler) {
-        GuiHelper.getGui(namespace).openPacket(this);
+        RegisteredGui gui = GuiHelper.getGui(guiNamespace);
+        if(gui == null) {
+            HalpLibe.LOGGER.warn("Invalid gui id in packet: " + guiNamespace);
+            return;
+        }
+
+        gui.handleOpenPacket(this);
     }
 
     @Override
     public int getPacketSize() {
-        return namespace.length() + 1;
+        return guiNamespace.length() + 1;
     }
 }

@@ -3,6 +3,7 @@ package turniplabs.halplibe.helper.gui;
 import net.minecraft.core.data.registry.Registry;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import turniplabs.halplibe.HalpLibe;
 import turniplabs.halplibe.helper.gui.factory.IGuiFactory;
 import turniplabs.halplibe.helper.gui.registered.RegisteredGui;
@@ -29,7 +30,8 @@ public final class GuiHelper {
         return REGISTRY.getItem(modId + ":" + guiId);
     }
 
-    public static RegisteredGui getGui(@NotNull String namespace) {
+    public static RegisteredGui getGui(@Nullable String namespace) {
+        if(namespace == null) return null;
         return REGISTRY.getItem(namespace);
     }
 

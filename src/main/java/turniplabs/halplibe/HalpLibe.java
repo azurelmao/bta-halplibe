@@ -9,7 +9,7 @@ import net.minecraft.core.item.Item;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import turniplabs.halplibe.helper.*;
-import turniplabs.halplibe.helper.gui.Guis;
+import turniplabs.halplibe.helper.gui.packet.PacketGuiButtonClick;
 import turniplabs.halplibe.helper.gui.packet.PacketOpenBlockGui;
 import turniplabs.halplibe.helper.gui.packet.PacketOpenGui;
 import turniplabs.halplibe.helper.gui.packet.PacketOpenItemGui;
@@ -88,11 +88,7 @@ public class HalpLibe implements ModInitializer, PreLaunchEntrypoint{
         NetworkHelper.register(PacketOpenGui.class, false, true);
         NetworkHelper.register(PacketOpenItemGui.class, false, true);
         NetworkHelper.register(PacketOpenBlockGui.class, false, true);
-        try {
-            Class.forName(Guis.class.getName()); // init vanilla guis
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        NetworkHelper.register(PacketGuiButtonClick.class, true, true);
 
         LOGGER.info("HalpLibe initialized.");
     }
