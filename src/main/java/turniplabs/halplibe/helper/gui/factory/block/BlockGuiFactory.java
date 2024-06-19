@@ -25,6 +25,7 @@ public interface BlockGuiFactory extends IGuiFactory {
 
     @Override
     default @Nullable Container createContainer(@NotNull RegisteredGui gui, @NotNull EntityPlayerMP player, @Nullable ItemStack itemStack, int x, int y, int z) {
+        if(y < 0) throwInvalidException("y value of block coordinates must be set to a positive value. This either means a wrong value has been used as an argument or that the wrong gui method has been called.");
         return createContainer(gui, player, x, y, z);
     }
 }
