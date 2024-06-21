@@ -40,12 +40,6 @@ public class HalpLibe implements ModInitializer, PreLaunchEntrypoint{
         exportRecipes = CONFIG.getBoolean("Debug.ExportRecipes");
         compatibilityMode = CONFIG.getBoolean("Experimental.CompatibilityMode");
 
-        // Initialize Block and Item static fields
-        try {
-            Class.forName("net.minecraft.core.block.Block");
-            Class.forName("net.minecraft.core.item.Item");
-        } catch (ClassNotFoundException ignored) {
-        }
         ModVersionHelper.initialize();
     }
     public static final AchievementPage VANILLA_ACHIEVEMENTS = new VanillaAchievementsPage();
@@ -95,7 +89,12 @@ public class HalpLibe implements ModInitializer, PreLaunchEntrypoint{
 
     @Override
     public void onPreLaunch() {
-        // Initializes halp statics first
+        // Initialize Block and Item static fields
+        try {
+            Class.forName("net.minecraft.core.block.Block");
+            Class.forName("net.minecraft.core.item.Item");
+        } catch (ClassNotFoundException ignored) {
+        }
     }
 
 }

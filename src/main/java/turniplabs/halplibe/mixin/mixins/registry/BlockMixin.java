@@ -27,7 +27,7 @@ public abstract class BlockMixin {
 		throw new IllegalArgumentException("Slot " + id + " is already occupied by " + blocksList[id].getKey() + " when adding " + key);
 	}
 
-	@Redirect(method = "<clinit>", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/achievement/stat/StatList;onBlockInit()V"))
+	@Redirect(method = "initializeBlocks()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/achievement/stat/StatList;onBlockInit()V"))
 	private static void delayInit() {
 	}
 }

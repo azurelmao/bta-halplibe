@@ -18,8 +18,8 @@ public class ItemMixin {
 		ItemHelper.Registry.highestVanilla = highestItemId;
 		ci.cancel();
 	}
-	
-	@Redirect(method = "<clinit>", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/achievement/stat/StatList;onItemInit()V"))
+
+	@Redirect(method = "initializeItems()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/achievement/stat/StatList;onItemInit()V"))
 	private static void delayInit() {
 	}
 }
