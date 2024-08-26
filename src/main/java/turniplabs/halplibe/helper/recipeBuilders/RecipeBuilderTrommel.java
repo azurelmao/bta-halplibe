@@ -114,7 +114,8 @@ public class RecipeBuilderTrommel extends RecipeBuilderBase{
                 .register(recipeID, new RecipeEntryTrommel(input, bag));
     }
     @Override
-    protected void create(String recipeID, ItemStack outputStack) {
+    public void create(String recipeID, ItemStack outputStack) throws IllegalArgumentException {
         // Standard create method doesn't apply to this class
+        throw new IllegalArgumentException("Use create(String recipeID), create(String recipeID, ItemStack outputStack) does not apply for trommels");
     }
 }
