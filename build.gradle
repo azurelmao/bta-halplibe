@@ -1,6 +1,7 @@
 plugins {
 	id 'fabric-loom' version '1.7.bta'
 	id 'java'
+	id 'maven-publish'
 }
 
 import org.gradle.internal.os.OperatingSystem
@@ -139,5 +140,27 @@ processResources {
 
 	filesMatching("fabric.mod.json") {
 		expand "version": version
+	}
+}
+
+publishing {
+	repositories {
+		maven {
+			name = "signalumMaven"
+			url = "https://maven.thesignalumproject.net/releases"
+			credentials(PasswordCredentials)
+			authentication {
+				basic(BasicAuthentication)
+			}
+		}
+	}
+
+	publications {
+		maven(MavenPublication) {
+			groupId = project.mod_group
+			artifactId = project.mod_name
+			version = project.mod_version
+			from components.java
+		}
 	}
 }
