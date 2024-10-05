@@ -1,4 +1,4 @@
-package turniplabs.halplibe.mixin.mixins;
+package turniplabs.halplibe.mixin;
 
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
@@ -106,7 +106,7 @@ public abstract class I18nMixin {
             String[] rootLangs = filesInDir(path);
             String[] subCurrentLangs = filesInDir(path + currentLangId + "/");
             String[] subDefaultLangs = filesInDir(path + defaultLangId + "/");
-            HalpLibe.LOGGER.debug(mod.getMetadata().getId() + " contains " + rootLangs.length + subDefaultLangs.length + subCurrentLangs.length + " language files.");
+            HalpLibe.LOGGER.debug(mod.getMetadata().getId() + " contains " + (rootLangs.length + subDefaultLangs.length + subCurrentLangs.length) + " language files.");
             HalpLibe.LOGGER.debug(Arrays.toString(rootLangs));
             HalpLibe.LOGGER.debug(Arrays.toString(subCurrentLangs));
             HalpLibe.LOGGER.debug(Arrays.toString(subDefaultLangs));

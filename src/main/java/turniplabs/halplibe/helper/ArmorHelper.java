@@ -17,7 +17,7 @@ public final class ArmorHelper {
      */
     @SuppressWarnings("unused") // API function
     public static ArmorMaterial createArmorMaterial(String modId, String name, int durability, float combat, float blast, float fire, float fall) {
-        ArmorMaterial armorMaterial = new ArmorMaterial(new NamespaceID(modId, name), ArmorMaterial.getArmorMaterials().size()-1, durability)
+        ArmorMaterial armorMaterial = new ArmorMaterial(new NamespaceID(modId, name), durability)
                 .withProtectionPercentage(DamageType.COMBAT, combat)
                 .withProtectionPercentage(DamageType.BLAST, blast)
                 .withProtectionPercentage(DamageType.FIRE, fire)

@@ -1,19 +1,18 @@
 package turniplabs.halplibe.helper;
 
 import net.minecraft.client.render.EntityRenderDispatcher;
-import net.minecraft.client.render.TileEntityRenderDispatcher;
+import net.minecraft.client.render.BlockEntityRenderDispatcher;
+import net.minecraft.client.render.blockentity.BlockEntityRenderer;
 import net.minecraft.client.render.entity.EntityRenderer;
-import net.minecraft.client.render.tileentity.TileEntityRenderer;
-import net.minecraft.core.block.entity.TileEntity;
+import net.minecraft.core.block.entity.BlockEntity;
 import net.minecraft.core.entity.Entity;
 import net.minecraft.core.entity.EntityDispatcher;
 import org.jetbrains.annotations.NotNull;
 import turniplabs.halplibe.HalpLibe;
 import turniplabs.halplibe.mixin.accessors.RenderManagerAccessor;
-import turniplabs.halplibe.mixin.accessors.TileEntityAccessor;
-import turniplabs.halplibe.mixin.accessors.TileEntityRendererAccessor;
+import turniplabs.halplibe.mixin.accessors.BlockEntityAccessor;
+import turniplabs.halplibe.mixin.accessors.BlockEntityRendererAccessor;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -24,13 +23,13 @@ public final class EntityHelper {
         Assignment.queueEntityRenderer(clazz, rendererSupplier);
     }
 
-    public static void createTileEntity(Class<? extends TileEntity> clazz, String name) {
-        TileEntityAccessor.callAddMapping(clazz, name);
+    public static void createBlockEntity(Class<? extends BlockEntity> clazz, String name) {
+        BlockEntityAccessor.callAddMapping(clazz, name);
     }
 
-    public static void createSpecialTileEntity(Class<? extends TileEntity> clazz, String name, Supplier<TileEntityRenderer<?>> rendererSupplier) {
-        TileEntityAccessor.callAddMapping(clazz, name);
-        Assignment.queueTileEntityRenderer(clazz, rendererSupplier);
+    public static void createSpecialBlockEntity(Class<? extends BlockEntity> clazz, String name, Supplier<BlockEntityRenderer<?>> rendererSupplier) {
+        BlockEntityAccessor.callAddMapping(clazz, name);
+        Assignment.queueBlockEntityRenderer(clazz, rendererSupplier);
     }
     public static class Assignment {
         public static boolean entityRendererDispatcherInitialized = false;
@@ -46,28 +45,28 @@ public final class EntityHelper {
                 Map<Class<? extends Entity>, EntityRenderer<?>> entityRenderMap = ((RenderManagerAccessor) EntityRenderDispatcher.instance).getEntityRenderMap();
                 EntityRenderer<?> renderer = rendererSupplier.get();
                 entityRenderMap.put(clazz, renderer);
-                renderer.setRenderDispatcher(EntityRenderDispatcher.instance);
+                renderer.init(EntityRenderDispatcher.instance);
                 return;
             }
             queuedEntityRenderer.put(clazz, rendererSupplier);
         }
-        public static boolean tileEntityRendererDispatcherInitialized = false;
-        public static final Map<Class<? extends TileEntity> , Supplier<TileEntityRenderer<?>>> queuedTileEntityRenderer = new LinkedHashMap<>();
+        public static boolean BlockEntityRendererDispatcherInitialized = false;
+        public static final Map<Class<? extends BlockEntity> , Supplier<BlockEntityRenderer<?>>> queuedBlockEntityRenderer = new LinkedHashMap<>();
         /**
-         *  Queues a TileEntityRenderer assignment until the game is ready to do so
+         *  Queues a BlockEntityRenderer assignment until the game is ready to do so
          */
-        public static void queueTileEntityRenderer(@NotNull Class<? extends TileEntity> clazz, @NotNull Supplier<TileEntityRenderer<?>> rendererSupplier){
+        public static void queueBlockEntityRenderer(@NotNull Class<? extends BlockEntity> clazz, @NotNull Supplier<BlockEntityRenderer<?>> rendererSupplier){
             if (!HalpLibe.isClient) return;
             if (rendererSupplier == null) return;
 
-            if (tileEntityRendererDispatcherInitialized){
-                Map<Class<? extends TileEntity>, TileEntityRenderer<?>> specialRendererMap = ((TileEntityRendererAccessor) TileEntityRenderDispatcher.instance).getSpecialRendererMap();
-                TileEntityRenderer<?> renderer = rendererSupplier.get();
+            if (BlockEntityRendererDispatcherInitialized){
+                Map<Class<? extends BlockEntity>, BlockEntityRenderer<?>> specialRendererMap = ((BlockEntityRendererAccessor) BlockEntityRenderDispatcher.instance).getSpecialRendererMap();
+                BlockEntityRenderer<?> renderer = rendererSupplier.get();
                 specialRendererMap.put(clazz, renderer);
-                renderer.setRenderDispatcher(TileEntityRenderDispatcher.instance);
+                renderer.setRenderDispatcher(BlockEntityRenderDispatcher.instance);
                 return;
             }
-            queuedTileEntityRenderer.put(clazz, rendererSupplier);
+            queuedBlockEntityRenderer.put(clazz, rendererSupplier);
         }
     }
 }

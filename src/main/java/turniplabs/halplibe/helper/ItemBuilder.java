@@ -2,8 +2,8 @@ package turniplabs.halplibe.helper;
 
 import net.minecraft.client.render.item.model.ItemModel;
 import net.minecraft.client.render.item.model.ItemModelDispatcher;
-import net.minecraft.client.render.item.model.ItemModelStandard;
-import net.minecraft.client.render.stitcher.TextureRegistry;
+import net.minecraft.client.render.item.model.StandardItemModel;
+import net.minecraft.client.render.texture.stitcher.TextureRegistry;
 import net.minecraft.core.data.tag.Tag;
 import net.minecraft.core.item.Item;
 import org.apache.commons.lang3.ArrayUtils;
@@ -36,7 +36,7 @@ public final class ItemBuilder implements Cloneable {
     private Function<Item, ItemModel> customItemModelSupplier;
     public ItemBuilder(String modId){
         this.modId = modId;
-        customItemModelSupplier = (item -> new ItemModelStandard(item, null));
+        customItemModelSupplier = (item -> new StandardItemModel(item, null));
     }
     @Override
     public ItemBuilder clone() {
@@ -60,7 +60,7 @@ public final class ItemBuilder implements Cloneable {
         return builder;
     }
     /**
-     * Sets the icon for the {@link Item}'s {@link ItemModel}, only works if the ItemModel used extends {@link ItemModelStandard}
+     * Sets the icon for the {@link Item}'s {@link ItemModel}, only works if the ItemModel used extends {@link StandardItemModel}
      * @param iconKey texture key for the icon for the item to use. Example "minecraft:item/stick"
      * @return @return Copy of {@link ItemBuilder}
      */
@@ -182,7 +182,7 @@ public final class ItemBuilder implements Cloneable {
         newTokens.add(modId);
         newTokens.addAll(tokens.subList(1, tokens.size()));
 
-        ItemBuilder.Assignment.queueItemModel(item, customItemModelSupplier, textureKey);
+        Assignment.queueItemModel(item, customItemModelSupplier, textureKey);
 
         item.setKey(StringUtils.join(newTokens, "."));
 
@@ -216,14 +216,14 @@ public final class ItemBuilder implements Cloneable {
             public ItemModel getModel(){
                 ItemModel model = modelFunction.apply(item);
 
-                if (model instanceof ItemModelStandard && iconKey != null){
-                    ((ItemModelStandard) model).icon = TextureRegistry.getTexture(iconKey);
+                if (model instanceof StandardItemModel && iconKey != null){
+                    ((StandardItemModel) model).icon = TextureRegistry.getTexture(iconKey);
                     return model;
                 }
-                if (model instanceof ItemModelStandard && ((ItemModelStandard) model).icon == ItemModelStandard.ITEM_TEXTURE_UNASSIGNED){
+                if (model instanceof StandardItemModel && ((StandardItemModel) model).icon == StandardItemModel.ITEM_TEXTURE_UNASSIGNED){
                     String namespace = item.getKey().split("\\.")[1];
                     // Unholy string fuckery
-                    ((ItemModelStandard) model).icon = TextureRegistry.getTexture(String.format("%s:item/%s", namespace,
+                    ((StandardItemModel) model).icon = TextureRegistry.getTexture(String.format("%s:item/%s", namespace,
                             item.getKey().replaceFirst("item." + namespace + ".", "").replace(".", "_")));
                     return model;
                 }

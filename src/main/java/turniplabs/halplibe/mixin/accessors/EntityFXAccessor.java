@@ -1,17 +1,17 @@
 package turniplabs.halplibe.mixin.accessors;
 
-import net.minecraft.client.entity.fx.EntityFX;
+import net.minecraft.client.entity.particle.Particle;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-@Mixin(value = EntityFX.class, remap = false)
+@Mixin(value = Particle.class, remap = false)
 public interface EntityFXAccessor {
     @Accessor
-    void setParticleRed(float particleRed);
+    void setRCol(float particleRed);
 
     @Accessor
-    void setParticleGreen(float particleGreen);
+    void setGCol(float particleGreen);
 
     @Accessor
-    void setParticleBlue(float particleBlue);
+    void setBCol(float particleBlue);
 }

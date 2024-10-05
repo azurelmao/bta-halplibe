@@ -3,7 +3,9 @@ package turniplabs.halplibe.util.toml;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.spongepowered.include.com.google.common.collect.ImmutableList;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Optional;
 
 public class Toml {
     protected HashMap<String, Toml> categories = new HashMap<>();

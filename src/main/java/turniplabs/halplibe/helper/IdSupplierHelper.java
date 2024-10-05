@@ -5,13 +5,13 @@ import turniplabs.halplibe.util.toml.Toml;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
-public final class RegistryHelper {
+public final class IdSupplierHelper {
 	private static final ArrayList<Runnable> registryFunctions = new ArrayList<>();
 	private static final ArrayList<Runnable> configuredRegistryFunctions = new ArrayList<>();
 	private static final ArrayList<Runnable> smartRegistryFunctions = new ArrayList<>();
 
 	/**
-	 * Only intended for internal use from {@link BlockBuilder.Registry#reserveRuns(String, Toml, int, Consumer)} and {@link ItemHelper.Registry#reserveRuns(String, Toml, int, Consumer)}
+	 * Only intended for internal use from {@link BlockBuilder.Registry#reserveRuns(String, Toml, int, Consumer)}
 	 *
 	 *
 	 * @param function the function to run on registry handling
@@ -21,8 +21,8 @@ public final class RegistryHelper {
 	}
 
 	/**
-	 * For blocks and items, use {@link BlockBuilder.Registry#reserveRuns(String, Toml, int, Consumer)} and {@link ItemHelper.Registry#reserveRuns(String, Toml, int, Consumer)}, respectively
-	 * These will figure out what ids are available automatically, making sure to account for mods that aren't using halplibe, or are using {@link RegistryHelper#scheduleRegistry(boolean, Runnable)}
+	 * For blocks, use {@link BlockBuilder.Registry#reserveRuns(String, Toml, int, Consumer)}
+	 * These will figure out what ids are available automatically, making sure to account for mods that aren't using halplibe, or are using {@link IdSupplierHelper#scheduleRegistry(boolean, Runnable)}
 	 *
 	 * Reason this is not deprecated:
 	 * - other registries that halplibe doesn't already have utils for

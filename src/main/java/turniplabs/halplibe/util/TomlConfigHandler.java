@@ -14,7 +14,6 @@ public class TomlConfigHandler {
     private Toml rawParsed;
     private final String configFileName;
     private final File configFile;
-    private ConfigUpdater updater;
 
     public TomlConfigHandler(String modID, Toml defaults) {
         this.configFileName = modID + ".cfg";
@@ -36,11 +35,6 @@ public class TomlConfigHandler {
         else this.config = new Toml();
         config.addMissing(defaults);
         if(create) create();
-    }
-
-    public TomlConfigHandler(ConfigUpdater updater, String modID, Toml defaults) {
-        this(modID, defaults);
-        this.updater = updater;
     }
 
     //creates the actual config file
@@ -151,10 +145,6 @@ public class TomlConfigHandler {
                 rawParsed.addMissing(parsed);
             } else rawParsed = parsed;
 
-            if (updater != null) {
-                updater.updating = rawParsed;
-                updater.update();
-            }
             properties.merge(true, rawParsed);
 
             input.close();
