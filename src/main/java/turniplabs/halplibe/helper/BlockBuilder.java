@@ -36,42 +36,39 @@ import java.util.function.Function;
 
 public final class BlockBuilder implements Cloneable {
 
-    private final String modId;
-    private final String key;
-    private final String namespaceId;
+    private final @NotNull String modId;
+    private final @NotNull String key;
+    private final @NotNull String namespaceId;
     private final int id;
-    private Float hardness = null;
-    private Float resistance = null;
-    private Integer luminance = null;
-    private Integer lightOpacity = null;
-    private Float slipperiness = null;
+    private @Nullable Float hardness = null;
+    private @Nullable Float resistance = null;
+    private @Nullable Integer luminance = null;
+    private @Nullable Integer lightOpacity = null;
+    private @Nullable Float slipperiness = null;
     private boolean immovable = false;
     private boolean useInternalLight = false;
     private boolean visualUpdateOnMetadata = false;
-    private Boolean tickOnLoad = null;
+    private @Nullable Boolean tickOnLoad = null;
     private boolean infiniburn = false;
-    private int[] flammability = null;
-    private BlockSound blockSound = null;
-    private Function<Block<?>, BlockColor> blockColor = null;
-    @NotNull
-    private Function<Block<?>, BlockModel<?>> blockModelSupplier = BlockModelStandard::new;
-    @NotNull
-    private Function<ItemBlock<?>, ItemModel> customItemModelSupplier = ItemModelBlock::new;
-    private BlockLambda<ItemBlock<?>> customBlockItem = null;
-    private Tag<Block<?>>[] tags = null;
-    @NotNull
-    private String[] textures = new String[6];
-    @Nullable
-    private String itemIcon = null;
+    private int @Nullable [] flammability = null;
+    private @Nullable BlockSound blockSound = null;
+    private @Nullable Function<Block<?>, BlockColor> blockColor = null;
+    private @NotNull Function<Block<?>, BlockModel<?>> blockModelSupplier = BlockModelStandard::new;
+    private @NotNull Function<ItemBlock<?>, ItemModel> customItemModelSupplier = ItemModelBlock::new;
+    private @Nullable BlockLambda<ItemBlock<?>> customBlockItem = null;
+    private @Nullable Tag<Block<?>>[] tags = null;
+    private String @NotNull [] textures = new String[6];
+    private @Nullable String itemIcon = null;
+//    private @Nullable
 
-    public BlockBuilder(String modId, String name, int id) {
+    public BlockBuilder(@NotNull String modId, @NotNull String name, int id) {
         this.modId = modId;
         this.key = String.format("tile.%s.%s", modId, name.replace("_", "."));
         this.namespaceId = String.format("%s:block/%s", modId, name);
         this.id = id;
     }
 
-    public BlockBuilder(String modId, String translationKey, String namespacedId, int id) {
+    public BlockBuilder(@NotNull String modId, @NotNull String translationKey, @NotNull String namespacedId, int id) {
         this.modId = modId;
         this.key = translationKey;
         this.namespaceId = namespacedId;
