@@ -25,6 +25,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import turniplabs.halplibe.HalpLibe;
+import turniplabs.halplibe.mixin.accessors.BlockAccessor;
 import turniplabs.halplibe.mixin.accessors.BlocksAccessor;
 import turniplabs.halplibe.util.registry.IdSupplier;
 import turniplabs.halplibe.util.registry.RunLengthConfig;
@@ -569,14 +570,19 @@ public final class BlockBuilder implements Cloneable {
             block.withTags(tags);
         }
 
+        if (customBlockItem != null) {
+            block.setBlockItem(() -> customBlockItem.run(block));
+        }
+
         if (BlocksAccessor.hasInit()) {
             block.init();
 
-            if (customBlockItem != null) {
-                Item.itemsList[block.id()] = customBlockItem.run(block);
-            } else {
-                Item.itemsList[block.id()] = new ItemBlock<>(block);
+            Item item = block.blockItemSupplier.get();
+            if (((BlockAccessor)(Object)block).getStatParent() != null) {
+                item.setStatParent(((BlockAccessor)(Object)block).getStatParent());
             }
+            Item.itemsList[item.id] = item;
+
 
             block.getLogic().initializeBlock();
             BlocksAccessor.cacheBlock(block);
