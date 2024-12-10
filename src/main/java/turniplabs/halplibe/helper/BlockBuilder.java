@@ -14,6 +14,7 @@ import net.minecraft.core.block.BlockLogic;
 import net.minecraft.core.block.BlockLogicFire;
 import net.minecraft.core.block.BlockLogicSupplier;
 import net.minecraft.core.block.Blocks;
+import net.minecraft.core.block.entity.TileEntity;
 import net.minecraft.core.block.tag.BlockTags;
 import net.minecraft.core.data.tag.Tag;
 import net.minecraft.core.item.Item;
@@ -33,6 +34,7 @@ import turniplabs.halplibe.util.toml.Toml;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public final class BlockBuilder implements Cloneable {
 
@@ -59,7 +61,7 @@ public final class BlockBuilder implements Cloneable {
     private @Nullable Tag<Block<?>>[] tags = null;
     private String @NotNull [] textures = new String[6];
     private @Nullable String itemIcon = null;
-//    private @Nullable
+    private @Nullable Supplier<TileEntity> entitySupplier = null;
 
     public BlockBuilder(@NotNull String modId, @NotNull String name, int id) {
         this.modId = modId;
@@ -228,6 +230,18 @@ public final class BlockBuilder implements Cloneable {
         BlockBuilder builder = clone();
         builder.textures[Side.WEST.getId()] = texture;
         builder.textures[Side.EAST.getId()] = texture;
+        return builder;
+    }
+
+    /**
+     * Sets the block to be a TileEntity Block which creates the provided tile entities on placement
+     * @param tileEntitySupplier supplier of TileEntity instances for the block to create when placed
+     * @return @return Copy of {@link ItemBuilder}
+     */
+    @SuppressWarnings("unused")
+    public BlockBuilder setTileEntity(@Nullable Supplier<TileEntity> tileEntitySupplier) {
+        BlockBuilder builder = clone();
+        builder.entitySupplier = tileEntitySupplier;
         return builder;
     }
 
@@ -543,9 +557,11 @@ public final class BlockBuilder implements Cloneable {
             block.withSound(blockSound);
         }
 
-        Assignment.queueBlockColor(block, blockColor);
+        if (entitySupplier != null) {
+            block.withEntity(entitySupplier);
+        }
 
-        ItemBlock<?> BlockItem;
+        Assignment.queueBlockColor(block, blockColor);
 
         if (tags != null) {
             block.withTags(tags);
@@ -555,9 +571,9 @@ public final class BlockBuilder implements Cloneable {
             block.init();
 
             if (customBlockItem != null) {
-                Item.itemsList[block.id()] = BlockItem = customBlockItem.run(block);
+                Item.itemsList[block.id()] = customBlockItem.run(block);
             } else {
-                Item.itemsList[block.id()] = BlockItem = new ItemBlock<>(block);
+                Item.itemsList[block.id()] = new ItemBlock<>(block);
             }
 
             block.getLogic().initializeBlock();
@@ -565,7 +581,7 @@ public final class BlockBuilder implements Cloneable {
         }
 
         Assignment.queueBlockModel(block, blockModelSupplier, textures);
-//        ItemBuilder.Assignment.queueItemModel(BlockItem, customItemModelSupplier, itemIcon); // TODO reimpl item model
+        ItemBuilder.Assignment.queueItemModel(id, customItemModelSupplier, itemIcon); // TODO reimpl item model
 
         return block;
     }
@@ -641,7 +657,7 @@ public final class BlockBuilder implements Cloneable {
         /**
          *  Queues a BlockModel assignment until the game is ready to do so
          */
-        public static <T extends Block> void queueBlockModel(@NotNull T block, Function<T, BlockModel<?>> blockModelSupplier, @Nullable String[] textures){
+        public static <T extends Block<?>> void queueBlockModel(@NotNull T block, Function<T, BlockModel<?>> blockModelSupplier, @Nullable String[] textures){
             if (!HalpLibe.isClient) return;
             if (blockModelSupplier == null) return;
 
@@ -652,7 +668,7 @@ public final class BlockBuilder implements Cloneable {
             queuedBlockModels.add(new BlockAssignmentEntry<>(block, blockModelSupplier, textures));
         }
 
-        public static class BlockAssignmentEntry<T extends Block>{
+        public static class BlockAssignmentEntry<T extends Block<?>>{
             public final T block;
             public final Function<T, BlockModel<?>> modelFunction;
             public final String[] textures;
