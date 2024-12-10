@@ -1,8 +1,7 @@
 package turniplabs.halplibe.helper;
 
-
-import net.minecraft.client.entity.particle.FireflyParticle;
 import net.minecraft.client.entity.particle.ParticleDispatcher;
+import net.minecraft.client.entity.particle.ParticleFirefly;
 import net.minecraft.client.entity.particle.ParticleLambda;
 import net.minecraft.core.util.helper.MathHelper;
 import turniplabs.halplibe.HalpLibe;
@@ -23,7 +22,7 @@ public final class ParticleHelper {
      * Set the firefly particle's color using the vanilla scheme,
      * which only takes in mid RGB colors and interpolates the rest.
      */
-    public static void setFireflyColor(FireflyParticle particle, float r, float g, float b) {
+    public static void setFireflyColor(ParticleFirefly particle, float r, float g, float b) {
         ((EntityFireflyFXAccessor) particle).setMidR(r);
         ((EntityFireflyFXAccessor) particle).setMidG(g);
         ((EntityFireflyFXAccessor) particle).setMidB(b);
@@ -35,13 +34,13 @@ public final class ParticleHelper {
         ((EntityFireflyFXAccessor) particle).setMaxB(MathHelper.clamp(b + 0.25F, 0.0F, 1.0F));
     }
 
-    public static void setFireflyColorMin(FireflyParticle particle, float r, float g, float b) {
+    public static void setFireflyColorMin(ParticleFirefly particle, float r, float g, float b) {
         ((EntityFireflyFXAccessor) particle).setMinR(r);
         ((EntityFireflyFXAccessor) particle).setMinG(g);
         ((EntityFireflyFXAccessor) particle).setMinB(b);
     }
 
-    public static void setFireflyColorMid(FireflyParticle particle, float r, float g, float b) {
+    public static void setFireflyColorMid(ParticleFirefly particle, float r, float g, float b) {
         ((EntityFireflyFXAccessor) particle).setMidR(r);
         ((EntityFireflyFXAccessor) particle).setMidG(g);
         ((EntityFireflyFXAccessor) particle).setMidB(b);
@@ -50,7 +49,7 @@ public final class ParticleHelper {
         ((EntityFXAccessor) particle).setBCol(b);
     }
 
-    public static void setFireflyColorMax(FireflyParticle particle, float r, float g, float b) {
+    public static void setFireflyColorMax(ParticleFirefly particle, float r, float g, float b) {
         ((EntityFireflyFXAccessor) particle).setMaxR(r);
         ((EntityFireflyFXAccessor) particle).setMaxG(g);
         ((EntityFireflyFXAccessor) particle).setMaxB(b);

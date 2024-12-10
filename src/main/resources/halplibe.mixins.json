@@ -7,14 +7,14 @@
     "I18nMixin",
     "MinecraftMixin",
     "MinecraftServerMixin",
-    "accessors.BlockEntityAccessor",
-    "accessors.BlockEntityRendererAccessor",
+    "accessors.BlocksAccessor",
     "accessors.EntityFireflyFXAccessor",
     "accessors.EntityFXAccessor",
     "accessors.LanguageAccessor",
     "accessors.RenderManagerAccessor"
   ],
   "client": [
+    "accessors.TileEntityRendererAccessor"
   ],
   "server": [
   ],

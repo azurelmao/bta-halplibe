@@ -25,7 +25,7 @@ version = project.mod_version
 
 loom {
 	noIntermediateMappings()
-	customMinecraftMetadata.set("https://nightly.betterthanadventure.net/bta-${project.bta_version}-manifest.json")
+	customMinecraftMetadata.set("https://github.com/Turnip-Labs/bta-manifest-repo/releases/download/v${project.bta_version}/${project.bta_version}.json")
 }
 
 repositories {
@@ -44,17 +44,17 @@ repositories {
 		url = 'https://maven.thesignalumproject.net/infrastructure'
 	}
 	ivy {
-		url = "https://github.com/Better-than-Adventure"
+		url = "https://downloads.betterthanadventure.net/bta-client/${project.bta_channel}/"
 		patternLayout {
-			artifact "[organisation]/releases/download/v[revision]/[module].jar"
+			artifact "/v[revision]/client.jar"
 			m2compatible = true
 		}
 		metadataSources { artifact() }
 	}
 	ivy {
-		url = "https://nightly.betterthanadventure.net"
+		url = "https://downloads.betterthanadventure.net/bta-server/${project.bta_channel}/"
 		patternLayout {
-			artifact "/bta-[revision]-client.jar"
+			artifact "/v[revision]/server.jar"
 			m2compatible = true
 		}
 		metadataSources { artifact() }

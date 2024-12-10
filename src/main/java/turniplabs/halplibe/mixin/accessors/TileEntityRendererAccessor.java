@@ -1,16 +1,16 @@
 package turniplabs.halplibe.mixin.accessors;
 
 import net.minecraft.client.render.BlockEntityRenderDispatcher;
-import net.minecraft.client.render.blockentity.BlockEntityRenderer;
-import net.minecraft.core.block.entity.BlockEntity;
+import net.minecraft.client.render.blockentity.TileEntityRenderer;
+import net.minecraft.core.block.entity.TileEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 import java.util.Map;
 
 @Mixin(value = BlockEntityRenderDispatcher.class, remap = false)
-public interface BlockEntityRendererAccessor {
+public interface TileEntityRendererAccessor {
     @Accessor("renderers")
-    Map<Class<? extends BlockEntity>, BlockEntityRenderer<?>> getSpecialRendererMap();
+    Map<Class<? extends TileEntity>, TileEntityRenderer<?>> getSpecialRendererMap();
 
 }

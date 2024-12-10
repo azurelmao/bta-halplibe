@@ -4,26 +4,27 @@ import net.minecraft.client.render.block.color.BlockColor;
 import net.minecraft.client.render.block.color.BlockColorDispatcher;
 import net.minecraft.client.render.block.model.BlockModel;
 import net.minecraft.client.render.block.model.BlockModelDispatcher;
-import net.minecraft.client.render.block.model.StandardBlockModel;
-import net.minecraft.client.render.item.model.BlockItemModel;
+import net.minecraft.client.render.block.model.BlockModelStandard;
 import net.minecraft.client.render.item.model.ItemModel;
 
-import net.minecraft.client.render.item.model.StandardItemModel;
-import net.minecraft.client.render.texture.stitcher.IconCoordinate;
-import net.minecraft.client.render.texture.stitcher.TextureRegistry;
+import net.minecraft.client.render.item.model.ItemModelBlock;
+import net.minecraft.client.render.item.model.ItemModelStandard;
 import net.minecraft.core.block.Block;
-import net.minecraft.core.block.FireBlock;
+import net.minecraft.core.block.BlockLogic;
+import net.minecraft.core.block.BlockLogicFire;
+import net.minecraft.core.block.BlockLogicSupplier;
+import net.minecraft.core.block.Blocks;
 import net.minecraft.core.block.tag.BlockTags;
 import net.minecraft.core.data.tag.Tag;
 import net.minecraft.core.item.Item;
-import net.minecraft.core.item.block.BlockItem;
+import net.minecraft.core.item.block.ItemBlock;
 import net.minecraft.core.sound.BlockSound;
 import net.minecraft.core.util.helper.Side;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import turniplabs.halplibe.HalpLibe;
+import turniplabs.halplibe.mixin.accessors.BlocksAccessor;
 import turniplabs.halplibe.util.registry.IdSupplier;
 import turniplabs.halplibe.util.registry.RunLengthConfig;
 import turniplabs.halplibe.util.registry.RunReserves;
@@ -32,11 +33,13 @@ import turniplabs.halplibe.util.toml.Toml;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public final class BlockBuilder implements Cloneable {
 
-    private final String MOD_ID;
+    private final String modId;
+    private final String key;
+    private final String namespaceId;
+    private final int id;
     private Float hardness = null;
     private Float resistance = null;
     private Integer luminance = null;
@@ -48,22 +51,31 @@ public final class BlockBuilder implements Cloneable {
     private Boolean tickOnLoad = null;
     private boolean infiniburn = false;
     private int[] flammability = null;
-    private Block blockDrop = null;
     private BlockSound blockSound = null;
-    private Function<Block, BlockColor> blockColor = null;
+    private Function<Block<?>, BlockColor> blockColor = null;
     @NotNull
-        private Function<Block, BlockModel<?>> blockModelSupplier = StandardBlockModel::new;
+    private Function<Block<?>, BlockModel<?>> blockModelSupplier = BlockModelStandard::new;
     @NotNull
-    private Function<BlockItem, ItemModel> customItemModelSupplier = BlockItemModel::new;
-    private BlockLambda<BlockItem> customBlockItem = null;
-    private Tag<Block>[] tags = null;
+    private Function<ItemBlock<?>, ItemModel> customItemModelSupplier = ItemModelBlock::new;
+    private BlockLambda<ItemBlock<?>> customBlockItem = null;
+    private Tag<Block<?>>[] tags = null;
     @NotNull
     private String[] textures = new String[6];
     @Nullable
     private String itemIcon = null;
 
-    public BlockBuilder(String modId) {
-        MOD_ID = modId;
+    public BlockBuilder(String modId, String name, int id) {
+        this.modId = modId;
+        this.key = String.format("tile.%s.%s", modId, name.replace("_", "."));
+        this.namespaceId = String.format("%s:block/%s", modId, name);
+        this.id = id;
+    }
+
+    public BlockBuilder(String modId, String translationKey, String namespacedId, int id) {
+        this.modId = modId;
+        this.key = translationKey;
+        this.namespaceId = namespacedId;
+        this.id = id;
     }
 
     @Override
@@ -80,7 +92,7 @@ public final class BlockBuilder implements Cloneable {
     }
 
     /**
-     * Sets the texture on the side of the block model. Only applies if assigned block model extends {@link StandardBlockModel}
+     * Sets the texture on the side of the block model. Only applies if assigned block model extends {@link BlockModelStandard}
      * @param texture Texture key
      * @return Copy of the {@link BlockBuilder}
      */
@@ -92,7 +104,7 @@ public final class BlockBuilder implements Cloneable {
     }
 
     /**
-     * Sets the texture on the side of the block model. Only applies if assigned block model extends {@link StandardBlockModel}
+     * Sets the texture on the side of the block model. Only applies if assigned block model extends {@link BlockModelStandard}
      * @param texture Texture key
      * @return Copy of the {@link BlockBuilder}
      */
@@ -104,7 +116,7 @@ public final class BlockBuilder implements Cloneable {
     }
 
     /**
-     * Sets the texture on the side of the block model. Only applies if assigned block model extends {@link StandardBlockModel}
+     * Sets the texture on the side of the block model. Only applies if assigned block model extends {@link BlockModelStandard}
      * @param texture Texture key
      * @return Copy of the {@link BlockBuilder}
      */
@@ -116,7 +128,7 @@ public final class BlockBuilder implements Cloneable {
     }
 
     /**
-     * Sets the texture on the side of the block model. Only applies if assigned block model extends {@link StandardBlockModel}
+     * Sets the texture on the side of the block model. Only applies if assigned block model extends {@link BlockModelStandard}
      * @param texture Texture key
      * @return Copy of the {@link BlockBuilder}
      */
@@ -128,7 +140,7 @@ public final class BlockBuilder implements Cloneable {
     }
 
     /**
-     * Sets the texture on the side of the block model. Only applies if assigned block model extends {@link StandardBlockModel}
+     * Sets the texture on the side of the block model. Only applies if assigned block model extends {@link BlockModelStandard}
      * @param texture Texture key
      * @return Copy of the {@link BlockBuilder}
      */
@@ -140,7 +152,7 @@ public final class BlockBuilder implements Cloneable {
     }
 
     /**
-     * Sets the texture on the side of the block model. Only applies if assigned block model extends {@link StandardBlockModel}
+     * Sets the texture on the side of the block model. Only applies if assigned block model extends {@link BlockModelStandard}
      * @param texture Texture key
      * @return Copy of the {@link BlockBuilder}
      */
@@ -152,7 +164,7 @@ public final class BlockBuilder implements Cloneable {
     }
 
     /**
-     * Sets the texture on the side of the block model. Only applies if assigned block model extends {@link StandardBlockModel}
+     * Sets the texture on the side of the block model. Only applies if assigned block model extends {@link BlockModelStandard}
      * @param texture Texture key
      * @return Copy of the {@link BlockBuilder}
      */
@@ -169,7 +181,7 @@ public final class BlockBuilder implements Cloneable {
     }
 
     /**
-     * Sets the texture on the side of the block model. Only applies if assigned block model extends {@link StandardBlockModel}
+     * Sets the texture on the side of the block model. Only applies if assigned block model extends {@link BlockModelStandard}
      * @param texture Texture key
      * @return Copy of the {@link BlockBuilder}
      */
@@ -184,7 +196,7 @@ public final class BlockBuilder implements Cloneable {
     }
 
     /**
-     * Sets the texture on the side of the block model. Only applies if assigned block model extends {@link StandardBlockModel}
+     * Sets the texture on the side of the block model. Only applies if assigned block model extends {@link BlockModelStandard}
      * @param texture Texture key
      * @return Copy of the {@link BlockBuilder}
      */
@@ -197,7 +209,7 @@ public final class BlockBuilder implements Cloneable {
     }
 
     /**
-     * Sets the texture on the side of the block model. Only applies if assigned block model extends {@link StandardBlockModel}
+     * Sets the texture on the side of the block model. Only applies if assigned block model extends {@link BlockModelStandard}
      * @param texture Texture key
      * @return Copy of the {@link BlockBuilder}
      */
@@ -210,7 +222,7 @@ public final class BlockBuilder implements Cloneable {
     }
 
     /**
-     * Sets the texture on the side of the block model. Only applies if assigned block model extends {@link StandardBlockModel}
+     * Sets the texture on the side of the block model. Only applies if assigned block model extends {@link BlockModelStandard}
      * @param texture Texture key
      * @return Copy of the {@link BlockBuilder}
      */
@@ -223,7 +235,7 @@ public final class BlockBuilder implements Cloneable {
     }
 
     /**
-     * Sets the icon for the {@link Item}'s {@link ItemModel}, only works if the ItemModel used extends {@link StandardItemModel} and the {@link BlockModel} renders as 2D
+     * Sets the icon for the {@link Item}'s {@link ItemModel}, only works if the ItemModel used extends {@link ItemModelStandard} and the {@link BlockModel} renders as 2D
      * @param iconKey texture key for the icon for the item to use. Example "minecraft:item/stick"
      * @return @return Copy of {@link ItemBuilder}
      */
@@ -378,16 +390,6 @@ public final class BlockBuilder implements Cloneable {
     }
 
     /**
-     * Makes a block drop a different block than itself upon breaking.
-     */
-    @SuppressWarnings({"unused"})
-    public BlockBuilder setBlockDrop(Block droppedBlock) {
-        BlockBuilder blockBuilder = this.clone();
-        blockBuilder.blockDrop = droppedBlock;
-        return blockBuilder;
-    }
-
-    /**
      * Sets the block's sound when walking over and breaking it.<br>
      * Example code:
      * <pre>{@code
@@ -413,7 +415,7 @@ public final class BlockBuilder implements Cloneable {
      * }</pre>
      */
     @SuppressWarnings({"unused"})
-    public BlockBuilder setBlockColor(Function<Block, BlockColor> blockColorSupplier) {
+    public BlockBuilder setBlockColor(Function<Block<?>, BlockColor> blockColorSupplier) {
         BlockBuilder blockBuilder = this.clone();
         blockBuilder.blockColor = blockColorSupplier;
         return blockBuilder;
@@ -429,7 +431,7 @@ public final class BlockBuilder implements Cloneable {
      * }</pre>
      */
     @SuppressWarnings({"unused"})
-    public BlockBuilder setBlockModel(@NotNull Function<Block, BlockModel<?>> blockModelSupplier) {
+    public BlockBuilder setBlockModel(@NotNull Function<Block<?>, BlockModel<?>> blockModelSupplier) {
         BlockBuilder blockBuilder = this.clone();
         blockBuilder.blockModelSupplier = blockModelSupplier;
         return blockBuilder;
@@ -445,7 +447,7 @@ public final class BlockBuilder implements Cloneable {
      * }</pre>
      */
     @SuppressWarnings({"unused"})
-    public BlockBuilder setItemModel(@NotNull Function<BlockItem, ItemModel> itemModelSupplier) {
+    public BlockBuilder setItemModel(@NotNull Function<ItemBlock<?>, ItemModel> itemModelSupplier) {
         BlockBuilder blockBuilder = this.clone();
         blockBuilder.customItemModelSupplier = itemModelSupplier;
         return blockBuilder;
@@ -461,7 +463,7 @@ public final class BlockBuilder implements Cloneable {
      * }</pre>
      */
     @SuppressWarnings({"unused"})
-    public BlockBuilder setBlockItem(BlockLambda<BlockItem> customBlockItem) {
+    public BlockBuilder setBlockItem(BlockLambda<ItemBlock<?>> customBlockItem) {
         BlockBuilder blockBuilder = this.clone();
         blockBuilder.customBlockItem = customBlockItem;
         return blockBuilder;
@@ -472,7 +474,7 @@ public final class BlockBuilder implements Cloneable {
      */
     @SafeVarargs
     @SuppressWarnings({"unused"})
-    public final BlockBuilder setTags(Tag<Block>... tags) {
+    public final BlockBuilder setTags(Tag<Block<?>>... tags) {
         BlockBuilder blockBuilder = this.clone();
         blockBuilder.tags = tags;
         return blockBuilder;
@@ -483,7 +485,7 @@ public final class BlockBuilder implements Cloneable {
      */
     @SafeVarargs
     @SuppressWarnings({"unused"})
-    public final BlockBuilder addTags(Tag<Block>... tags) {
+    public final BlockBuilder addTags(Tag<Block<?>>... tags) {
         BlockBuilder blockBuilder = this.clone();
         blockBuilder.tags = ArrayUtils.addAll(this.tags, tags);
         return blockBuilder;
@@ -491,11 +493,13 @@ public final class BlockBuilder implements Cloneable {
 
     /**
      * Applies the builder configuration to the supplied block.
-     * @param block Input block object
+     * @param blockLogicSupplier Input block object
      * @return Returns the input block after builder settings are applied to it.
      */
     @SuppressWarnings({"unused"})
-    public <T extends Block> T build(T block) {
+    public <T extends BlockLogic> Block<T> build(BlockLogicSupplier<T> blockLogicSupplier) {
+        // TODO add tile entity supplier build arg
+        Block<T> block = Blocks.register(key, namespaceId, id, blockLogicSupplier);
         if (hardness != null) {
             block.withHardness(hardness);
         }
@@ -523,7 +527,7 @@ public final class BlockBuilder implements Cloneable {
         }
 
         if (flammability != null) {
-            FireBlock.setFlammable(block.id, flammability[0], flammability[1]);
+            BlockLogicFire.setFlammable(block, flammability[0], flammability[1]);
         }
 
         if (infiniburn) {
@@ -538,47 +542,40 @@ public final class BlockBuilder implements Cloneable {
             block.setTicking(tickOnLoad);
         }
 
-        if (blockDrop != null) {
-            block.setDropOverride(blockDrop.id);
-        }
-
         if (blockSound != null) {
             block.withSound(blockSound);
         }
 
         Assignment.queueBlockColor(block, blockColor);
 
-        BlockItem BlockItem;
-
-        if (customBlockItem != null) {
-            Item.itemsList[block.id] = BlockItem = customBlockItem.run(block);
-        } else {
-            Item.itemsList[block.id] = BlockItem = new BlockItem(block);
-        }
+        ItemBlock<?> BlockItem;
 
         if (tags != null) {
             block.withTags(tags);
         }
 
+        if (BlocksAccessor.hasInit()) {
+            block.init();
+
+            if (customBlockItem != null) {
+                Item.itemsList[block.id()] = BlockItem = customBlockItem.run(block);
+            } else {
+                Item.itemsList[block.id()] = BlockItem = new ItemBlock<>(block);
+            }
+
+            block.getLogic().initializeBlock();
+            BlocksAccessor.cacheBlock(block);
+        }
+
         Assignment.queueBlockModel(block, blockModelSupplier, textures);
-        ItemBuilder.Assignment.queueItemModel(BlockItem, customItemModelSupplier, itemIcon);
-
-        List<String> tokens = Arrays.stream(block.getKey().split("\\."))
-                .filter(token -> !token.equals(MOD_ID))
-                .collect(Collectors.toList());
-
-        List<String> newTokens = new ArrayList<>();
-        newTokens.add(MOD_ID);
-        newTokens.addAll(tokens.subList(1, tokens.size()));
-
-        block.setKey(StringUtils.join(newTokens, '.'));
+//        ItemBuilder.Assignment.queueItemModel(BlockItem, customItemModelSupplier, itemIcon); // TODO reimpl item model
 
         return block;
     }
     
     @FunctionalInterface
     public interface BlockLambda<T> {
-        T run(Block block);
+        T run(Block<?> block);
     }
     public static class Registry{
         public static int highestVanilla;
@@ -595,8 +592,8 @@ public final class BlockBuilder implements Cloneable {
          */
         public static int findOpenIds(int count) {
             int run = 0;
-            for (int i = highestVanilla; i < Block.blocksList.length; i++) {
-                if (Block.blocksList[i] == null && !reserves.isReserved(i)) {
+            for (int i = highestVanilla; i < Blocks.blocksList.length; i++) {
+                if (Blocks.blocksList[i] == null && !reserves.isReserved(i)) {
                     if (run >= count)
                         return (i - run);
                     run++;
@@ -609,8 +606,8 @@ public final class BlockBuilder implements Cloneable {
 
         public static int findLength(int id, int terminate) {
             int run = 0;
-            for (int i = id; i < Block.blocksList.length; i++) {
-                if (Block.blocksList[i] == null && !reserves.isReserved(i)) {
+            for (int i = id; i < Blocks.blocksList.length; i++) {
+                if (Blocks.blocksList[i] == null && !reserves.isReserved(i)) {
                     run++;
                     if (run >= terminate) return terminate;
                 } else {
@@ -671,11 +668,10 @@ public final class BlockBuilder implements Cloneable {
             public BlockModel<?> getModel(){
                 BlockModel<?> model = modelFunction.apply(block);
 
-                if (model instanceof StandardBlockModel && textures != null){
-                    IconCoordinate[] atlasIndices = ((StandardBlockModel<?>) model).atlasIndices;
-                    for (int i = 0; i < atlasIndices.length; i++) {
+                if (model instanceof BlockModelStandard && textures != null){
+                    for (int i = 0; i < textures.length; i++) {
                         if (textures[i] != null){
-                            atlasIndices[i] = TextureRegistry.getTexture(textures[i]);
+                            ((BlockModelStandard<?>) model).setTex(BlockModelStandard.BLOCK_TEXTURES, textures[i], Side.getSideById(i));
                         }
                     }
                 }
@@ -683,11 +679,11 @@ public final class BlockBuilder implements Cloneable {
             }
         }
         public static boolean blockColorDispatcherInitialized = false;
-        public static final Map<Block, Function<Block, BlockColor>> queuedBlockColors = new LinkedHashMap<>();
+        public static final Map<Block<?>, Function<Block<?>, BlockColor>> queuedBlockColors = new LinkedHashMap<>();
         /**
          *  Queues a BlockColor assignment until the game is ready to do so
          */
-        public static void queueBlockColor(@NotNull Block block, Function<Block, BlockColor> blockColorSupplier){
+        public static void queueBlockColor(@NotNull Block<?> block, Function<Block<?>, BlockColor> blockColorSupplier){
             if (!HalpLibe.isClient) return;
             if (blockColorSupplier == null) return;
 

@@ -2,7 +2,7 @@ package turniplabs.halplibe.helper;
 
 import net.minecraft.client.render.item.model.ItemModel;
 import net.minecraft.client.render.item.model.ItemModelDispatcher;
-import net.minecraft.client.render.item.model.StandardItemModel;
+import net.minecraft.client.render.item.model.ItemModelStandard;
 import net.minecraft.client.render.texture.stitcher.TextureRegistry;
 import net.minecraft.core.data.tag.Tag;
 import net.minecraft.core.item.Item;
@@ -36,7 +36,7 @@ public final class ItemBuilder implements Cloneable {
     private Function<Item, ItemModel> customItemModelSupplier;
     public ItemBuilder(String modId){
         this.modId = modId;
-        customItemModelSupplier = (item -> new StandardItemModel(item, null));
+        customItemModelSupplier = (item -> new ItemModelStandard(item, null));
     }
     @Override
     public ItemBuilder clone() {
@@ -60,7 +60,7 @@ public final class ItemBuilder implements Cloneable {
         return builder;
     }
     /**
-     * Sets the icon for the {@link Item}'s {@link ItemModel}, only works if the ItemModel used extends {@link StandardItemModel}
+     * Sets the icon for the {@link Item}'s {@link ItemModel}, only works if the ItemModel used extends {@link ItemModelStandard}
      * @param iconKey texture key for the icon for the item to use. Example "minecraft:item/stick"
      * @return @return Copy of {@link ItemBuilder}
      */
@@ -216,14 +216,14 @@ public final class ItemBuilder implements Cloneable {
             public ItemModel getModel(){
                 ItemModel model = modelFunction.apply(item);
 
-                if (model instanceof StandardItemModel && iconKey != null){
-                    ((StandardItemModel) model).icon = TextureRegistry.getTexture(iconKey);
+                if (model instanceof ItemModelStandard && iconKey != null){
+                    ((ItemModelStandard) model).icon = TextureRegistry.getTexture(iconKey);
                     return model;
                 }
-                if (model instanceof StandardItemModel && ((StandardItemModel) model).icon == StandardItemModel.ITEM_TEXTURE_UNASSIGNED){
+                if (model instanceof ItemModelStandard && ((ItemModelStandard) model).icon == ItemModelStandard.ITEM_TEXTURE_UNASSIGNED){
                     String namespace = item.getKey().split("\\.")[1];
                     // Unholy string fuckery
-                    ((StandardItemModel) model).icon = TextureRegistry.getTexture(String.format("%s:item/%s", namespace,
+                    ((ItemModelStandard) model).icon = TextureRegistry.getTexture(String.format("%s:item/%s", namespace,
                             item.getKey().replaceFirst("item." + namespace + ".", "").replace(".", "_")));
                     return model;
                 }
