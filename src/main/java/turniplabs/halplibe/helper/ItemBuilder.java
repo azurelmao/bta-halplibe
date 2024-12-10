@@ -182,7 +182,7 @@ public final class ItemBuilder implements Cloneable {
         newTokens.add(modId);
         newTokens.addAll(tokens.subList(1, tokens.size()));
 
-        Assignment.queueItemModel(item, customItemModelSupplier, textureKey);
+        Assignment.queueItemModel(item.id, customItemModelSupplier, textureKey);
 
         item.setKey(StringUtils.join(newTokens, "."));
 
@@ -195,25 +195,26 @@ public final class ItemBuilder implements Cloneable {
         /**
          *  Queues a ItemModel assignment until the game is ready to do so
          */
-        public static <T extends Item> void queueItemModel(@NotNull T item, @NotNull Function<T, ItemModel> itemModelSupplier, @Nullable String iconTexture){
+        public static <T extends Item> void queueItemModel(int id, @NotNull Function<T, ItemModel> itemModelSupplier, @Nullable String iconTexture){
             if (!HalpLibe.isClient) return;
             if (itemDispatcherInitialized){
-                ItemModelDispatcher.getInstance().addDispatch(new ItemAssignmentEntry<>(item, itemModelSupplier, iconTexture).getModel());
+                ItemModelDispatcher.getInstance().addDispatch(new ItemAssignmentEntry<>(id, itemModelSupplier, iconTexture).getModel());
                 return;
             }
-            queuedItemModels.add(new ItemAssignmentEntry<>(item, itemModelSupplier, iconTexture));
+            queuedItemModels.add(new ItemAssignmentEntry<>(id, itemModelSupplier, iconTexture));
         }
         public static class ItemAssignmentEntry<T extends Item>{
-            public final T item;
+            public final int itemId;
             public final Function<T, ItemModel> modelFunction;
             public final String iconKey;
 
-            public ItemAssignmentEntry(T item, Function<T, ItemModel> modelFunction, String iconKey){
-                this.item = item;
+            public ItemAssignmentEntry(int id, Function<T, ItemModel> modelFunction, String iconKey){
+                this.itemId = id;
                 this.modelFunction = modelFunction;
                 this.iconKey = iconKey;
             }
             public ItemModel getModel(){
+                T item = (T) Item.itemsList[itemId];
                 ItemModel model = modelFunction.apply(item);
 
                 if (model instanceof ItemModelStandard && iconKey != null){

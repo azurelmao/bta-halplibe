@@ -14,6 +14,7 @@ import net.minecraft.core.block.BlockLogic;
 import net.minecraft.core.block.BlockLogicFire;
 import net.minecraft.core.block.BlockLogicSupplier;
 import net.minecraft.core.block.Blocks;
+import net.minecraft.core.block.entity.TileEntity;
 import net.minecraft.core.block.tag.BlockTags;
 import net.minecraft.core.data.tag.Tag;
 import net.minecraft.core.item.Item;
@@ -24,6 +25,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import turniplabs.halplibe.HalpLibe;
+import turniplabs.halplibe.mixin.accessors.BlockAccessor;
 import turniplabs.halplibe.mixin.accessors.BlocksAccessor;
 import turniplabs.halplibe.util.registry.IdSupplier;
 import turniplabs.halplibe.util.registry.RunLengthConfig;
@@ -33,49 +35,35 @@ import turniplabs.halplibe.util.toml.Toml;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public final class BlockBuilder implements Cloneable {
 
-    private final String modId;
-    private final String key;
-    private final String namespaceId;
-    private final int id;
-    private Float hardness = null;
-    private Float resistance = null;
-    private Integer luminance = null;
-    private Integer lightOpacity = null;
-    private Float slipperiness = null;
+    private final @NotNull String modId;
+    private @Nullable Float hardness = null;
+    private @Nullable Float resistance = null;
+    private @Nullable Integer luminance = null;
+    private @Nullable Integer lightOpacity = null;
+    private @Nullable Float slipperiness = null;
     private boolean immovable = false;
     private boolean useInternalLight = false;
     private boolean visualUpdateOnMetadata = false;
-    private Boolean tickOnLoad = null;
+    private @Nullable Boolean tickOnLoad = null;
     private boolean infiniburn = false;
-    private int[] flammability = null;
-    private BlockSound blockSound = null;
-    private Function<Block<?>, BlockColor> blockColor = null;
-    @NotNull
-    private Function<Block<?>, BlockModel<?>> blockModelSupplier = BlockModelStandard::new;
-    @NotNull
-    private Function<ItemBlock<?>, ItemModel> customItemModelSupplier = ItemModelBlock::new;
-    private BlockLambda<ItemBlock<?>> customBlockItem = null;
-    private Tag<Block<?>>[] tags = null;
-    @NotNull
-    private String[] textures = new String[6];
-    @Nullable
-    private String itemIcon = null;
+    private int @Nullable [] flammability = null;
+    private @Nullable BlockSound blockSound = null;
+    private @Nullable Function<Block<?>, BlockColor> blockColor = null;
+    private @NotNull Function<Block<?>, BlockModel<?>> blockModelSupplier = BlockModelStandard::new;
+    private @NotNull Function<ItemBlock<?>, ItemModel> customItemModelSupplier = ItemModelBlock::new;
+    private @Nullable BlockLambda<ItemBlock<?>> customBlockItem = null;
+    private @Nullable Tag<Block<?>>[] tags = null;
+    private String @NotNull [] textures = new String[6];
+    private @Nullable String itemIcon = null;
+    private @Nullable Supplier<TileEntity> entitySupplier = null;
 
-    public BlockBuilder(String modId, String name, int id) {
-        this.modId = modId;
-        this.key = String.format("tile.%s.%s", modId, name.replace("_", "."));
-        this.namespaceId = String.format("%s:block/%s", modId, name);
-        this.id = id;
-    }
 
-    public BlockBuilder(String modId, String translationKey, String namespacedId, int id) {
+    public BlockBuilder(@NotNull String modId) {
         this.modId = modId;
-        this.key = translationKey;
-        this.namespaceId = namespacedId;
-        this.id = id;
     }
 
     @Override
@@ -231,6 +219,18 @@ public final class BlockBuilder implements Cloneable {
         BlockBuilder builder = clone();
         builder.textures[Side.WEST.getId()] = texture;
         builder.textures[Side.EAST.getId()] = texture;
+        return builder;
+    }
+
+    /**
+     * Sets the block to be a TileEntity Block which creates the provided tile entities on placement
+     * @param tileEntitySupplier supplier of TileEntity instances for the block to create when placed
+     * @return @return Copy of {@link ItemBuilder}
+     */
+    @SuppressWarnings("unused")
+    public BlockBuilder setTileEntity(@Nullable Supplier<TileEntity> tileEntitySupplier) {
+        BlockBuilder builder = clone();
+        builder.entitySupplier = tileEntitySupplier;
         return builder;
     }
 
@@ -492,14 +492,28 @@ public final class BlockBuilder implements Cloneable {
     }
 
     /**
-     * Applies the builder configuration to the supplied block.
-     * @param blockLogicSupplier Input block object
-     * @return Returns the input block after builder settings are applied to it.
+     * Generates a block with the specified configuration
+     * @param name Underscore separated name (eg `waxed_lightly_weathered_cut_copper_stairs`)
+     * @param numericId Numeric id of the block must be in the range [0, 16383]
+     * @param blockLogicSupplier {@link BlockLogic} that will be assigned to the Block on creation
+     * @return Returns the {@link Block} after registration and configuration
      */
     @SuppressWarnings({"unused"})
-    public <T extends BlockLogic> Block<T> build(BlockLogicSupplier<T> blockLogicSupplier) {
-        // TODO add tile entity supplier build arg
-        Block<T> block = Blocks.register(key, namespaceId, id, blockLogicSupplier);
+    public <T extends BlockLogic> Block<T> build(String name, int numericId, BlockLogicSupplier<T> blockLogicSupplier) {
+        return build(name.replace("_", "."), name, numericId, blockLogicSupplier);
+    }
+
+    /**
+     * Generates a block with the specified configuration
+     * @param translationKey Dot separated identifier to use for translation (eg `cracked.polished.blackstone.bricks`)
+     * @param name Underscore separated name (eg `waxed_lightly_weathered_cut_copper_stairs`)
+     * @param numericId Numeric id of the block must be in the range [0, 16383]
+     * @param blockLogicSupplier {@link BlockLogic} that will be assigned to the Block on creation
+     * @return Returns the {@link Block} after registration and configuration
+     */
+    @SuppressWarnings({"unused"})
+    public <T extends BlockLogic> Block<T> build(String translationKey, String name, int numericId, BlockLogicSupplier<T> blockLogicSupplier) {
+        Block<T> block = Blocks.register(String.format("%s.%s", modId, translationKey), String.format("%s:block/%s", modId, name), numericId, blockLogicSupplier);
         if (hardness != null) {
             block.withHardness(hardness);
         }
@@ -546,29 +560,36 @@ public final class BlockBuilder implements Cloneable {
             block.withSound(blockSound);
         }
 
-        Assignment.queueBlockColor(block, blockColor);
+        if (entitySupplier != null) {
+            block.withEntity(entitySupplier);
+        }
 
-        ItemBlock<?> BlockItem;
+        Assignment.queueBlockColor(block, blockColor);
 
         if (tags != null) {
             block.withTags(tags);
         }
 
+        if (customBlockItem != null) {
+            block.setBlockItem(() -> customBlockItem.run(block));
+        }
+
         if (BlocksAccessor.hasInit()) {
             block.init();
 
-            if (customBlockItem != null) {
-                Item.itemsList[block.id()] = BlockItem = customBlockItem.run(block);
-            } else {
-                Item.itemsList[block.id()] = BlockItem = new ItemBlock<>(block);
+            Item item = block.blockItemSupplier.get();
+            if (((BlockAccessor)(Object)block).getStatParent() != null) {
+                item.setStatParent(((BlockAccessor)(Object)block).getStatParent());
             }
+            Item.itemsList[item.id] = item;
+
 
             block.getLogic().initializeBlock();
             BlocksAccessor.cacheBlock(block);
         }
 
         Assignment.queueBlockModel(block, blockModelSupplier, textures);
-//        ItemBuilder.Assignment.queueItemModel(BlockItem, customItemModelSupplier, itemIcon); // TODO reimpl item model
+        ItemBuilder.Assignment.queueItemModel(block.id(), customItemModelSupplier, itemIcon); // TODO reimpl item model
 
         return block;
     }
@@ -644,7 +665,7 @@ public final class BlockBuilder implements Cloneable {
         /**
          *  Queues a BlockModel assignment until the game is ready to do so
          */
-        public static <T extends Block> void queueBlockModel(@NotNull T block, Function<T, BlockModel<?>> blockModelSupplier, @Nullable String[] textures){
+        public static <T extends Block<?>> void queueBlockModel(@NotNull T block, Function<T, BlockModel<?>> blockModelSupplier, @Nullable String[] textures){
             if (!HalpLibe.isClient) return;
             if (blockModelSupplier == null) return;
 
@@ -655,7 +676,7 @@ public final class BlockBuilder implements Cloneable {
             queuedBlockModels.add(new BlockAssignmentEntry<>(block, blockModelSupplier, textures));
         }
 
-        public static class BlockAssignmentEntry<T extends Block>{
+        public static class BlockAssignmentEntry<T extends Block<?>>{
             public final T block;
             public final Function<T, BlockModel<?>> modelFunction;
             public final String[] textures;
