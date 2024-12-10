@@ -14,7 +14,12 @@
     "accessors.RenderManagerAccessor"
   ],
   "client": [
-    "accessors.TileEntityRendererAccessor"
+    "accessors.TileEntityRendererAccessor",
+    "models.BlockColorDispatcherMixin",
+    "models.BlockModelDispatcherMixin",
+    "models.EntityRenderDispatcherMixin",
+    "models.ItemModelDispatcherMixin",
+    "models.TileEntityRendererDispatcherMixin"
   ],
   "server": [
   ],

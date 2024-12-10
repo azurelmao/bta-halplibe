@@ -39,9 +39,6 @@ import java.util.function.Supplier;
 public final class BlockBuilder implements Cloneable {
 
     private final @NotNull String modId;
-    private final @NotNull String key;
-    private final @NotNull String namespaceId;
-    private final int id;
     private @Nullable Float hardness = null;
     private @Nullable Float resistance = null;
     private @Nullable Integer luminance = null;
@@ -63,18 +60,9 @@ public final class BlockBuilder implements Cloneable {
     private @Nullable String itemIcon = null;
     private @Nullable Supplier<TileEntity> entitySupplier = null;
 
-    public BlockBuilder(@NotNull String modId, @NotNull String name, int id) {
-        this.modId = modId;
-        this.key = String.format("tile.%s.%s", modId, name.replace("_", "."));
-        this.namespaceId = String.format("%s:block/%s", modId, name);
-        this.id = id;
-    }
 
-    public BlockBuilder(@NotNull String modId, @NotNull String translationKey, @NotNull String namespacedId, int id) {
+    public BlockBuilder(@NotNull String modId) {
         this.modId = modId;
-        this.key = translationKey;
-        this.namespaceId = namespacedId;
-        this.id = id;
     }
 
     @Override
@@ -503,14 +491,28 @@ public final class BlockBuilder implements Cloneable {
     }
 
     /**
-     * Applies the builder configuration to the supplied block.
-     * @param blockLogicSupplier Input block object
-     * @return Returns the input block after builder settings are applied to it.
+     * Generates a block with the specified configuration
+     * @param name Underscore separated name (eg `waxed_lightly_weathered_cut_copper_stairs`)
+     * @param numericId Numeric id of the block must be in the range [0, 16383]
+     * @param blockLogicSupplier {@link BlockLogic} that will be assigned to the Block on creation
+     * @return Returns the {@link Block} after registration and configuration
      */
     @SuppressWarnings({"unused"})
-    public <T extends BlockLogic> Block<T> build(BlockLogicSupplier<T> blockLogicSupplier) {
-        // TODO add tile entity supplier build arg
-        Block<T> block = Blocks.register(key, namespaceId, id, blockLogicSupplier);
+    public <T extends BlockLogic> Block<T> build(String name, int numericId, BlockLogicSupplier<T> blockLogicSupplier) {
+        return build(name.replace("_", "."), name, numericId, blockLogicSupplier);
+    }
+
+    /**
+     * Generates a block with the specified configuration
+     * @param translationKey Dot separated identifier to use for translation (eg `cracked.polished.blackstone.bricks`)
+     * @param name Underscore separated name (eg `waxed_lightly_weathered_cut_copper_stairs`)
+     * @param numericId Numeric id of the block must be in the range [0, 16383]
+     * @param blockLogicSupplier {@link BlockLogic} that will be assigned to the Block on creation
+     * @return Returns the {@link Block} after registration and configuration
+     */
+    @SuppressWarnings({"unused"})
+    public <T extends BlockLogic> Block<T> build(String translationKey, String name, int numericId, BlockLogicSupplier<T> blockLogicSupplier) {
+        Block<T> block = Blocks.register(String.format("%s.%s", modId, translationKey), String.format("%s:block/%s", modId, name), numericId, blockLogicSupplier);
         if (hardness != null) {
             block.withHardness(hardness);
         }
@@ -581,7 +583,7 @@ public final class BlockBuilder implements Cloneable {
         }
 
         Assignment.queueBlockModel(block, blockModelSupplier, textures);
-        ItemBuilder.Assignment.queueItemModel(id, customItemModelSupplier, itemIcon); // TODO reimpl item model
+        ItemBuilder.Assignment.queueItemModel(block.id(), customItemModelSupplier, itemIcon); // TODO reimpl item model
 
         return block;
     }

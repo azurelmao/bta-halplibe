@@ -93,7 +93,7 @@ public final class EntityHelper {
             }
             queuedEntityRenderer.put(clazz, rendererSupplier);
         }
-        public static boolean TileEntityRendererDispatcherInitialized = false;
+        public static boolean tileEntityRendererDispatcherInitialized = false;
         public static final Map<Class<? extends TileEntity> , Supplier<TileEntityRenderer<?>>> queuedTileEntityRenderer = new LinkedHashMap<>();
         /**
          *  Queues a TileEntityRenderer assignment until the game is ready to do so
@@ -102,7 +102,7 @@ public final class EntityHelper {
             if (!HalpLibe.isClient) return;
             Objects.requireNonNull(rendererSupplier, "Renderer Supplier must not be null!");
 
-            if (TileEntityRendererDispatcherInitialized){
+            if (tileEntityRendererDispatcherInitialized){
                 Map<Class<? extends TileEntity>, TileEntityRenderer<?>> specialRendererMap = ((TileEntityRendererAccessor) BlockEntityRenderDispatcher.instance).getSpecialRendererMap();
                 TileEntityRenderer<?> renderer = rendererSupplier.get();
                 specialRendererMap.put(clazz, renderer);
