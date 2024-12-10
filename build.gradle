@@ -1,6 +1,7 @@
 plugins {
 	id 'fabric-loom' version '1.7.bta'
 	id 'java'
+	id 'maven-publish'
 }
 
 import org.gradle.internal.os.OperatingSystem
@@ -42,6 +43,18 @@ repositories {
 		name = 'signalumMaven'
 		url = 'https://maven.thesignalumproject.net/infrastructure'
 	}
+	maven {
+		name = 'signalumMaven'
+		url = 'https://maven.thesignalumproject.net/releases'
+	}
+	ivy {
+		url = "https://github.com/Better-than-Adventure"
+		patternLayout {
+			artifact "[organisation]/releases/download/v[revision]/[module].jar"
+			m2compatible = true
+		}
+		metadataSources { artifact() }
+	}
 	ivy {
 		url = "https://downloads.betterthanadventure.net/bta-client/${project.bta_channel}/"
 		patternLayout {
@@ -80,7 +93,7 @@ dependencies {
 	// If you do not need Halplibe you can comment this line out or delete this line
 	//implementation("turniplabs:halplibe:${project.halplibe_version}")
 
-//	modImplementation("turniplabs:modmenu-bta:${project.mod_menu_version}")
+	modImplementation("turniplabs:modmenu-bta:${project.mod_menu_version}")
 
 	implementation "org.slf4j:slf4j-api:1.8.0-beta4"
 	implementation "org.apache.logging.log4j:log4j-slf4j18-impl:2.16.0"
@@ -140,24 +153,24 @@ processResources {
 	}
 }
 
-//publishing {
-//	repositories {
-//		maven {
-//			name = "signalumMaven"
-//			url = "https://maven.thesignalumproject.net/releases"
-//			credentials(PasswordCredentials)
-//			authentication {
-//				basic(BasicAuthentication)
-//			}
-//		}
-//	}
-//
-//	publications {
-//		maven(MavenPublication) {
-//			groupId = project.mod_group
-//			artifactId = project.mod_name
-//			version = project.mod_version
-//			from components.java
-//		}
-//	}
-//}
+publishing {
+	repositories {
+		maven {
+			name = "signalumMaven"
+			url = "https://maven.thesignalumproject.net/releases"
+			credentials(PasswordCredentials)
+			authentication {
+				basic(BasicAuthentication)
+			}
+		}
+	}
+
+	publications {
+		maven(MavenPublication) {
+			groupId = project.mod_group
+			artifactId = project.mod_name
+			version = project.mod_version
+			from components.java
+		}
+	}
+}
