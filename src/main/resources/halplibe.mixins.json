@@ -12,7 +12,9 @@
     "accessors.EntityFireflyFXAccessor",
     "accessors.EntityFXAccessor",
     "accessors.LanguageAccessor",
-    "accessors.RenderManagerAccessor"
+    "accessors.RenderManagerAccessor",
+    "accessors.WeightedRandomBagAccessor",
+    "accessors.WeightedRandomBagEntryAccessor"
   ],
   "client": [
     "accessors.TileEntityRendererAccessor",
