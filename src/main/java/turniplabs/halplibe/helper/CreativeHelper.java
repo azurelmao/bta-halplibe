@@ -48,7 +48,7 @@ public final class CreativeHelper {
      */
     @SuppressWarnings("unused")
     public static void setParent(IItemConvertible itemToAdd, int metaToAdd, IItemConvertible itemParent, int metaParent){
-        setParent(new ItemStack(itemToAdd, 1, metaToAdd), new ItemStack(itemParent, metaParent));
+        setParent(new ItemStack(itemToAdd, 1, metaToAdd), new ItemStack(itemParent, 1, metaParent));
     }
     /**
      * @param itemToAdd The itemstack to be added to the creative inventory list
