@@ -3,11 +3,11 @@ package turniplabs.halplibe.util;
 import net.minecraft.core.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class CreativeEntry implements Comparable<CreativeEntry> {
-    public static final HashMap<String, CreativeEntry> priorityEntryMap = new HashMap<>();
-    public static final HashMap<String, CreativeEntry> childEntryMap = new HashMap<>();
+    public static final LinkedHashMap<String, CreativeEntry> priorityEntryMap = new LinkedHashMap<>();
+    public static final LinkedHashMap<String, CreativeEntry> childEntryMap = new LinkedHashMap<>();
     public static void addEntry(CreativeEntry entry){
         String key = entry.stackToAdd.toString();
         if (entry.parentStack != null){
