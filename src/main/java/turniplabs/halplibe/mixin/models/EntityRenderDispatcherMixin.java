@@ -1,5 +1,6 @@
 package turniplabs.halplibe.mixin.models;
 
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.render.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.core.entity.Entity;
@@ -10,6 +11,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import turniplabs.halplibe.helper.EntityHelper;
+import turniplabs.halplibe.helper.ModelHelper;
+import turniplabs.halplibe.util.ModelEntrypoint;
 
 import java.util.Map;
 import java.util.Set;
@@ -21,16 +24,7 @@ public abstract class EntityRenderDispatcherMixin {
 
     @Inject(method = "<init>()V", at = @At("TAIL"))
     private void addQueuedModels(CallbackInfo ci){
-        Set<Map.Entry<Class<? extends Entity> , Supplier<EntityRenderer<?>>>> entries = EntityHelper.Assignment.queuedEntityRenderer.entrySet();
-        for (Map.Entry<Class<? extends Entity> , Supplier<EntityRenderer<?>>> entry : entries){
-            try {
-                EntityRenderer<?> renderer = entry.getValue().get();
-                renderers.put(entry.getKey(), renderer);
-                renderer.init((EntityRenderDispatcher) (Object)this);
-            } catch (Exception e){
-                throw new RuntimeException("Exception Occurred when applying " + entry.getKey().getSimpleName(), e);
-            }
-        }
-        EntityHelper.Assignment.entityRendererDispatcherInitialized = true;
+        ModelHelper.entityRenderers = renderers;
+        FabricLoader.getInstance().getEntrypoints("initModels", ModelEntrypoint.class).forEach(ModelEntrypoint::initEntityModels);
     }
 }

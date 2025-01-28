@@ -13,12 +13,10 @@
     "accessors.EntityFireflyFXAccessor",
     "accessors.EntityFXAccessor",
     "accessors.LanguageAccessor",
-    "accessors.RenderManagerAccessor",
     "accessors.WeightedRandomBagAccessor",
     "accessors.WeightedRandomBagEntryAccessor"
   ],
   "client": [
-    "accessors.TileEntityRendererAccessor",
     "models.BlockColorDispatcherMixin",
     "models.BlockModelDispatcherMixin",
     "models.EntityRenderDispatcherMixin",

@@ -1,22 +1,15 @@
 package turniplabs.halplibe.helper;
 
-import net.minecraft.client.render.item.model.ItemModel;
-import net.minecraft.client.render.item.model.ItemModelDispatcher;
-import net.minecraft.client.render.item.model.ItemModelStandard;
-import net.minecraft.client.render.texture.stitcher.TextureRegistry;
 import net.minecraft.core.data.tag.Tag;
 import net.minecraft.core.item.Item;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import turniplabs.halplibe.HalpLibe;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -32,11 +25,8 @@ public final class ItemBuilder implements Cloneable {
     private Integer maxDamage = null;
     @Nullable
     private Supplier<Item> containerItemSupplier = null;
-    @NotNull
-    private Function<Item, ItemModel> customItemModelSupplier;
     public ItemBuilder(String modId){
         this.modId = modId;
-        customItemModelSupplier = (item -> new ItemModelStandard(item, null));
     }
     @Override
     public ItemBuilder clone() {
@@ -46,29 +36,6 @@ public final class ItemBuilder implements Cloneable {
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();
         }
-    }
-
-    /**
-     * Sets the ItemModel to be assigned to the {@link Item} built.
-     * @param modelSupplier Provides the {@link Item} built in {@link #build(Item)} to a lambda that returns an {@link ItemModel}
-     * @return @return Copy of {@link ItemBuilder}
-     */
-    @SuppressWarnings({"unused"})
-    public ItemBuilder setItemModel(Function<Item, ItemModel> modelSupplier){
-        ItemBuilder builder = this.clone();
-        builder.customItemModelSupplier = modelSupplier;
-        return builder;
-    }
-    /**
-     * Sets the icon for the {@link Item}'s {@link ItemModel}, only works if the ItemModel used extends {@link ItemModelStandard}
-     * @param iconKey texture key for the icon for the item to use. Example "minecraft:item/stick"
-     * @return @return Copy of {@link ItemBuilder}
-     */
-    @SuppressWarnings("unused")
-    public ItemBuilder setIcon(String iconKey){
-        ItemBuilder builder = clone();
-        builder.textureKey = iconKey;
-        return builder;
     }
 
     /**
@@ -182,54 +149,9 @@ public final class ItemBuilder implements Cloneable {
         newTokens.add(modId);
         newTokens.addAll(tokens.subList(1, tokens.size()));
 
-        Assignment.queueItemModel(item.id, customItemModelSupplier, textureKey);
-
         item.setKey(StringUtils.join(newTokens, "."));
 
         return item;
     }
 
-    public static class Assignment{
-        public static boolean itemDispatcherInitialized = false;
-        public static final List<ItemAssignmentEntry<?>> queuedItemModels = new ArrayList<>();
-        /**
-         *  Queues a ItemModel assignment until the game is ready to do so
-         */
-        public static <T extends Item> void queueItemModel(int id, @NotNull Function<T, ItemModel> itemModelSupplier, @Nullable String iconTexture){
-            if (!HalpLibe.isClient) return;
-            if (itemDispatcherInitialized){
-                ItemModelDispatcher.getInstance().addDispatch(new ItemAssignmentEntry<>(id, itemModelSupplier, iconTexture).getModel());
-                return;
-            }
-            queuedItemModels.add(new ItemAssignmentEntry<>(id, itemModelSupplier, iconTexture));
-        }
-        public static class ItemAssignmentEntry<T extends Item>{
-            public final int itemId;
-            public final Function<T, ItemModel> modelFunction;
-            public final String iconKey;
-
-            public ItemAssignmentEntry(int id, Function<T, ItemModel> modelFunction, String iconKey){
-                this.itemId = id;
-                this.modelFunction = modelFunction;
-                this.iconKey = iconKey;
-            }
-            public ItemModel getModel(){
-                T item = (T) Item.itemsList[itemId];
-                ItemModel model = modelFunction.apply(item);
-
-                if (model instanceof ItemModelStandard && iconKey != null){
-                    ((ItemModelStandard) model).icon = TextureRegistry.getTexture(iconKey);
-                    return model;
-                }
-                if (model instanceof ItemModelStandard && ((ItemModelStandard) model).icon == ItemModelStandard.ITEM_TEXTURE_UNASSIGNED){
-                    String namespace = item.getKey().split("\\.")[1];
-                    // Unholy string fuckery
-                    ((ItemModelStandard) model).icon = TextureRegistry.getTexture(String.format("%s:item/%s", namespace,
-                            item.getKey().replaceFirst("item." + namespace + ".", "").replace(".", "_")));
-                    return model;
-                }
-                return model;
-            }
-        }
-    }
 }

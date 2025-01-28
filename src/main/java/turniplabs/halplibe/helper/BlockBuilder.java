@@ -1,12 +1,5 @@
 package turniplabs.halplibe.helper;
 
-import net.minecraft.client.render.block.color.BlockColor;
-import net.minecraft.client.render.block.color.BlockColorDispatcher;
-import net.minecraft.client.render.block.model.BlockModel;
-import net.minecraft.client.render.block.model.BlockModelDispatcher;
-import net.minecraft.client.render.block.model.BlockModelStandard;
-import net.minecraft.client.render.item.model.ItemModel;
-
 import net.minecraft.client.render.item.model.ItemModelBlock;
 import net.minecraft.client.render.item.model.ItemModelStandard;
 import net.minecraft.core.block.Block;
@@ -52,9 +45,6 @@ public final class BlockBuilder implements Cloneable {
     private boolean infiniburn = false;
     private int @Nullable [] flammability = null;
     private @Nullable BlockSound blockSound = null;
-    private @Nullable Function<Block<?>, BlockColor> blockColor = null;
-    private @NotNull Function<Block<?>, BlockModel<?>> blockModelSupplier = BlockModelStandard::new;
-    private @NotNull Function<ItemBlock<?>, ItemModel> customItemModelSupplier = ItemModelBlock::new;
     private @Nullable BlockLambda<ItemBlock<?>> customBlockItem = null;
     private @Nullable Tag<Block<?>>[] tags = null;
     private String @NotNull [] textures = new String[6];
@@ -80,149 +70,6 @@ public final class BlockBuilder implements Cloneable {
     }
 
     /**
-     * Sets the texture on the side of the block model. Only applies if assigned block model extends {@link BlockModelStandard}
-     * @param texture Texture key
-     * @return Copy of the {@link BlockBuilder}
-     */
-    @SuppressWarnings("unused")
-    public BlockBuilder setTopTexture(String texture){
-        BlockBuilder builder = clone();
-        builder.textures[Side.TOP.getId()] = texture;
-        return builder;
-    }
-
-    /**
-     * Sets the texture on the side of the block model. Only applies if assigned block model extends {@link BlockModelStandard}
-     * @param texture Texture key
-     * @return Copy of the {@link BlockBuilder}
-     */
-    @SuppressWarnings("unused")
-    public BlockBuilder setBottomTexture(String texture){
-        BlockBuilder builder = clone();
-        builder.textures[Side.BOTTOM.getId()] = texture;
-        return builder;
-    }
-
-    /**
-     * Sets the texture on the side of the block model. Only applies if assigned block model extends {@link BlockModelStandard}
-     * @param texture Texture key
-     * @return Copy of the {@link BlockBuilder}
-     */
-    @SuppressWarnings("unused")
-    public BlockBuilder setNorthTexture(String texture){
-        BlockBuilder builder = clone();
-        builder.textures[Side.NORTH.getId()] = texture;
-        return builder;
-    }
-
-    /**
-     * Sets the texture on the side of the block model. Only applies if assigned block model extends {@link BlockModelStandard}
-     * @param texture Texture key
-     * @return Copy of the {@link BlockBuilder}
-     */
-    @SuppressWarnings("unused")
-    public BlockBuilder setSouthTexture(String texture){
-        BlockBuilder builder = clone();
-        builder.textures[Side.SOUTH.getId()] = texture;
-        return builder;
-    }
-
-    /**
-     * Sets the texture on the side of the block model. Only applies if assigned block model extends {@link BlockModelStandard}
-     * @param texture Texture key
-     * @return Copy of the {@link BlockBuilder}
-     */
-    @SuppressWarnings("unused")
-    public BlockBuilder setWestTexture(String texture){
-        BlockBuilder builder = clone();
-        builder.textures[Side.WEST.getId()] = texture;
-        return builder;
-    }
-
-    /**
-     * Sets the texture on the side of the block model. Only applies if assigned block model extends {@link BlockModelStandard}
-     * @param texture Texture key
-     * @return Copy of the {@link BlockBuilder}
-     */
-    @SuppressWarnings("unused")
-    public BlockBuilder setEastTexture(String texture){
-        BlockBuilder builder = clone();
-        builder.textures[Side.EAST.getId()] = texture;
-        return builder;
-    }
-
-    /**
-     * Sets the texture on the side of the block model. Only applies if assigned block model extends {@link BlockModelStandard}
-     * @param texture Texture key
-     * @return Copy of the {@link BlockBuilder}
-     */
-    @SuppressWarnings("unused")
-    public BlockBuilder setTextures(String texture){
-        BlockBuilder builder = clone();
-        builder.textures[Side.TOP.getId()] = texture;
-        builder.textures[Side.BOTTOM.getId()] = texture;
-        builder.textures[Side.NORTH.getId()] = texture;
-        builder.textures[Side.SOUTH.getId()] = texture;
-        builder.textures[Side.WEST.getId()] = texture;
-        builder.textures[Side.EAST.getId()] = texture;
-        return builder;
-    }
-
-    /**
-     * Sets the texture on the side of the block model. Only applies if assigned block model extends {@link BlockModelStandard}
-     * @param texture Texture key
-     * @return Copy of the {@link BlockBuilder}
-     */
-    @SuppressWarnings("unused")
-    public BlockBuilder setSideTextures(String texture){
-        BlockBuilder builder = clone();
-        builder.textures[Side.NORTH.getId()] = texture;
-        builder.textures[Side.SOUTH.getId()] = texture;
-        builder.textures[Side.WEST.getId()] = texture;
-        builder.textures[Side.EAST.getId()] = texture;
-        return builder;
-    }
-
-    /**
-     * Sets the texture on the side of the block model. Only applies if assigned block model extends {@link BlockModelStandard}
-     * @param texture Texture key
-     * @return Copy of the {@link BlockBuilder}
-     */
-    @SuppressWarnings("unused")
-    public BlockBuilder setTopBottomTextures(String texture){
-        BlockBuilder builder = clone();
-        builder.textures[Side.TOP.getId()] = texture;
-        builder.textures[Side.BOTTOM.getId()] = texture;
-        return builder;
-    }
-
-    /**
-     * Sets the texture on the side of the block model. Only applies if assigned block model extends {@link BlockModelStandard}
-     * @param texture Texture key
-     * @return Copy of the {@link BlockBuilder}
-     */
-    @SuppressWarnings("unused")
-    public BlockBuilder setNorthSouthTextures(String texture){
-        BlockBuilder builder = clone();
-        builder.textures[Side.NORTH.getId()] = texture;
-        builder.textures[Side.SOUTH.getId()] = texture;
-        return builder;
-    }
-
-    /**
-     * Sets the texture on the side of the block model. Only applies if assigned block model extends {@link BlockModelStandard}
-     * @param texture Texture key
-     * @return Copy of the {@link BlockBuilder}
-     */
-    @SuppressWarnings("unused")
-    public BlockBuilder setEastWestTextures(String texture){
-        BlockBuilder builder = clone();
-        builder.textures[Side.WEST.getId()] = texture;
-        builder.textures[Side.EAST.getId()] = texture;
-        return builder;
-    }
-
-    /**
      * Sets the block to be a TileEntity Block which creates the provided tile entities on placement
      * @param tileEntitySupplier supplier of TileEntity instances for the block to create when placed
      * @return @return Copy of {@link ItemBuilder}
@@ -231,18 +78,6 @@ public final class BlockBuilder implements Cloneable {
     public BlockBuilder setTileEntity(@Nullable Supplier<TileEntity> tileEntitySupplier) {
         BlockBuilder builder = clone();
         builder.entitySupplier = tileEntitySupplier;
-        return builder;
-    }
-
-    /**
-     * Sets the icon for the {@link Item}'s {@link ItemModel}, only works if the ItemModel used extends {@link ItemModelStandard} and the {@link BlockModel} renders as 2D
-     * @param iconKey texture key for the icon for the item to use. Example "minecraft:item/stick"
-     * @return @return Copy of {@link ItemBuilder}
-     */
-    @SuppressWarnings("unused")
-    public BlockBuilder setIcon(String iconKey){
-        BlockBuilder builder = clone();
-        builder.itemIcon = iconKey;
         return builder;
     }
 
@@ -406,54 +241,6 @@ public final class BlockBuilder implements Cloneable {
     }
 
     /**
-     * Makes the block's textures be colorized according to the provided BlockColor.<br>
-     * Example code:
-     * <pre>{@code
-     *     public static final Block customGrassBlock = new BlockBuilder(MOD_ID)
-     *          .setBlockColor(new BlockColorGrass())
-     *          .build(new BlockGrass("custom.grass.block", 4001, Material.grass));
-     * }</pre>
-     */
-    @SuppressWarnings({"unused"})
-    public BlockBuilder setBlockColor(Function<Block<?>, BlockColor> blockColorSupplier) {
-        BlockBuilder blockBuilder = this.clone();
-        blockBuilder.blockColor = blockColorSupplier;
-        return blockBuilder;
-    }
-
-    /**
-     * Sets the block's visible model.<br>
-     * Example code:
-     * <pre>{@code
-     *     public static final Block customFlower = new BlockBuilder(MOD_ID)
-     *          .setBlockModel(block -> new BlockModelCrossedSquares<>(block)))
-     *          .build(new BlockFlower("custom.flower", 4002);
-     * }</pre>
-     */
-    @SuppressWarnings({"unused"})
-    public BlockBuilder setBlockModel(@NotNull Function<Block<?>, BlockModel<?>> blockModelSupplier) {
-        BlockBuilder blockBuilder = this.clone();
-        blockBuilder.blockModelSupplier = blockModelSupplier;
-        return blockBuilder;
-    }
-
-    /**
-     * Sets the item form of the block's visible model.<br>
-     * Example code:
-     * <pre>{@code
-     *     public static final Block customFlower = new BlockBuilder(MOD_ID)
-     *          .setItemModel(block -> new ItemModelBlock(block, MOD_ID)))
-     *          .build(new BlockFlower("custom.flower", 4002);
-     * }</pre>
-     */
-    @SuppressWarnings({"unused"})
-    public BlockBuilder setItemModel(@NotNull Function<ItemBlock<?>, ItemModel> itemModelSupplier) {
-        BlockBuilder blockBuilder = this.clone();
-        blockBuilder.customItemModelSupplier = itemModelSupplier;
-        return blockBuilder;
-    }
-
-    /**
      * Sets the block's item used to place the block.<br>
      * Example code:
      * <pre>{@code
@@ -564,7 +351,7 @@ public final class BlockBuilder implements Cloneable {
             block.withEntity(entitySupplier);
         }
 
-        Assignment.queueBlockColor(block, blockColor);
+        //Assignment.queueBlockColor(block, blockColor);
 
         if (tags != null) {
             block.withTags(tags);
@@ -587,9 +374,6 @@ public final class BlockBuilder implements Cloneable {
             block.getLogic().initializeBlock();
             BlocksAccessor.cacheBlock(block);
         }
-
-        Assignment.queueBlockModel(block, blockModelSupplier, textures);
-        ItemBuilder.Assignment.queueItemModel(block.id(), customItemModelSupplier, itemIcon); // TODO reimpl item model
 
         return block;
     }
@@ -656,63 +440,6 @@ public final class BlockBuilder implements Cloneable {
                         supplier.validate();
                     }
             );
-        }
-    }
-    public static class Assignment{
-        public static boolean blockDispatcherInitialized = false;
-        public static final List<BlockAssignmentEntry<?>> queuedBlockModels = new ArrayList<>();
-
-        /**
-         *  Queues a BlockModel assignment until the game is ready to do so
-         */
-        public static <T extends Block<?>> void queueBlockModel(@NotNull T block, Function<T, BlockModel<?>> blockModelSupplier, @Nullable String[] textures){
-            if (!HalpLibe.isClient) return;
-            if (blockModelSupplier == null) return;
-
-            if (blockDispatcherInitialized){
-                BlockModelDispatcher.getInstance().addDispatch(new BlockAssignmentEntry<>(block, blockModelSupplier, textures).getModel());
-                return;
-            }
-            queuedBlockModels.add(new BlockAssignmentEntry<>(block, blockModelSupplier, textures));
-        }
-
-        public static class BlockAssignmentEntry<T extends Block<?>>{
-            public final T block;
-            public final Function<T, BlockModel<?>> modelFunction;
-            public final String[] textures;
-
-            public BlockAssignmentEntry(@NotNull T block, @NotNull Function<T, BlockModel<?>> modelFunction, @Nullable String[] textures){
-                this.block = block;
-                this.modelFunction = modelFunction;
-                this.textures = textures;
-            }
-            public BlockModel<?> getModel(){
-                BlockModel<?> model = modelFunction.apply(block);
-
-                if (model instanceof BlockModelStandard && textures != null){
-                    for (int i = 0; i < textures.length; i++) {
-                        if (textures[i] != null){
-                            ((BlockModelStandard<?>) model).setTex(BlockModelStandard.BLOCK_TEXTURES, textures[i], Side.getSideById(i));
-                        }
-                    }
-                }
-                return model;
-            }
-        }
-        public static boolean blockColorDispatcherInitialized = false;
-        public static final Map<Block<?>, Function<Block<?>, BlockColor>> queuedBlockColors = new LinkedHashMap<>();
-        /**
-         *  Queues a BlockColor assignment until the game is ready to do so
-         */
-        public static void queueBlockColor(@NotNull Block<?> block, Function<Block<?>, BlockColor> blockColorSupplier){
-            if (!HalpLibe.isClient) return;
-            if (blockColorSupplier == null) return;
-
-            if (blockColorDispatcherInitialized){
-                BlockColorDispatcher.getInstance().addDispatch(block, blockColorSupplier.apply(block));
-                return;
-            }
-            queuedBlockColors.put(block, blockColorSupplier);
         }
     }
 }
