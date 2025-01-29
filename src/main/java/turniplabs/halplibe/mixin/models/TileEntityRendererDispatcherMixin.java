@@ -26,6 +26,7 @@ public class TileEntityRendererDispatcherMixin {
     @Inject(method = "<init>()V", at = @At("TAIL"))
     private void addQueuedModels(CallbackInfo ci){
         ModelHelper.tileEntityRenderers = renderers;
+        ModelHelper.tileEntityRenderDispatcher = thisAs;
         FabricLoader.getInstance().getEntrypoints("initModels", ModelEntrypoint.class).forEach(e -> e.initTileEntityModels(thisAs));
     }
 }

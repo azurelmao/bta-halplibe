@@ -2,6 +2,8 @@ package turniplabs.halplibe.helper;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.render.EntityRenderDispatcher;
+import net.minecraft.client.render.TileEntityRenderDispatcher;
 import net.minecraft.client.render.block.color.BlockColor;
 import net.minecraft.client.render.block.color.BlockColorDispatcher;
 import net.minecraft.client.render.block.model.BlockModel;
@@ -26,16 +28,22 @@ public class ModelHelper {
     public static Map<Class<?>, EntityRenderer<?>> entityRenderers;
     public static Map<Class<?>, TileEntityRenderer<?>> tileEntityRenderers;
 
+    public static BlockModelDispatcher blockModelDispatcher;
+    public static ItemModelDispatcher itemModelDispatcher;
+    public static EntityRenderDispatcher entityRenderDispatcher;
+    public static TileEntityRenderDispatcher tileEntityRenderDispatcher;
+    public static BlockColorDispatcher blockColorDispatcher;
+
     public static void setBlockModel(@NotNull Block<? extends BlockLogic> block, @NotNull Supplier<BlockModel<?>> func) {
-        BlockModelDispatcher.getInstance().addDispatch(block,func.get());
+        blockModelDispatcher.addDispatch(block,func.get());
     }
 
     public static void setBlockColor(@NotNull Block<? extends BlockLogic> block, @NotNull Supplier<BlockColor> func) {
-        BlockColorDispatcher.getInstance().addDispatch(block,func.get());
+        blockColorDispatcher.addDispatch(block,func.get());
     }
 
     public static void setItemModel(@NotNull Item item, @NotNull Supplier<ItemModel> func) {
-        ItemModelDispatcher.getInstance().addDispatch(item,func.get());
+        itemModelDispatcher.addDispatch(item,func.get());
     }
 
     public static void setEntityModel(@NotNull Class<? extends Entity> entity, @NotNull Supplier<EntityRenderer<?>> func) {

@@ -30,6 +30,7 @@ public abstract class EntityRenderDispatcherMixin {
     @Inject(method = "<init>()V", at = @At("TAIL"))
     private void addQueuedModels(CallbackInfo ci){
         ModelHelper.entityRenderers = renderers;
+        ModelHelper.entityRenderDispatcher = thisAs;
         FabricLoader.getInstance().getEntrypoints("initModels", ModelEntrypoint.class).forEach(e -> e.initEntityModels(thisAs));
     }
 }

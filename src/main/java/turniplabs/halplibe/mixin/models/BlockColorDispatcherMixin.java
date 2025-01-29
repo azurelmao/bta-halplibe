@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import turniplabs.halplibe.helper.BlockBuilder;
+import turniplabs.halplibe.helper.ModelHelper;
 import turniplabs.halplibe.util.ModelEntrypoint;
 
 import java.util.Map;
@@ -26,6 +27,7 @@ public abstract class BlockColorDispatcherMixin extends Dispatcher<Block<?>, Blo
 
     @Inject(method = "<init>()V", at = @At("TAIL"))
     private void addQueuedModels(CallbackInfo ci) {
+        ModelHelper.blockColorDispatcher = thisAs;
         FabricLoader.getInstance().getEntrypoints("initModels", ModelEntrypoint.class).forEach(e -> e.initBlockColors(thisAs));
     }
 }

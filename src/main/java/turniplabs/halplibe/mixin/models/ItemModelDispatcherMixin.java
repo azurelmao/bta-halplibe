@@ -20,6 +20,7 @@ public abstract class ItemModelDispatcherMixin {
 
     @Inject(method = "<init>()V", at = @At("TAIL"))
     private void addQueuedModels(CallbackInfo ci){
+        ModelHelper.itemModelDispatcher = thisAs;
         FabricLoader.getInstance().getEntrypoints("initModels", ModelEntrypoint.class).forEach(e -> e.initItemModels(thisAs));
     }
 }
