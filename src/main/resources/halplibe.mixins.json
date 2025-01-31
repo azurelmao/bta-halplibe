@@ -17,6 +17,7 @@
     "accessors.WeightedRandomBagEntryAccessor"
   ],
   "client": [
+    "PacketHandlerClientMixin",
     "models.BlockColorDispatcherMixin",
     "models.BlockModelDispatcherMixin",
     "models.EntityRenderDispatcherMixin",
