@@ -6,20 +6,20 @@ import javax.annotation.Nonnull;
 
 public interface NetworkMessage {
     /**
-     * Write this packet to a buffer.
+     * Encode the UniversalPacket into your NetworkMessage.
      * This may be called on any thread, so this should be a pure operation.
      *
      * @param packet The packet to write data to.
      */
-    void toBytes( @Nonnull UniversalPacket packet );
+    void encodeToUniversalPacket(@Nonnull UniversalPacket packet );
 
     /**
-     * Read this packet from a buffer.
+     * Decode the UniversalPacket into your NetworkMessage.
      * This may be called on any thread, so this should be a pure operation.
      *
-     * @param buf The packet to read data from.
+     * @param packet The packet to read data from.
      */
-    void fromBytes( @Nonnull UniversalPacket buf );
+    void decodeFromUniversalPacket(@Nonnull UniversalPacket packet );
 
     /**
      * Handle this {@link NetworkMessage}.
