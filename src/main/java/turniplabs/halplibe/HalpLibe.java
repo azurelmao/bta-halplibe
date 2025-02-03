@@ -13,6 +13,8 @@ import net.minecraft.core.block.Block;
 import net.minecraft.core.item.Item;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import turniplabs.halplibe.helper.NetworkHelper;
+import turniplabs.halplibe.helper.network.NetworkHandler;
 import turniplabs.halplibe.util.ModelEntrypoint;
 import turniplabs.halplibe.util.TomlConfigHandler;
 import turniplabs.halplibe.util.toml.Toml;
@@ -38,6 +40,7 @@ public class HalpLibe implements ModInitializer, PreLaunchEntrypoint {
 
     @Override
     public void onInitialize() {
+        NetworkHandler.setup();
         LOGGER.info("HalpLibe initialized.");
     }
 

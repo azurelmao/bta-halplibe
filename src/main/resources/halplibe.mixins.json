@@ -14,7 +14,8 @@
     "accessors.EntityFXAccessor",
     "accessors.LanguageAccessor",
     "accessors.WeightedRandomBagAccessor",
-    "accessors.WeightedRandomBagEntryAccessor"
+    "accessors.WeightedRandomBagEntryAccessor",
+    "accessors.PacketHandlerServerAccessor"
   ],
   "client": [
     "PacketHandlerClientMixin",
