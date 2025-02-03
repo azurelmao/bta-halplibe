@@ -19,6 +19,7 @@ import java.util.function.Supplier;
 public final class NetworkHandler
 {
     private static final Map<Integer, BiConsumer<NetworkMessage.NetworkContext, UniversalPacket>> packetReaders = new HashMap<>();
+    private static final Map<String, Short> modIds = new HashMap<>();
     private static final Map<Class<?>, Integer> packetIds = new HashMap<>();
 
     private NetworkHandler()
@@ -45,9 +46,16 @@ public final class NetworkHandler
      * @param factory The factory for this type of message.
      */
     @SuppressWarnings({"unused"})
-    public static <T extends NetworkMessage> void registerNetworkMessage( int id, Supplier<T> factory )
+    public static <T extends NetworkMessage> void registerNetworkMessage( String modId, short id, Supplier<T> factory )
     {
-        registerNetworkMessage( id, getType( factory ), buf -> {
+        if (!modIds.containsKey(modId)) {
+           modIds.put(modId, (short)modId.length());
+        }
+
+        final int high = (modIds.get(modId) & 0xFFFF) << 16;
+        final int low = id & 0xFFFF;
+
+        registerNetworkMessage( high | low, getType( factory ), buf -> {
             T instance = factory.get();
             instance.fromBytes( buf );
             return instance;
