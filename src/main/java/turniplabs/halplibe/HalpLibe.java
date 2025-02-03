@@ -40,7 +40,6 @@ public class HalpLibe implements ModInitializer, PreLaunchEntrypoint {
 
     @Override
     public void onInitialize() {
-        NetworkHandler.setup();
         LOGGER.info("HalpLibe initialized.");
     }
 
