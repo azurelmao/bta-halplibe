@@ -14,7 +14,8 @@
     "accessors.EntityFXAccessor",
     "accessors.LanguageAccessor",
     "accessors.WeightedRandomBagAccessor",
-    "accessors.WeightedRandomBagEntryAccessor"
+    "accessors.WeightedRandomBagEntryAccessor",
+    "accessors.PacketHandlerServerAccessor"
   ],
   "client": [
     "PacketHandlerClientMixin",
@@ -25,6 +26,7 @@
     "models.TileEntityRendererDispatcherMixin"
   ],
   "server": [
+    "PacketHandlerLoginMixin"
   ],
   "injectors": {
     "defaultRequire": 1
