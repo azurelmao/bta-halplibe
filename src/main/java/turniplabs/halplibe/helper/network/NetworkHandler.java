@@ -244,6 +244,10 @@ public final class NetworkHandler
 
 		@Override
 		public void handle(NetworkContext context) {
+			if (EnvironmentHelper.isServerEnvironment()) {
+				return;
+			}
+
 			try {
 				NetworkHandler.packetReaders.clear();
 				NetworkHandler.packetIds.clear();
