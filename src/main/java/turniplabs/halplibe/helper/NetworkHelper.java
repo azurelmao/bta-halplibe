@@ -76,7 +76,7 @@ public final class NetworkHelper {
 
             f.setAccessible(false);
 
-            addMapping = Packet.class.getDeclaredMethod("addIdClassMapping", int.class, boolean.class, boolean.class, Class.class);
+            addMapping = Packet.class.getDeclaredMethod("addMapping", int.class, boolean.class, boolean.class, Class.class);
         } catch (Throwable err) {
             throw new RuntimeException(err);
         }

@@ -138,11 +138,7 @@ public final class ItemBuilder implements Cloneable {
         }
 
         if (maxDamage != null){
-            try {
-                item.getClass().getMethod("setMaxDamage", int.class).invoke(item, maxDamage);
-            } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                throw new RuntimeException(e);
-            }
+            item.setMaxDamage(maxDamage);
         }
 
         List<String> newTokens = new ArrayList<>();
