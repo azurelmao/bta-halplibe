@@ -1,0 +1,3 @@
+accessWidener v2 named
+
+transitive-accessible method net/minecraft/core/item/Item setMaxDamage (I)Lnet/minecraft/core/item/Item;

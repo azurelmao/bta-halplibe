@@ -28,6 +28,7 @@
   "mixins": [
       "halplibe.mixins.json"
   ],
+  "accessWidener": "halplibe.accesswidener",
 
   "depends": {
   },
