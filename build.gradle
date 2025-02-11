@@ -1,7 +1,19 @@
+buildscript {
+	ext.kotlin_version = '2.1.0'
+	dependencies {
+		classpath 'org.kohsuke:github-api:1.135'
+		classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+	}
+	repositories {
+		mavenCentral()
+	}
+}
+
 plugins {
 	id 'fabric-loom' version '1.7.bta'
 	id 'java'
 	id 'maven-publish'
+	id "com.modrinth.minotaur" version "2.+"
 }
 
 import org.gradle.internal.os.OperatingSystem
@@ -169,5 +181,45 @@ publishing {
 			version = project.mod_version
 			from components.java
 		}
+	}
+}
+
+modrinth {
+	token = modrinthToken
+	projectId = "halplibe" // This can be the project ID or the slug. Either will work!
+	versionName = "HalpLibe ${project.mod_version}"
+	versionNumber = project.mod_version // You don't need to set this manually. Will fail if Modrinth has this version already
+	versionType = "release" // This is the default -- can also be `beta` or `alpha`
+	uploadFile = remapJar // With Loom, this MUST be set to `remapJar` instead of `jar`!
+	gameVersions = ["b1.7.3"] // Must be an array, even with only one version
+	loaders = ["fabric"] // Must also be an array - no need to specify this if you're using Loom or ForgeGradle
+	changelog = Files.readString(java.nio.file.Path.of("${rootProject.projectDir}/CHANGELOG.md"))
+	dependencies { // A special DSL for creating dependencies
+		// scope.type
+		// The scope can be `required`, `optional`, `incompatible`, or `embedded`
+		// The type can either be `project` or `version`
+		//required.project "fabric-api" // Creates a new required dependency on Fabric API
+		//optional.version "sodium", "mc1.19.3-0.4.8" // Creates a new optional dependency on this specific version of Sodium
+	}
+}
+
+import org.kohsuke.github.GHReleaseBuilder
+import org.kohsuke.github.GitHub
+
+import java.nio.file.Files
+
+tasks.register('github') {
+	doLast {
+		def github = GitHub.connectUsingOAuth(githubToken as String)
+		def repository = github.getRepository("Turnip-Labs/bta-halplibe")
+
+		def releaseBuilder = new GHReleaseBuilder(repository, version as String)
+		releaseBuilder.name("HalpLibe $version")
+		releaseBuilder.body(Files.readString(java.nio.file.Path.of("${rootProject.projectDir}/CHANGELOG.md")))
+		releaseBuilder.commitish("7.3")
+
+		def release = releaseBuilder.create()
+		release.uploadAsset(project.file(remapJar.getArchiveFile().get().getAsFile()),"application/java-archive")
+		release.uploadAsset(project.file(remapSourcesJar.getArchiveFile().get().getAsFile()),"application/java-archive")
 	}
 }
