@@ -210,7 +210,7 @@ import java.nio.file.Files
 
 tasks.register('github') {
 	doLast {
-		def github = GitHub.connectUsingOAuth(githubToken as String)
+		def github = GitHub.connectUsingOAuth(turnipLabsGithubToken as String)
 		def repository = github.getRepository("Turnip-Labs/bta-halplibe")
 
 		def releaseBuilder = new GHReleaseBuilder(repository, version as String)
