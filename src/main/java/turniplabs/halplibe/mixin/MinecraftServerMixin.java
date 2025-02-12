@@ -9,7 +9,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import turniplabs.halplibe.helper.network.NetworkHandler;
+import turniplabs.halplibe.util.BlockInitEntrypoint;
 import turniplabs.halplibe.util.GameStartEntrypoint;
+import turniplabs.halplibe.util.ItemInitEntrypoint;
 import turniplabs.halplibe.util.RecipeEntrypoint;
 
 @Mixin(value = MinecraftServer.class, remap = false)
@@ -32,6 +34,16 @@ public class MinecraftServerMixin {
     @Inject(method = "startServer", at = @At("TAIL"))
     public void afterGameStartEntrypoint(CallbackInfoReturnable<Boolean> cir){
         FabricLoader.getInstance().getEntrypoints("afterGameStart", GameStartEntrypoint.class).forEach(GameStartEntrypoint::afterGameStart);
+    }
+
+    @Inject(method = "startServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/block/Blocks;init()V", shift = At.Shift.AFTER))
+    public void afterBlockInitEntrypoint(CallbackInfoReturnable<Boolean> cir) {
+        FabricLoader.getInstance().getEntrypoints("afterBlockInit", BlockInitEntrypoint.class).forEach(BlockInitEntrypoint::afterBlockInit);;
+    }
+
+    @Inject(method = "startServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/item/Items;init()V", shift = At.Shift.AFTER))
+    public void afterItemInitEntrypoint(CallbackInfoReturnable<Boolean> cir) {
+        FabricLoader.getInstance().getEntrypoints("afterItemInit", ItemInitEntrypoint.class).forEach(ItemInitEntrypoint::afterItemInit);;
     }
 
     /*
