@@ -184,23 +184,25 @@ publishing {
 	}
 }
 
-modrinth {
-	token = hasProperty("modrinthToken") ? modrinthToken : null
-	projectId = "halplibe" // This can be the project ID or the slug. Either will work!
-	versionName = "HalpLibe ${project.mod_version}"
-	versionNumber = project.mod_version // You don't need to set this manually. Will fail if Modrinth has this version already
-	versionType = "release" // This is the default -- can also be `beta` or `alpha`
-	uploadFile = remapJar // With Loom, this MUST be set to `remapJar` instead of `jar`!
-	additionalFiles = [remapSourcesJar]
-	gameVersions = ["b1.7.3"] // Must be an array, even with only one version
-	loaders = ["fabric"] // Must also be an array - no need to specify this if you're using Loom or ForgeGradle
-	changelog = Files.readString(java.nio.file.Path.of("${rootProject.projectDir}/CHANGELOG.md"))
-	dependencies { // A special DSL for creating dependencies
-		// scope.type
-		// The scope can be `required`, `optional`, `incompatible`, or `embedded`
-		// The type can either be `project` or `version`
-		//required.project "fabric-api" // Creates a new required dependency on Fabric API
-		//optional.version "sodium", "mc1.19.3-0.4.8" // Creates a new optional dependency on this specific version of Sodium
+if(hasProperty("modrinthToken")){
+	modrinth {
+		token = modrinthToken
+		projectId = "halplibe" // This can be the project ID or the slug. Either will work!
+		versionName = "HalpLibe ${project.mod_version}"
+		versionNumber = project.mod_version // You don't need to set this manually. Will fail if Modrinth has this version already
+		versionType = "release" // This is the default -- can also be `beta` or `alpha`
+		uploadFile = remapJar // With Loom, this MUST be set to `remapJar` instead of `jar`!
+		additionalFiles = [remapSourcesJar]
+		gameVersions = ["b1.7.3"] // Must be an array, even with only one version
+		loaders = ["fabric"] // Must also be an array - no need to specify this if you're using Loom or ForgeGradle
+		changelog = Files.readString(java.nio.file.Path.of("${rootProject.projectDir}/CHANGELOG.md"))
+		dependencies { // A special DSL for creating dependencies
+			// scope.type
+			// The scope can be `required`, `optional`, `incompatible`, or `embedded`
+			// The type can either be `project` or `version`
+			//required.project "fabric-api" // Creates a new required dependency on Fabric API
+			//optional.version "sodium", "mc1.19.3-0.4.8" // Creates a new optional dependency on this specific version of Sodium
+		}
 	}
 }
 
