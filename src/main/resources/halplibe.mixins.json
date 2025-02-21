@@ -5,27 +5,27 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "I18nMixin",
-    "MinecraftMixin",
-    "MinecraftServerMixin",
     "MobCreeperMixin",
     "accessors.BlockAccessor",
     "accessors.BlocksAccessor",
-    "accessors.EntityFireflyFXAccessor",
-    "accessors.EntityFXAccessor",
     "accessors.LanguageAccessor",
     "accessors.WeightedRandomBagAccessor",
     "accessors.WeightedRandomBagEntryAccessor",
     "accessors.PacketHandlerServerAccessor"
   ],
   "client": [
+    "MinecraftMixin",
     "PacketHandlerClientMixin",
     "models.BlockColorDispatcherMixin",
     "models.BlockModelDispatcherMixin",
     "models.EntityRenderDispatcherMixin",
     "models.ItemModelDispatcherMixin",
-    "models.TileEntityRendererDispatcherMixin"
+    "models.TileEntityRendererDispatcherMixin",
+    "accessors.EntityFireflyFXAccessor",
+    "accessors.EntityFXAccessor"
   ],
   "server": [
+    "MinecraftServerMixin",
     "PacketHandlerLoginMixin"
   ],
   "injectors": {
