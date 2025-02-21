@@ -23,7 +23,7 @@ public class TileEntityRendererDispatcherMixin {
     @Unique
     private final TileEntityRenderDispatcher thisAs = (TileEntityRenderDispatcher) (Object) this;
 
-    @Inject(method = "<init>()V", at = @At("TAIL"))
+    @Inject(method = "<init>()V", at = @At(value = "INVOKE", target = "Ljava/util/Map;values()Ljava/util/Collection;", shift = At.Shift.BEFORE))
     private void addQueuedModels(CallbackInfo ci){
         ModelHelper.tileEntityRenderers = renderers;
         ModelHelper.tileEntityRenderDispatcher = thisAs;

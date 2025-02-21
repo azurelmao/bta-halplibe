@@ -27,7 +27,7 @@ public abstract class EntityRenderDispatcherMixin {
     @Unique
     private final EntityRenderDispatcher thisAs = (EntityRenderDispatcher) (Object) this;
 
-    @Inject(method = "<init>()V", at = @At("TAIL"))
+    @Inject(method = "<init>()V", at = @At(value = "INVOKE", target = "Ljava/util/Map;values()Ljava/util/Collection;", shift = At.Shift.BEFORE))
     private void addQueuedModels(CallbackInfo ci){
         ModelHelper.entityRenderers = renderers;
         ModelHelper.entityRenderDispatcher = thisAs;
