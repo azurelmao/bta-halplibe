@@ -185,7 +185,7 @@ publishing {
 }
 
 modrinth {
-	token = modrinthToken
+	token = hasProperty("modrinthToken") ? modrinthToken : null
 	projectId = "halplibe" // This can be the project ID or the slug. Either will work!
 	versionName = "HalpLibe ${project.mod_version}"
 	versionNumber = project.mod_version // You don't need to set this manually. Will fail if Modrinth has this version already
